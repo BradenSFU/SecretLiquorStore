@@ -1,0 +1,4 @@
+.ui-autocomplete { border: 1px solid #999; background: #fff; cursor: default; overflow: auto; }
+.ui-menu-item { padding: 10px 5px; font-size: 1.2em; white-space: nowrap; overflow: hidden; }
+.ui-state-focus { background: #f0f0f0; }
+.ui-autocomplete strong { font-weight: normal; color: #3399ff; }
