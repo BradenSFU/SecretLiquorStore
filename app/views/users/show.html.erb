@@ -25,5 +25,15 @@
   <%= @user.Isadmin %>
 </p>
 
+<p>
+  <strong>hashedpassword:</strong>
+  <%= @user.hashedpassword %>
+</p>
+
+<p>
+  <strong>User.id:</strong>
+  <%= @user.id %>
+</p>
+
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
