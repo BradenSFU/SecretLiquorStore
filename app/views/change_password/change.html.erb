@@ -1,14 +1,12 @@
-<% provide(:title, "Log in") %>
-<%= form_tag change_password_success_path do %><% provide(:title, "Log in") %>
-<h1>Change Password</h1>
+<h1>Change Password<h2>
+<%= form_for @user, :url => change_password_path(params[:Username]) do %>
 <div class="row">
   <div class="col-md-3 col-md-offset-3">
-    <label for="name">Old Password</label> <%= text_field_tag :name %>
-    <label for="name">New Password</label> <%= text_field_tag :name %>
-    <label for="name">Confirm New Password</label> <%= text_field_tag :name %>
+    <label for="Username">Username</label> <%= text_field_tag :Username, params[:Username] %>
+    <label for="Password">Old Password</label> <%= text_field_tag :Password, parms[:Password] %>
+    <label for="Password">New Password</label> <%= text_field_tag :Password, parms[:Password] %>
+    <label for="Password">Confirm New Password</label> <%= text_field_tag :Password, parms[:Password] %>
 <%= submit_tag "Submit" %>
 <%end%>
 </div>
 </div>
-
-<p>Find me in app/views/change_password/change.html.erb</p>
