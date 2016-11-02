@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'change_password/change'
+
+  get 'change_password/success'
+
   get "log_in" => "sessions#new", :as => "log_in"
 
   root 'welcome#index'
