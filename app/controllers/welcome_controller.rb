@@ -8,8 +8,10 @@ class WelcomeController < ApplicationController
     parsed = JSON.parse(response)
     if parsed['drinks'] == nil
       redirect_to error_404_url
-    else
-      @drink = parsed['drinks'][0]
+    end
+    @drink = parsed['drinks'][0]
+    if @drink['strDrink'] != params[:searchBarDrink]
+      # redirect_to rearch results page
     end
   end
 end
