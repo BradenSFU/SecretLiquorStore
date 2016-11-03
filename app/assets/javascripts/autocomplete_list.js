@@ -2892,10 +2892,10 @@ $(function(){
       var results = $.ui.autocomplete.filter(drinkNames, request.term);
       response(results.slice(0, 10))
     },
-    // select: function(event, ui) {
-    //   $(this).val(ui.item.value);
-    //   $('#searchByDrink').submit()
-    // }
+    select: function(event, ui) {
+      $(this).val(ui.item.value);
+      $('#searchByDrink').submit()
+    }
   });
 
 });
