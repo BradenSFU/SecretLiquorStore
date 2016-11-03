@@ -7,7 +7,7 @@ class WelcomeController < ApplicationController
     response = Net::HTTP.get(uri)
     parsed = JSON.parse(response)
     if parsed['drinks'] == nil
-      format.html { redirect_to error_404_url }
+      redirect_to error_404_url
     else
       @drink = parsed['drinks'][0]
     end
