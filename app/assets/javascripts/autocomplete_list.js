@@ -2887,12 +2887,15 @@ $(function(){
 "Jam Donut"];
 
   // setup autocomplete function pulling from drinkNames[] array
-  $('#autocomplete').autocomplete({
+  $('#autocompleteDrink').autocomplete({
     source: function(request, response) {
       var results = $.ui.autocomplete.filter(drinkNames, request.term);
       response(results.slice(0, 10))
-    }
+    },
+    // select: function(event, ui) {
+    //   $(this).val(ui.item.value);
+    //   $('#searchByDrink').submit()
+    // }
   });
-
 
 });

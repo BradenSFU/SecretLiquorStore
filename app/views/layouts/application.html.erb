@@ -26,8 +26,11 @@
           <li><a href="#">Search</a></li>
           <li><a href="#">About us</a></li>
           <li><a href="#">Search by drink</a>
-            <div id="searchfield">
-              <form><input type="text" class="biginput" id="autocomplete"></form>
+            <div id="searchDrinkfield">
+              <%= form_tag("/search", :method => "get", :id => "searchByDrink") do %>
+                <input type="text" class="biginput" name="searchBarDrink" id="autocompleteDrink">
+                <%= submit_tag('Search') %>
+              <% end %>
             </div><!-- @end #searchfield -->
           </li>
         </ul>

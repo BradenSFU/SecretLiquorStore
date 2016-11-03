@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get "log_in" => "sessions#new", :as => "log_in"
+  get "/searchdrink/#{params[:searchBarDrink]}", to: 'welcome#drinksearch', as: "drink_search"
 
   root 'welcome#index'
 
