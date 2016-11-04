@@ -21,10 +21,8 @@
         <ul class =" nav navbar-nav">
           <li><a href="#">Profile</a></li>
           <li><a href="#">Publish</a></li>
-          <li><%= link_to "Log in", log_in_path %></li>
-          <li><a href="#">Sign Up</a></li>
           <li><a href="#">Search</a></li>
-          <li><a href="#">About us</a></li>
+          <li><a href="#l">About us</a></li>
           <li><a href="#">Search by drink</a>
             <div id="searchDrinkfield">
               <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink") do %>
@@ -33,9 +31,26 @@
               <% end %>
             </div><!-- @end #searchfield -->
           </li>
+
+          <% if current_user %>
+            <li style="float:right;color:#999">Logged in as <%= current_user.Username %></li>
+            <li style="float:right"><%= link_to "Log out", log_out_path %></li>
+          <% else %>
+            <li style="float:right">  <%= link_to "Sign up", sign_up_path %></li>
+            <li style="float:right"><%= link_to "Log in", log_in_path %></li>
+          <% end %>
+
         </ul>
       </div>
     </nav>
+
+    <p>
+      <%= flash[:success] unless flash[:success].blank? %>
+      <%= flash[:error] unless flash[:error].blank? %>
+    </p>
+    <% flash.each do |name, msg| %>
+      <%= content_tag :div, msg, :id => "flash_#{name}" %>
+    <% end %>
 
   </body>
   <%= yield %>
