@@ -2886,8 +2886,6 @@ $(function(){
 "Dark Caipirinha",
 "Jam Donut"];
 
-  alert('test');
-  
   // setup autocomplete function pulling from drinkNames[] array
   $('#autocompleteDrink').autocomplete({
     source: function(request, response) {
