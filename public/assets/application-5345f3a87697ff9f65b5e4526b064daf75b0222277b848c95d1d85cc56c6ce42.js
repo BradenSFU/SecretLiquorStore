@@ -11562,6 +11562,2673 @@ return jQuery;
   }
 
 })( jQuery );
+/*!
+ * jQuery UI Core 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/category/ui-core/
+ */
+
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+
+		// AMD. Register as an anonymous module.
+		define( [ "jquery" ], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
+
+// $.ui might exist from components with no dependencies, e.g., $.ui.position
+$.ui = $.ui || {};
+
+$.extend( $.ui, {
+	version: "1.11.4",
+
+	keyCode: {
+		BACKSPACE: 8,
+		COMMA: 188,
+		DELETE: 46,
+		DOWN: 40,
+		END: 35,
+		ENTER: 13,
+		ESCAPE: 27,
+		HOME: 36,
+		LEFT: 37,
+		PAGE_DOWN: 34,
+		PAGE_UP: 33,
+		PERIOD: 190,
+		RIGHT: 39,
+		SPACE: 32,
+		TAB: 9,
+		UP: 38
+	}
+});
+
+// plugins
+$.fn.extend({
+	scrollParent: function( includeHidden ) {
+		var position = this.css( "position" ),
+			excludeStaticParent = position === "absolute",
+			overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/,
+			scrollParent = this.parents().filter( function() {
+				var parent = $( this );
+				if ( excludeStaticParent && parent.css( "position" ) === "static" ) {
+					return false;
+				}
+				return overflowRegex.test( parent.css( "overflow" ) + parent.css( "overflow-y" ) + parent.css( "overflow-x" ) );
+			}).eq( 0 );
+
+		return position === "fixed" || !scrollParent.length ? $( this[ 0 ].ownerDocument || document ) : scrollParent;
+	},
+
+	uniqueId: (function() {
+		var uuid = 0;
+
+		return function() {
+			return this.each(function() {
+				if ( !this.id ) {
+					this.id = "ui-id-" + ( ++uuid );
+				}
+			});
+		};
+	})(),
+
+	removeUniqueId: function() {
+		return this.each(function() {
+			if ( /^ui-id-\d+$/.test( this.id ) ) {
+				$( this ).removeAttr( "id" );
+			}
+		});
+	}
+});
+
+// selectors
+function focusable( element, isTabIndexNotNaN ) {
+	var map, mapName, img,
+		nodeName = element.nodeName.toLowerCase();
+	if ( "area" === nodeName ) {
+		map = element.parentNode;
+		mapName = map.name;
+		if ( !element.href || !mapName || map.nodeName.toLowerCase() !== "map" ) {
+			return false;
+		}
+		img = $( "img[usemap='#" + mapName + "']" )[ 0 ];
+		return !!img && visible( img );
+	}
+	return ( /^(input|select|textarea|button|object)$/.test( nodeName ) ?
+		!element.disabled :
+		"a" === nodeName ?
+			element.href || isTabIndexNotNaN :
+			isTabIndexNotNaN) &&
+		// the element and all of its ancestors must be visible
+		visible( element );
+}
+
+function visible( element ) {
+	return $.expr.filters.visible( element ) &&
+		!$( element ).parents().addBack().filter(function() {
+			return $.css( this, "visibility" ) === "hidden";
+		}).length;
+}
+
+$.extend( $.expr[ ":" ], {
+	data: $.expr.createPseudo ?
+		$.expr.createPseudo(function( dataName ) {
+			return function( elem ) {
+				return !!$.data( elem, dataName );
+			};
+		}) :
+		// support: jQuery <1.8
+		function( elem, i, match ) {
+			return !!$.data( elem, match[ 3 ] );
+		},
+
+	focusable: function( element ) {
+		return focusable( element, !isNaN( $.attr( element, "tabindex" ) ) );
+	},
+
+	tabbable: function( element ) {
+		var tabIndex = $.attr( element, "tabindex" ),
+			isTabIndexNaN = isNaN( tabIndex );
+		return ( isTabIndexNaN || tabIndex >= 0 ) && focusable( element, !isTabIndexNaN );
+	}
+});
+
+// support: jQuery <1.8
+if ( !$( "<a>" ).outerWidth( 1 ).jquery ) {
+	$.each( [ "Width", "Height" ], function( i, name ) {
+		var side = name === "Width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ],
+			type = name.toLowerCase(),
+			orig = {
+				innerWidth: $.fn.innerWidth,
+				innerHeight: $.fn.innerHeight,
+				outerWidth: $.fn.outerWidth,
+				outerHeight: $.fn.outerHeight
+			};
+
+		function reduce( elem, size, border, margin ) {
+			$.each( side, function() {
+				size -= parseFloat( $.css( elem, "padding" + this ) ) || 0;
+				if ( border ) {
+					size -= parseFloat( $.css( elem, "border" + this + "Width" ) ) || 0;
+				}
+				if ( margin ) {
+					size -= parseFloat( $.css( elem, "margin" + this ) ) || 0;
+				}
+			});
+			return size;
+		}
+
+		$.fn[ "inner" + name ] = function( size ) {
+			if ( size === undefined ) {
+				return orig[ "inner" + name ].call( this );
+			}
+
+			return this.each(function() {
+				$( this ).css( type, reduce( this, size ) + "px" );
+			});
+		};
+
+		$.fn[ "outer" + name] = function( size, margin ) {
+			if ( typeof size !== "number" ) {
+				return orig[ "outer" + name ].call( this, size );
+			}
+
+			return this.each(function() {
+				$( this).css( type, reduce( this, size, true, margin ) + "px" );
+			});
+		};
+	});
+}
+
+// support: jQuery <1.8
+if ( !$.fn.addBack ) {
+	$.fn.addBack = function( selector ) {
+		return this.add( selector == null ?
+			this.prevObject : this.prevObject.filter( selector )
+		);
+	};
+}
+
+// support: jQuery 1.6.1, 1.6.2 (http://bugs.jquery.com/ticket/9413)
+if ( $( "<a>" ).data( "a-b", "a" ).removeData( "a-b" ).data( "a-b" ) ) {
+	$.fn.removeData = (function( removeData ) {
+		return function( key ) {
+			if ( arguments.length ) {
+				return removeData.call( this, $.camelCase( key ) );
+			} else {
+				return removeData.call( this );
+			}
+		};
+	})( $.fn.removeData );
+}
+
+// deprecated
+$.ui.ie = !!/msie [\w.]+/.exec( navigator.userAgent.toLowerCase() );
+
+$.fn.extend({
+	focus: (function( orig ) {
+		return function( delay, fn ) {
+			return typeof delay === "number" ?
+				this.each(function() {
+					var elem = this;
+					setTimeout(function() {
+						$( elem ).focus();
+						if ( fn ) {
+							fn.call( elem );
+						}
+					}, delay );
+				}) :
+				orig.apply( this, arguments );
+		};
+	})( $.fn.focus ),
+
+	disableSelection: (function() {
+		var eventType = "onselectstart" in document.createElement( "div" ) ?
+			"selectstart" :
+			"mousedown";
+
+		return function() {
+			return this.bind( eventType + ".ui-disableSelection", function( event ) {
+				event.preventDefault();
+			});
+		};
+	})(),
+
+	enableSelection: function() {
+		return this.unbind( ".ui-disableSelection" );
+	},
+
+	zIndex: function( zIndex ) {
+		if ( zIndex !== undefined ) {
+			return this.css( "zIndex", zIndex );
+		}
+
+		if ( this.length ) {
+			var elem = $( this[ 0 ] ), position, value;
+			while ( elem.length && elem[ 0 ] !== document ) {
+				// Ignore z-index if position is set to a value where z-index is ignored by the browser
+				// This makes behavior of this function consistent across browsers
+				// WebKit always returns auto if the element is positioned
+				position = elem.css( "position" );
+				if ( position === "absolute" || position === "relative" || position === "fixed" ) {
+					// IE returns 0 when zIndex is not specified
+					// other browsers return a string
+					// we ignore the case of nested elements with an explicit value of 0
+					// <div style="z-index: -10;"><div style="z-index: 0;"></div></div>
+					value = parseInt( elem.css( "zIndex" ), 10 );
+					if ( !isNaN( value ) && value !== 0 ) {
+						return value;
+					}
+				}
+				elem = elem.parent();
+			}
+		}
+
+		return 0;
+	}
+});
+
+// $.ui.plugin is deprecated. Use $.widget() extensions instead.
+$.ui.plugin = {
+	add: function( module, option, set ) {
+		var i,
+			proto = $.ui[ module ].prototype;
+		for ( i in set ) {
+			proto.plugins[ i ] = proto.plugins[ i ] || [];
+			proto.plugins[ i ].push( [ option, set[ i ] ] );
+		}
+	},
+	call: function( instance, name, args, allowDisconnected ) {
+		var i,
+			set = instance.plugins[ name ];
+
+		if ( !set ) {
+			return;
+		}
+
+		if ( !allowDisconnected && ( !instance.element[ 0 ].parentNode || instance.element[ 0 ].parentNode.nodeType === 11 ) ) {
+			return;
+		}
+
+		for ( i = 0; i < set.length; i++ ) {
+			if ( instance.options[ set[ i ][ 0 ] ] ) {
+				set[ i ][ 1 ].apply( instance.element, args );
+			}
+		}
+	}
+};
+
+}));
+/*!
+ * jQuery UI Widget 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/jQuery.widget/
+ */
+
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+
+		// AMD. Register as an anonymous module.
+		define( [ "jquery" ], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
+
+var widget_uuid = 0,
+	widget_slice = Array.prototype.slice;
+
+$.cleanData = (function( orig ) {
+	return function( elems ) {
+		var events, elem, i;
+		for ( i = 0; (elem = elems[i]) != null; i++ ) {
+			try {
+
+				// Only trigger remove when necessary to save time
+				events = $._data( elem, "events" );
+				if ( events && events.remove ) {
+					$( elem ).triggerHandler( "remove" );
+				}
+
+			// http://bugs.jquery.com/ticket/8235
+			} catch ( e ) {}
+		}
+		orig( elems );
+	};
+})( $.cleanData );
+
+$.widget = function( name, base, prototype ) {
+	var fullName, existingConstructor, constructor, basePrototype,
+		// proxiedPrototype allows the provided prototype to remain unmodified
+		// so that it can be used as a mixin for multiple widgets (#8876)
+		proxiedPrototype = {},
+		namespace = name.split( "." )[ 0 ];
+
+	name = name.split( "." )[ 1 ];
+	fullName = namespace + "-" + name;
+
+	if ( !prototype ) {
+		prototype = base;
+		base = $.Widget;
+	}
+
+	// create selector for plugin
+	$.expr[ ":" ][ fullName.toLowerCase() ] = function( elem ) {
+		return !!$.data( elem, fullName );
+	};
+
+	$[ namespace ] = $[ namespace ] || {};
+	existingConstructor = $[ namespace ][ name ];
+	constructor = $[ namespace ][ name ] = function( options, element ) {
+		// allow instantiation without "new" keyword
+		if ( !this._createWidget ) {
+			return new constructor( options, element );
+		}
+
+		// allow instantiation without initializing for simple inheritance
+		// must use "new" keyword (the code above always passes args)
+		if ( arguments.length ) {
+			this._createWidget( options, element );
+		}
+	};
+	// extend with the existing constructor to carry over any static properties
+	$.extend( constructor, existingConstructor, {
+		version: prototype.version,
+		// copy the object used to create the prototype in case we need to
+		// redefine the widget later
+		_proto: $.extend( {}, prototype ),
+		// track widgets that inherit from this widget in case this widget is
+		// redefined after a widget inherits from it
+		_childConstructors: []
+	});
+
+	basePrototype = new base();
+	// we need to make the options hash a property directly on the new instance
+	// otherwise we'll modify the options hash on the prototype that we're
+	// inheriting from
+	basePrototype.options = $.widget.extend( {}, basePrototype.options );
+	$.each( prototype, function( prop, value ) {
+		if ( !$.isFunction( value ) ) {
+			proxiedPrototype[ prop ] = value;
+			return;
+		}
+		proxiedPrototype[ prop ] = (function() {
+			var _super = function() {
+					return base.prototype[ prop ].apply( this, arguments );
+				},
+				_superApply = function( args ) {
+					return base.prototype[ prop ].apply( this, args );
+				};
+			return function() {
+				var __super = this._super,
+					__superApply = this._superApply,
+					returnValue;
+
+				this._super = _super;
+				this._superApply = _superApply;
+
+				returnValue = value.apply( this, arguments );
+
+				this._super = __super;
+				this._superApply = __superApply;
+
+				return returnValue;
+			};
+		})();
+	});
+	constructor.prototype = $.widget.extend( basePrototype, {
+		// TODO: remove support for widgetEventPrefix
+		// always use the name + a colon as the prefix, e.g., draggable:start
+		// don't prefix for widgets that aren't DOM-based
+		widgetEventPrefix: existingConstructor ? (basePrototype.widgetEventPrefix || name) : name
+	}, proxiedPrototype, {
+		constructor: constructor,
+		namespace: namespace,
+		widgetName: name,
+		widgetFullName: fullName
+	});
+
+	// If this widget is being redefined then we need to find all widgets that
+	// are inheriting from it and redefine all of them so that they inherit from
+	// the new version of this widget. We're essentially trying to replace one
+	// level in the prototype chain.
+	if ( existingConstructor ) {
+		$.each( existingConstructor._childConstructors, function( i, child ) {
+			var childPrototype = child.prototype;
+
+			// redefine the child widget using the same prototype that was
+			// originally used, but inherit from the new version of the base
+			$.widget( childPrototype.namespace + "." + childPrototype.widgetName, constructor, child._proto );
+		});
+		// remove the list of existing child constructors from the old constructor
+		// so the old child constructors can be garbage collected
+		delete existingConstructor._childConstructors;
+	} else {
+		base._childConstructors.push( constructor );
+	}
+
+	$.widget.bridge( name, constructor );
+
+	return constructor;
+};
+
+$.widget.extend = function( target ) {
+	var input = widget_slice.call( arguments, 1 ),
+		inputIndex = 0,
+		inputLength = input.length,
+		key,
+		value;
+	for ( ; inputIndex < inputLength; inputIndex++ ) {
+		for ( key in input[ inputIndex ] ) {
+			value = input[ inputIndex ][ key ];
+			if ( input[ inputIndex ].hasOwnProperty( key ) && value !== undefined ) {
+				// Clone objects
+				if ( $.isPlainObject( value ) ) {
+					target[ key ] = $.isPlainObject( target[ key ] ) ?
+						$.widget.extend( {}, target[ key ], value ) :
+						// Don't extend strings, arrays, etc. with objects
+						$.widget.extend( {}, value );
+				// Copy everything else by reference
+				} else {
+					target[ key ] = value;
+				}
+			}
+		}
+	}
+	return target;
+};
+
+$.widget.bridge = function( name, object ) {
+	var fullName = object.prototype.widgetFullName || name;
+	$.fn[ name ] = function( options ) {
+		var isMethodCall = typeof options === "string",
+			args = widget_slice.call( arguments, 1 ),
+			returnValue = this;
+
+		if ( isMethodCall ) {
+			this.each(function() {
+				var methodValue,
+					instance = $.data( this, fullName );
+				if ( options === "instance" ) {
+					returnValue = instance;
+					return false;
+				}
+				if ( !instance ) {
+					return $.error( "cannot call methods on " + name + " prior to initialization; " +
+						"attempted to call method '" + options + "'" );
+				}
+				if ( !$.isFunction( instance[options] ) || options.charAt( 0 ) === "_" ) {
+					return $.error( "no such method '" + options + "' for " + name + " widget instance" );
+				}
+				methodValue = instance[ options ].apply( instance, args );
+				if ( methodValue !== instance && methodValue !== undefined ) {
+					returnValue = methodValue && methodValue.jquery ?
+						returnValue.pushStack( methodValue.get() ) :
+						methodValue;
+					return false;
+				}
+			});
+		} else {
+
+			// Allow multiple hashes to be passed on init
+			if ( args.length ) {
+				options = $.widget.extend.apply( null, [ options ].concat(args) );
+			}
+
+			this.each(function() {
+				var instance = $.data( this, fullName );
+				if ( instance ) {
+					instance.option( options || {} );
+					if ( instance._init ) {
+						instance._init();
+					}
+				} else {
+					$.data( this, fullName, new object( options, this ) );
+				}
+			});
+		}
+
+		return returnValue;
+	};
+};
+
+$.Widget = function( /* options, element */ ) {};
+$.Widget._childConstructors = [];
+
+$.Widget.prototype = {
+	widgetName: "widget",
+	widgetEventPrefix: "",
+	defaultElement: "<div>",
+	options: {
+		disabled: false,
+
+		// callbacks
+		create: null
+	},
+	_createWidget: function( options, element ) {
+		element = $( element || this.defaultElement || this )[ 0 ];
+		this.element = $( element );
+		this.uuid = widget_uuid++;
+		this.eventNamespace = "." + this.widgetName + this.uuid;
+
+		this.bindings = $();
+		this.hoverable = $();
+		this.focusable = $();
+
+		if ( element !== this ) {
+			$.data( element, this.widgetFullName, this );
+			this._on( true, this.element, {
+				remove: function( event ) {
+					if ( event.target === element ) {
+						this.destroy();
+					}
+				}
+			});
+			this.document = $( element.style ?
+				// element within the document
+				element.ownerDocument :
+				// element is window or document
+				element.document || element );
+			this.window = $( this.document[0].defaultView || this.document[0].parentWindow );
+		}
+
+		this.options = $.widget.extend( {},
+			this.options,
+			this._getCreateOptions(),
+			options );
+
+		this._create();
+		this._trigger( "create", null, this._getCreateEventData() );
+		this._init();
+	},
+	_getCreateOptions: $.noop,
+	_getCreateEventData: $.noop,
+	_create: $.noop,
+	_init: $.noop,
+
+	destroy: function() {
+		this._destroy();
+		// we can probably remove the unbind calls in 2.0
+		// all event bindings should go through this._on()
+		this.element
+			.unbind( this.eventNamespace )
+			.removeData( this.widgetFullName )
+			// support: jquery <1.6.3
+			// http://bugs.jquery.com/ticket/9413
+			.removeData( $.camelCase( this.widgetFullName ) );
+		this.widget()
+			.unbind( this.eventNamespace )
+			.removeAttr( "aria-disabled" )
+			.removeClass(
+				this.widgetFullName + "-disabled " +
+				"ui-state-disabled" );
+
+		// clean up events and states
+		this.bindings.unbind( this.eventNamespace );
+		this.hoverable.removeClass( "ui-state-hover" );
+		this.focusable.removeClass( "ui-state-focus" );
+	},
+	_destroy: $.noop,
+
+	widget: function() {
+		return this.element;
+	},
+
+	option: function( key, value ) {
+		var options = key,
+			parts,
+			curOption,
+			i;
+
+		if ( arguments.length === 0 ) {
+			// don't return a reference to the internal hash
+			return $.widget.extend( {}, this.options );
+		}
+
+		if ( typeof key === "string" ) {
+			// handle nested keys, e.g., "foo.bar" => { foo: { bar: ___ } }
+			options = {};
+			parts = key.split( "." );
+			key = parts.shift();
+			if ( parts.length ) {
+				curOption = options[ key ] = $.widget.extend( {}, this.options[ key ] );
+				for ( i = 0; i < parts.length - 1; i++ ) {
+					curOption[ parts[ i ] ] = curOption[ parts[ i ] ] || {};
+					curOption = curOption[ parts[ i ] ];
+				}
+				key = parts.pop();
+				if ( arguments.length === 1 ) {
+					return curOption[ key ] === undefined ? null : curOption[ key ];
+				}
+				curOption[ key ] = value;
+			} else {
+				if ( arguments.length === 1 ) {
+					return this.options[ key ] === undefined ? null : this.options[ key ];
+				}
+				options[ key ] = value;
+			}
+		}
+
+		this._setOptions( options );
+
+		return this;
+	},
+	_setOptions: function( options ) {
+		var key;
+
+		for ( key in options ) {
+			this._setOption( key, options[ key ] );
+		}
+
+		return this;
+	},
+	_setOption: function( key, value ) {
+		this.options[ key ] = value;
+
+		if ( key === "disabled" ) {
+			this.widget()
+				.toggleClass( this.widgetFullName + "-disabled", !!value );
+
+			// If the widget is becoming disabled, then nothing is interactive
+			if ( value ) {
+				this.hoverable.removeClass( "ui-state-hover" );
+				this.focusable.removeClass( "ui-state-focus" );
+			}
+		}
+
+		return this;
+	},
+
+	enable: function() {
+		return this._setOptions({ disabled: false });
+	},
+	disable: function() {
+		return this._setOptions({ disabled: true });
+	},
+
+	_on: function( suppressDisabledCheck, element, handlers ) {
+		var delegateElement,
+			instance = this;
+
+		// no suppressDisabledCheck flag, shuffle arguments
+		if ( typeof suppressDisabledCheck !== "boolean" ) {
+			handlers = element;
+			element = suppressDisabledCheck;
+			suppressDisabledCheck = false;
+		}
+
+		// no element argument, shuffle and use this.element
+		if ( !handlers ) {
+			handlers = element;
+			element = this.element;
+			delegateElement = this.widget();
+		} else {
+			element = delegateElement = $( element );
+			this.bindings = this.bindings.add( element );
+		}
+
+		$.each( handlers, function( event, handler ) {
+			function handlerProxy() {
+				// allow widgets to customize the disabled handling
+				// - disabled as an array instead of boolean
+				// - disabled class as method for disabling individual parts
+				if ( !suppressDisabledCheck &&
+						( instance.options.disabled === true ||
+							$( this ).hasClass( "ui-state-disabled" ) ) ) {
+					return;
+				}
+				return ( typeof handler === "string" ? instance[ handler ] : handler )
+					.apply( instance, arguments );
+			}
+
+			// copy the guid so direct unbinding works
+			if ( typeof handler !== "string" ) {
+				handlerProxy.guid = handler.guid =
+					handler.guid || handlerProxy.guid || $.guid++;
+			}
+
+			var match = event.match( /^([\w:-]*)\s*(.*)$/ ),
+				eventName = match[1] + instance.eventNamespace,
+				selector = match[2];
+			if ( selector ) {
+				delegateElement.delegate( selector, eventName, handlerProxy );
+			} else {
+				element.bind( eventName, handlerProxy );
+			}
+		});
+	},
+
+	_off: function( element, eventName ) {
+		eventName = (eventName || "").split( " " ).join( this.eventNamespace + " " ) +
+			this.eventNamespace;
+		element.unbind( eventName ).undelegate( eventName );
+
+		// Clear the stack to avoid memory leaks (#10056)
+		this.bindings = $( this.bindings.not( element ).get() );
+		this.focusable = $( this.focusable.not( element ).get() );
+		this.hoverable = $( this.hoverable.not( element ).get() );
+	},
+
+	_delay: function( handler, delay ) {
+		function handlerProxy() {
+			return ( typeof handler === "string" ? instance[ handler ] : handler )
+				.apply( instance, arguments );
+		}
+		var instance = this;
+		return setTimeout( handlerProxy, delay || 0 );
+	},
+
+	_hoverable: function( element ) {
+		this.hoverable = this.hoverable.add( element );
+		this._on( element, {
+			mouseenter: function( event ) {
+				$( event.currentTarget ).addClass( "ui-state-hover" );
+			},
+			mouseleave: function( event ) {
+				$( event.currentTarget ).removeClass( "ui-state-hover" );
+			}
+		});
+	},
+
+	_focusable: function( element ) {
+		this.focusable = this.focusable.add( element );
+		this._on( element, {
+			focusin: function( event ) {
+				$( event.currentTarget ).addClass( "ui-state-focus" );
+			},
+			focusout: function( event ) {
+				$( event.currentTarget ).removeClass( "ui-state-focus" );
+			}
+		});
+	},
+
+	_trigger: function( type, event, data ) {
+		var prop, orig,
+			callback = this.options[ type ];
+
+		data = data || {};
+		event = $.Event( event );
+		event.type = ( type === this.widgetEventPrefix ?
+			type :
+			this.widgetEventPrefix + type ).toLowerCase();
+		// the original event may come from any element
+		// so we need to reset the target on the new event
+		event.target = this.element[ 0 ];
+
+		// copy original event properties over to the new event
+		orig = event.originalEvent;
+		if ( orig ) {
+			for ( prop in orig ) {
+				if ( !( prop in event ) ) {
+					event[ prop ] = orig[ prop ];
+				}
+			}
+		}
+
+		this.element.trigger( event, data );
+		return !( $.isFunction( callback ) &&
+			callback.apply( this.element[0], [ event ].concat( data ) ) === false ||
+			event.isDefaultPrevented() );
+	}
+};
+
+$.each( { show: "fadeIn", hide: "fadeOut" }, function( method, defaultEffect ) {
+	$.Widget.prototype[ "_" + method ] = function( element, options, callback ) {
+		if ( typeof options === "string" ) {
+			options = { effect: options };
+		}
+		var hasOptions,
+			effectName = !options ?
+				method :
+				options === true || typeof options === "number" ?
+					defaultEffect :
+					options.effect || defaultEffect;
+		options = options || {};
+		if ( typeof options === "number" ) {
+			options = { duration: options };
+		}
+		hasOptions = !$.isEmptyObject( options );
+		options.complete = callback;
+		if ( options.delay ) {
+			element.delay( options.delay );
+		}
+		if ( hasOptions && $.effects && $.effects.effect[ effectName ] ) {
+			element[ method ]( options );
+		} else if ( effectName !== method && element[ effectName ] ) {
+			element[ effectName ]( options.duration, options.easing, callback );
+		} else {
+			element.queue(function( next ) {
+				$( this )[ method ]();
+				if ( callback ) {
+					callback.call( element[ 0 ] );
+				}
+				next();
+			});
+		}
+	};
+});
+
+return $.widget;
+
+}));
+/*!
+ * jQuery UI Position 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/position/
+ */
+
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+
+		// AMD. Register as an anonymous module.
+		define( [ "jquery" ], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
+(function() {
+
+$.ui = $.ui || {};
+
+var cachedScrollbarWidth, supportsOffsetFractions,
+	max = Math.max,
+	abs = Math.abs,
+	round = Math.round,
+	rhorizontal = /left|center|right/,
+	rvertical = /top|center|bottom/,
+	roffset = /[\+\-]\d+(\.[\d]+)?%?/,
+	rposition = /^\w+/,
+	rpercent = /%$/,
+	_position = $.fn.position;
+
+function getOffsets( offsets, width, height ) {
+	return [
+		parseFloat( offsets[ 0 ] ) * ( rpercent.test( offsets[ 0 ] ) ? width / 100 : 1 ),
+		parseFloat( offsets[ 1 ] ) * ( rpercent.test( offsets[ 1 ] ) ? height / 100 : 1 )
+	];
+}
+
+function parseCss( element, property ) {
+	return parseInt( $.css( element, property ), 10 ) || 0;
+}
+
+function getDimensions( elem ) {
+	var raw = elem[0];
+	if ( raw.nodeType === 9 ) {
+		return {
+			width: elem.width(),
+			height: elem.height(),
+			offset: { top: 0, left: 0 }
+		};
+	}
+	if ( $.isWindow( raw ) ) {
+		return {
+			width: elem.width(),
+			height: elem.height(),
+			offset: { top: elem.scrollTop(), left: elem.scrollLeft() }
+		};
+	}
+	if ( raw.preventDefault ) {
+		return {
+			width: 0,
+			height: 0,
+			offset: { top: raw.pageY, left: raw.pageX }
+		};
+	}
+	return {
+		width: elem.outerWidth(),
+		height: elem.outerHeight(),
+		offset: elem.offset()
+	};
+}
+
+$.position = {
+	scrollbarWidth: function() {
+		if ( cachedScrollbarWidth !== undefined ) {
+			return cachedScrollbarWidth;
+		}
+		var w1, w2,
+			div = $( "<div style='display:block;position:absolute;width:50px;height:50px;overflow:hidden;'><div style='height:100px;width:auto;'></div></div>" ),
+			innerDiv = div.children()[0];
+
+		$( "body" ).append( div );
+		w1 = innerDiv.offsetWidth;
+		div.css( "overflow", "scroll" );
+
+		w2 = innerDiv.offsetWidth;
+
+		if ( w1 === w2 ) {
+			w2 = div[0].clientWidth;
+		}
+
+		div.remove();
+
+		return (cachedScrollbarWidth = w1 - w2);
+	},
+	getScrollInfo: function( within ) {
+		var overflowX = within.isWindow || within.isDocument ? "" :
+				within.element.css( "overflow-x" ),
+			overflowY = within.isWindow || within.isDocument ? "" :
+				within.element.css( "overflow-y" ),
+			hasOverflowX = overflowX === "scroll" ||
+				( overflowX === "auto" && within.width < within.element[0].scrollWidth ),
+			hasOverflowY = overflowY === "scroll" ||
+				( overflowY === "auto" && within.height < within.element[0].scrollHeight );
+		return {
+			width: hasOverflowY ? $.position.scrollbarWidth() : 0,
+			height: hasOverflowX ? $.position.scrollbarWidth() : 0
+		};
+	},
+	getWithinInfo: function( element ) {
+		var withinElement = $( element || window ),
+			isWindow = $.isWindow( withinElement[0] ),
+			isDocument = !!withinElement[ 0 ] && withinElement[ 0 ].nodeType === 9;
+		return {
+			element: withinElement,
+			isWindow: isWindow,
+			isDocument: isDocument,
+			offset: withinElement.offset() || { left: 0, top: 0 },
+			scrollLeft: withinElement.scrollLeft(),
+			scrollTop: withinElement.scrollTop(),
+
+			// support: jQuery 1.6.x
+			// jQuery 1.6 doesn't support .outerWidth/Height() on documents or windows
+			width: isWindow || isDocument ? withinElement.width() : withinElement.outerWidth(),
+			height: isWindow || isDocument ? withinElement.height() : withinElement.outerHeight()
+		};
+	}
+};
+
+$.fn.position = function( options ) {
+	if ( !options || !options.of ) {
+		return _position.apply( this, arguments );
+	}
+
+	// make a copy, we don't want to modify arguments
+	options = $.extend( {}, options );
+
+	var atOffset, targetWidth, targetHeight, targetOffset, basePosition, dimensions,
+		target = $( options.of ),
+		within = $.position.getWithinInfo( options.within ),
+		scrollInfo = $.position.getScrollInfo( within ),
+		collision = ( options.collision || "flip" ).split( " " ),
+		offsets = {};
+
+	dimensions = getDimensions( target );
+	if ( target[0].preventDefault ) {
+		// force left top to allow flipping
+		options.at = "left top";
+	}
+	targetWidth = dimensions.width;
+	targetHeight = dimensions.height;
+	targetOffset = dimensions.offset;
+	// clone to reuse original targetOffset later
+	basePosition = $.extend( {}, targetOffset );
+
+	// force my and at to have valid horizontal and vertical positions
+	// if a value is missing or invalid, it will be converted to center
+	$.each( [ "my", "at" ], function() {
+		var pos = ( options[ this ] || "" ).split( " " ),
+			horizontalOffset,
+			verticalOffset;
+
+		if ( pos.length === 1) {
+			pos = rhorizontal.test( pos[ 0 ] ) ?
+				pos.concat( [ "center" ] ) :
+				rvertical.test( pos[ 0 ] ) ?
+					[ "center" ].concat( pos ) :
+					[ "center", "center" ];
+		}
+		pos[ 0 ] = rhorizontal.test( pos[ 0 ] ) ? pos[ 0 ] : "center";
+		pos[ 1 ] = rvertical.test( pos[ 1 ] ) ? pos[ 1 ] : "center";
+
+		// calculate offsets
+		horizontalOffset = roffset.exec( pos[ 0 ] );
+		verticalOffset = roffset.exec( pos[ 1 ] );
+		offsets[ this ] = [
+			horizontalOffset ? horizontalOffset[ 0 ] : 0,
+			verticalOffset ? verticalOffset[ 0 ] : 0
+		];
+
+		// reduce to just the positions without the offsets
+		options[ this ] = [
+			rposition.exec( pos[ 0 ] )[ 0 ],
+			rposition.exec( pos[ 1 ] )[ 0 ]
+		];
+	});
+
+	// normalize collision option
+	if ( collision.length === 1 ) {
+		collision[ 1 ] = collision[ 0 ];
+	}
+
+	if ( options.at[ 0 ] === "right" ) {
+		basePosition.left += targetWidth;
+	} else if ( options.at[ 0 ] === "center" ) {
+		basePosition.left += targetWidth / 2;
+	}
+
+	if ( options.at[ 1 ] === "bottom" ) {
+		basePosition.top += targetHeight;
+	} else if ( options.at[ 1 ] === "center" ) {
+		basePosition.top += targetHeight / 2;
+	}
+
+	atOffset = getOffsets( offsets.at, targetWidth, targetHeight );
+	basePosition.left += atOffset[ 0 ];
+	basePosition.top += atOffset[ 1 ];
+
+	return this.each(function() {
+		var collisionPosition, using,
+			elem = $( this ),
+			elemWidth = elem.outerWidth(),
+			elemHeight = elem.outerHeight(),
+			marginLeft = parseCss( this, "marginLeft" ),
+			marginTop = parseCss( this, "marginTop" ),
+			collisionWidth = elemWidth + marginLeft + parseCss( this, "marginRight" ) + scrollInfo.width,
+			collisionHeight = elemHeight + marginTop + parseCss( this, "marginBottom" ) + scrollInfo.height,
+			position = $.extend( {}, basePosition ),
+			myOffset = getOffsets( offsets.my, elem.outerWidth(), elem.outerHeight() );
+
+		if ( options.my[ 0 ] === "right" ) {
+			position.left -= elemWidth;
+		} else if ( options.my[ 0 ] === "center" ) {
+			position.left -= elemWidth / 2;
+		}
+
+		if ( options.my[ 1 ] === "bottom" ) {
+			position.top -= elemHeight;
+		} else if ( options.my[ 1 ] === "center" ) {
+			position.top -= elemHeight / 2;
+		}
+
+		position.left += myOffset[ 0 ];
+		position.top += myOffset[ 1 ];
+
+		// if the browser doesn't support fractions, then round for consistent results
+		if ( !supportsOffsetFractions ) {
+			position.left = round( position.left );
+			position.top = round( position.top );
+		}
+
+		collisionPosition = {
+			marginLeft: marginLeft,
+			marginTop: marginTop
+		};
+
+		$.each( [ "left", "top" ], function( i, dir ) {
+			if ( $.ui.position[ collision[ i ] ] ) {
+				$.ui.position[ collision[ i ] ][ dir ]( position, {
+					targetWidth: targetWidth,
+					targetHeight: targetHeight,
+					elemWidth: elemWidth,
+					elemHeight: elemHeight,
+					collisionPosition: collisionPosition,
+					collisionWidth: collisionWidth,
+					collisionHeight: collisionHeight,
+					offset: [ atOffset[ 0 ] + myOffset[ 0 ], atOffset [ 1 ] + myOffset[ 1 ] ],
+					my: options.my,
+					at: options.at,
+					within: within,
+					elem: elem
+				});
+			}
+		});
+
+		if ( options.using ) {
+			// adds feedback as second argument to using callback, if present
+			using = function( props ) {
+				var left = targetOffset.left - position.left,
+					right = left + targetWidth - elemWidth,
+					top = targetOffset.top - position.top,
+					bottom = top + targetHeight - elemHeight,
+					feedback = {
+						target: {
+							element: target,
+							left: targetOffset.left,
+							top: targetOffset.top,
+							width: targetWidth,
+							height: targetHeight
+						},
+						element: {
+							element: elem,
+							left: position.left,
+							top: position.top,
+							width: elemWidth,
+							height: elemHeight
+						},
+						horizontal: right < 0 ? "left" : left > 0 ? "right" : "center",
+						vertical: bottom < 0 ? "top" : top > 0 ? "bottom" : "middle"
+					};
+				if ( targetWidth < elemWidth && abs( left + right ) < targetWidth ) {
+					feedback.horizontal = "center";
+				}
+				if ( targetHeight < elemHeight && abs( top + bottom ) < targetHeight ) {
+					feedback.vertical = "middle";
+				}
+				if ( max( abs( left ), abs( right ) ) > max( abs( top ), abs( bottom ) ) ) {
+					feedback.important = "horizontal";
+				} else {
+					feedback.important = "vertical";
+				}
+				options.using.call( this, props, feedback );
+			};
+		}
+
+		elem.offset( $.extend( position, { using: using } ) );
+	});
+};
+
+$.ui.position = {
+	fit: {
+		left: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.isWindow ? within.scrollLeft : within.offset.left,
+				outerWidth = within.width,
+				collisionPosLeft = position.left - data.collisionPosition.marginLeft,
+				overLeft = withinOffset - collisionPosLeft,
+				overRight = collisionPosLeft + data.collisionWidth - outerWidth - withinOffset,
+				newOverRight;
+
+			// element is wider than within
+			if ( data.collisionWidth > outerWidth ) {
+				// element is initially over the left side of within
+				if ( overLeft > 0 && overRight <= 0 ) {
+					newOverRight = position.left + overLeft + data.collisionWidth - outerWidth - withinOffset;
+					position.left += overLeft - newOverRight;
+				// element is initially over right side of within
+				} else if ( overRight > 0 && overLeft <= 0 ) {
+					position.left = withinOffset;
+				// element is initially over both left and right sides of within
+				} else {
+					if ( overLeft > overRight ) {
+						position.left = withinOffset + outerWidth - data.collisionWidth;
+					} else {
+						position.left = withinOffset;
+					}
+				}
+			// too far left -> align with left edge
+			} else if ( overLeft > 0 ) {
+				position.left += overLeft;
+			// too far right -> align with right edge
+			} else if ( overRight > 0 ) {
+				position.left -= overRight;
+			// adjust based on position and margin
+			} else {
+				position.left = max( position.left - collisionPosLeft, position.left );
+			}
+		},
+		top: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.isWindow ? within.scrollTop : within.offset.top,
+				outerHeight = data.within.height,
+				collisionPosTop = position.top - data.collisionPosition.marginTop,
+				overTop = withinOffset - collisionPosTop,
+				overBottom = collisionPosTop + data.collisionHeight - outerHeight - withinOffset,
+				newOverBottom;
+
+			// element is taller than within
+			if ( data.collisionHeight > outerHeight ) {
+				// element is initially over the top of within
+				if ( overTop > 0 && overBottom <= 0 ) {
+					newOverBottom = position.top + overTop + data.collisionHeight - outerHeight - withinOffset;
+					position.top += overTop - newOverBottom;
+				// element is initially over bottom of within
+				} else if ( overBottom > 0 && overTop <= 0 ) {
+					position.top = withinOffset;
+				// element is initially over both top and bottom of within
+				} else {
+					if ( overTop > overBottom ) {
+						position.top = withinOffset + outerHeight - data.collisionHeight;
+					} else {
+						position.top = withinOffset;
+					}
+				}
+			// too far up -> align with top
+			} else if ( overTop > 0 ) {
+				position.top += overTop;
+			// too far down -> align with bottom edge
+			} else if ( overBottom > 0 ) {
+				position.top -= overBottom;
+			// adjust based on position and margin
+			} else {
+				position.top = max( position.top - collisionPosTop, position.top );
+			}
+		}
+	},
+	flip: {
+		left: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.offset.left + within.scrollLeft,
+				outerWidth = within.width,
+				offsetLeft = within.isWindow ? within.scrollLeft : within.offset.left,
+				collisionPosLeft = position.left - data.collisionPosition.marginLeft,
+				overLeft = collisionPosLeft - offsetLeft,
+				overRight = collisionPosLeft + data.collisionWidth - outerWidth - offsetLeft,
+				myOffset = data.my[ 0 ] === "left" ?
+					-data.elemWidth :
+					data.my[ 0 ] === "right" ?
+						data.elemWidth :
+						0,
+				atOffset = data.at[ 0 ] === "left" ?
+					data.targetWidth :
+					data.at[ 0 ] === "right" ?
+						-data.targetWidth :
+						0,
+				offset = -2 * data.offset[ 0 ],
+				newOverRight,
+				newOverLeft;
+
+			if ( overLeft < 0 ) {
+				newOverRight = position.left + myOffset + atOffset + offset + data.collisionWidth - outerWidth - withinOffset;
+				if ( newOverRight < 0 || newOverRight < abs( overLeft ) ) {
+					position.left += myOffset + atOffset + offset;
+				}
+			} else if ( overRight > 0 ) {
+				newOverLeft = position.left - data.collisionPosition.marginLeft + myOffset + atOffset + offset - offsetLeft;
+				if ( newOverLeft > 0 || abs( newOverLeft ) < overRight ) {
+					position.left += myOffset + atOffset + offset;
+				}
+			}
+		},
+		top: function( position, data ) {
+			var within = data.within,
+				withinOffset = within.offset.top + within.scrollTop,
+				outerHeight = within.height,
+				offsetTop = within.isWindow ? within.scrollTop : within.offset.top,
+				collisionPosTop = position.top - data.collisionPosition.marginTop,
+				overTop = collisionPosTop - offsetTop,
+				overBottom = collisionPosTop + data.collisionHeight - outerHeight - offsetTop,
+				top = data.my[ 1 ] === "top",
+				myOffset = top ?
+					-data.elemHeight :
+					data.my[ 1 ] === "bottom" ?
+						data.elemHeight :
+						0,
+				atOffset = data.at[ 1 ] === "top" ?
+					data.targetHeight :
+					data.at[ 1 ] === "bottom" ?
+						-data.targetHeight :
+						0,
+				offset = -2 * data.offset[ 1 ],
+				newOverTop,
+				newOverBottom;
+			if ( overTop < 0 ) {
+				newOverBottom = position.top + myOffset + atOffset + offset + data.collisionHeight - outerHeight - withinOffset;
+				if ( newOverBottom < 0 || newOverBottom < abs( overTop ) ) {
+					position.top += myOffset + atOffset + offset;
+				}
+			} else if ( overBottom > 0 ) {
+				newOverTop = position.top - data.collisionPosition.marginTop + myOffset + atOffset + offset - offsetTop;
+				if ( newOverTop > 0 || abs( newOverTop ) < overBottom ) {
+					position.top += myOffset + atOffset + offset;
+				}
+			}
+		}
+	},
+	flipfit: {
+		left: function() {
+			$.ui.position.flip.left.apply( this, arguments );
+			$.ui.position.fit.left.apply( this, arguments );
+		},
+		top: function() {
+			$.ui.position.flip.top.apply( this, arguments );
+			$.ui.position.fit.top.apply( this, arguments );
+		}
+	}
+};
+
+// fraction support test
+(function() {
+	var testElement, testElementParent, testElementStyle, offsetLeft, i,
+		body = document.getElementsByTagName( "body" )[ 0 ],
+		div = document.createElement( "div" );
+
+	//Create a "fake body" for testing based on method used in jQuery.support
+	testElement = document.createElement( body ? "div" : "body" );
+	testElementStyle = {
+		visibility: "hidden",
+		width: 0,
+		height: 0,
+		border: 0,
+		margin: 0,
+		background: "none"
+	};
+	if ( body ) {
+		$.extend( testElementStyle, {
+			position: "absolute",
+			left: "-1000px",
+			top: "-1000px"
+		});
+	}
+	for ( i in testElementStyle ) {
+		testElement.style[ i ] = testElementStyle[ i ];
+	}
+	testElement.appendChild( div );
+	testElementParent = body || document.documentElement;
+	testElementParent.insertBefore( testElement, testElementParent.firstChild );
+
+	div.style.cssText = "position: absolute; left: 10.7432222px;";
+
+	offsetLeft = $( div ).offset().left;
+	supportsOffsetFractions = offsetLeft > 10 && offsetLeft < 11;
+
+	testElement.innerHTML = "";
+	testElementParent.removeChild( testElement );
+})();
+
+})();
+
+return $.ui.position;
+
+}));
+
+
+
+
+/*!
+ * jQuery UI Menu 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/menu/
+ */
+
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"./core",
+			"./widget",
+			"./position"
+		], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
+
+return $.widget( "ui.menu", {
+	version: "1.11.4",
+	defaultElement: "<ul>",
+	delay: 300,
+	options: {
+		icons: {
+			submenu: "ui-icon-carat-1-e"
+		},
+		items: "> *",
+		menus: "ul",
+		position: {
+			my: "left-1 top",
+			at: "right top"
+		},
+		role: "menu",
+
+		// callbacks
+		blur: null,
+		focus: null,
+		select: null
+	},
+
+	_create: function() {
+		this.activeMenu = this.element;
+
+		// Flag used to prevent firing of the click handler
+		// as the event bubbles up through nested menus
+		this.mouseHandled = false;
+		this.element
+			.uniqueId()
+			.addClass( "ui-menu ui-widget ui-widget-content" )
+			.toggleClass( "ui-menu-icons", !!this.element.find( ".ui-icon" ).length )
+			.attr({
+				role: this.options.role,
+				tabIndex: 0
+			});
+
+		if ( this.options.disabled ) {
+			this.element
+				.addClass( "ui-state-disabled" )
+				.attr( "aria-disabled", "true" );
+		}
+
+		this._on({
+			// Prevent focus from sticking to links inside menu after clicking
+			// them (focus should always stay on UL during navigation).
+			"mousedown .ui-menu-item": function( event ) {
+				event.preventDefault();
+			},
+			"click .ui-menu-item": function( event ) {
+				var target = $( event.target );
+				if ( !this.mouseHandled && target.not( ".ui-state-disabled" ).length ) {
+					this.select( event );
+
+					// Only set the mouseHandled flag if the event will bubble, see #9469.
+					if ( !event.isPropagationStopped() ) {
+						this.mouseHandled = true;
+					}
+
+					// Open submenu on click
+					if ( target.has( ".ui-menu" ).length ) {
+						this.expand( event );
+					} else if ( !this.element.is( ":focus" ) && $( this.document[ 0 ].activeElement ).closest( ".ui-menu" ).length ) {
+
+						// Redirect focus to the menu
+						this.element.trigger( "focus", [ true ] );
+
+						// If the active item is on the top level, let it stay active.
+						// Otherwise, blur the active item since it is no longer visible.
+						if ( this.active && this.active.parents( ".ui-menu" ).length === 1 ) {
+							clearTimeout( this.timer );
+						}
+					}
+				}
+			},
+			"mouseenter .ui-menu-item": function( event ) {
+				// Ignore mouse events while typeahead is active, see #10458.
+				// Prevents focusing the wrong item when typeahead causes a scroll while the mouse
+				// is over an item in the menu
+				if ( this.previousFilter ) {
+					return;
+				}
+				var target = $( event.currentTarget );
+				// Remove ui-state-active class from siblings of the newly focused menu item
+				// to avoid a jump caused by adjacent elements both having a class with a border
+				target.siblings( ".ui-state-active" ).removeClass( "ui-state-active" );
+				this.focus( event, target );
+			},
+			mouseleave: "collapseAll",
+			"mouseleave .ui-menu": "collapseAll",
+			focus: function( event, keepActiveItem ) {
+				// If there's already an active item, keep it active
+				// If not, activate the first item
+				var item = this.active || this.element.find( this.options.items ).eq( 0 );
+
+				if ( !keepActiveItem ) {
+					this.focus( event, item );
+				}
+			},
+			blur: function( event ) {
+				this._delay(function() {
+					if ( !$.contains( this.element[0], this.document[0].activeElement ) ) {
+						this.collapseAll( event );
+					}
+				});
+			},
+			keydown: "_keydown"
+		});
+
+		this.refresh();
+
+		// Clicks outside of a menu collapse any open menus
+		this._on( this.document, {
+			click: function( event ) {
+				if ( this._closeOnDocumentClick( event ) ) {
+					this.collapseAll( event );
+				}
+
+				// Reset the mouseHandled flag
+				this.mouseHandled = false;
+			}
+		});
+	},
+
+	_destroy: function() {
+		// Destroy (sub)menus
+		this.element
+			.removeAttr( "aria-activedescendant" )
+			.find( ".ui-menu" ).addBack()
+				.removeClass( "ui-menu ui-widget ui-widget-content ui-menu-icons ui-front" )
+				.removeAttr( "role" )
+				.removeAttr( "tabIndex" )
+				.removeAttr( "aria-labelledby" )
+				.removeAttr( "aria-expanded" )
+				.removeAttr( "aria-hidden" )
+				.removeAttr( "aria-disabled" )
+				.removeUniqueId()
+				.show();
+
+		// Destroy menu items
+		this.element.find( ".ui-menu-item" )
+			.removeClass( "ui-menu-item" )
+			.removeAttr( "role" )
+			.removeAttr( "aria-disabled" )
+			.removeUniqueId()
+			.removeClass( "ui-state-hover" )
+			.removeAttr( "tabIndex" )
+			.removeAttr( "role" )
+			.removeAttr( "aria-haspopup" )
+			.children().each( function() {
+				var elem = $( this );
+				if ( elem.data( "ui-menu-submenu-carat" ) ) {
+					elem.remove();
+				}
+			});
+
+		// Destroy menu dividers
+		this.element.find( ".ui-menu-divider" ).removeClass( "ui-menu-divider ui-widget-content" );
+	},
+
+	_keydown: function( event ) {
+		var match, prev, character, skip,
+			preventDefault = true;
+
+		switch ( event.keyCode ) {
+		case $.ui.keyCode.PAGE_UP:
+			this.previousPage( event );
+			break;
+		case $.ui.keyCode.PAGE_DOWN:
+			this.nextPage( event );
+			break;
+		case $.ui.keyCode.HOME:
+			this._move( "first", "first", event );
+			break;
+		case $.ui.keyCode.END:
+			this._move( "last", "last", event );
+			break;
+		case $.ui.keyCode.UP:
+			this.previous( event );
+			break;
+		case $.ui.keyCode.DOWN:
+			this.next( event );
+			break;
+		case $.ui.keyCode.LEFT:
+			this.collapse( event );
+			break;
+		case $.ui.keyCode.RIGHT:
+			if ( this.active && !this.active.is( ".ui-state-disabled" ) ) {
+				this.expand( event );
+			}
+			break;
+		case $.ui.keyCode.ENTER:
+		case $.ui.keyCode.SPACE:
+			this._activate( event );
+			break;
+		case $.ui.keyCode.ESCAPE:
+			this.collapse( event );
+			break;
+		default:
+			preventDefault = false;
+			prev = this.previousFilter || "";
+			character = String.fromCharCode( event.keyCode );
+			skip = false;
+
+			clearTimeout( this.filterTimer );
+
+			if ( character === prev ) {
+				skip = true;
+			} else {
+				character = prev + character;
+			}
+
+			match = this._filterMenuItems( character );
+			match = skip && match.index( this.active.next() ) !== -1 ?
+				this.active.nextAll( ".ui-menu-item" ) :
+				match;
+
+			// If no matches on the current filter, reset to the last character pressed
+			// to move down the menu to the first item that starts with that character
+			if ( !match.length ) {
+				character = String.fromCharCode( event.keyCode );
+				match = this._filterMenuItems( character );
+			}
+
+			if ( match.length ) {
+				this.focus( event, match );
+				this.previousFilter = character;
+				this.filterTimer = this._delay(function() {
+					delete this.previousFilter;
+				}, 1000 );
+			} else {
+				delete this.previousFilter;
+			}
+		}
+
+		if ( preventDefault ) {
+			event.preventDefault();
+		}
+	},
+
+	_activate: function( event ) {
+		if ( !this.active.is( ".ui-state-disabled" ) ) {
+			if ( this.active.is( "[aria-haspopup='true']" ) ) {
+				this.expand( event );
+			} else {
+				this.select( event );
+			}
+		}
+	},
+
+	refresh: function() {
+		var menus, items,
+			that = this,
+			icon = this.options.icons.submenu,
+			submenus = this.element.find( this.options.menus );
+
+		this.element.toggleClass( "ui-menu-icons", !!this.element.find( ".ui-icon" ).length );
+
+		// Initialize nested menus
+		submenus.filter( ":not(.ui-menu)" )
+			.addClass( "ui-menu ui-widget ui-widget-content ui-front" )
+			.hide()
+			.attr({
+				role: this.options.role,
+				"aria-hidden": "true",
+				"aria-expanded": "false"
+			})
+			.each(function() {
+				var menu = $( this ),
+					item = menu.parent(),
+					submenuCarat = $( "<span>" )
+						.addClass( "ui-menu-icon ui-icon " + icon )
+						.data( "ui-menu-submenu-carat", true );
+
+				item
+					.attr( "aria-haspopup", "true" )
+					.prepend( submenuCarat );
+				menu.attr( "aria-labelledby", item.attr( "id" ) );
+			});
+
+		menus = submenus.add( this.element );
+		items = menus.find( this.options.items );
+
+		// Initialize menu-items containing spaces and/or dashes only as dividers
+		items.not( ".ui-menu-item" ).each(function() {
+			var item = $( this );
+			if ( that._isDivider( item ) ) {
+				item.addClass( "ui-widget-content ui-menu-divider" );
+			}
+		});
+
+		// Don't refresh list items that are already adapted
+		items.not( ".ui-menu-item, .ui-menu-divider" )
+			.addClass( "ui-menu-item" )
+			.uniqueId()
+			.attr({
+				tabIndex: -1,
+				role: this._itemRole()
+			});
+
+		// Add aria-disabled attribute to any disabled menu item
+		items.filter( ".ui-state-disabled" ).attr( "aria-disabled", "true" );
+
+		// If the active item has been removed, blur the menu
+		if ( this.active && !$.contains( this.element[ 0 ], this.active[ 0 ] ) ) {
+			this.blur();
+		}
+	},
+
+	_itemRole: function() {
+		return {
+			menu: "menuitem",
+			listbox: "option"
+		}[ this.options.role ];
+	},
+
+	_setOption: function( key, value ) {
+		if ( key === "icons" ) {
+			this.element.find( ".ui-menu-icon" )
+				.removeClass( this.options.icons.submenu )
+				.addClass( value.submenu );
+		}
+		if ( key === "disabled" ) {
+			this.element
+				.toggleClass( "ui-state-disabled", !!value )
+				.attr( "aria-disabled", value );
+		}
+		this._super( key, value );
+	},
+
+	focus: function( event, item ) {
+		var nested, focused;
+		this.blur( event, event && event.type === "focus" );
+
+		this._scrollIntoView( item );
+
+		this.active = item.first();
+		focused = this.active.addClass( "ui-state-focus" ).removeClass( "ui-state-active" );
+		// Only update aria-activedescendant if there's a role
+		// otherwise we assume focus is managed elsewhere
+		if ( this.options.role ) {
+			this.element.attr( "aria-activedescendant", focused.attr( "id" ) );
+		}
+
+		// Highlight active parent menu item, if any
+		this.active
+			.parent()
+			.closest( ".ui-menu-item" )
+			.addClass( "ui-state-active" );
+
+		if ( event && event.type === "keydown" ) {
+			this._close();
+		} else {
+			this.timer = this._delay(function() {
+				this._close();
+			}, this.delay );
+		}
+
+		nested = item.children( ".ui-menu" );
+		if ( nested.length && event && ( /^mouse/.test( event.type ) ) ) {
+			this._startOpening(nested);
+		}
+		this.activeMenu = item.parent();
+
+		this._trigger( "focus", event, { item: item } );
+	},
+
+	_scrollIntoView: function( item ) {
+		var borderTop, paddingTop, offset, scroll, elementHeight, itemHeight;
+		if ( this._hasScroll() ) {
+			borderTop = parseFloat( $.css( this.activeMenu[0], "borderTopWidth" ) ) || 0;
+			paddingTop = parseFloat( $.css( this.activeMenu[0], "paddingTop" ) ) || 0;
+			offset = item.offset().top - this.activeMenu.offset().top - borderTop - paddingTop;
+			scroll = this.activeMenu.scrollTop();
+			elementHeight = this.activeMenu.height();
+			itemHeight = item.outerHeight();
+
+			if ( offset < 0 ) {
+				this.activeMenu.scrollTop( scroll + offset );
+			} else if ( offset + itemHeight > elementHeight ) {
+				this.activeMenu.scrollTop( scroll + offset - elementHeight + itemHeight );
+			}
+		}
+	},
+
+	blur: function( event, fromFocus ) {
+		if ( !fromFocus ) {
+			clearTimeout( this.timer );
+		}
+
+		if ( !this.active ) {
+			return;
+		}
+
+		this.active.removeClass( "ui-state-focus" );
+		this.active = null;
+
+		this._trigger( "blur", event, { item: this.active } );
+	},
+
+	_startOpening: function( submenu ) {
+		clearTimeout( this.timer );
+
+		// Don't open if already open fixes a Firefox bug that caused a .5 pixel
+		// shift in the submenu position when mousing over the carat icon
+		if ( submenu.attr( "aria-hidden" ) !== "true" ) {
+			return;
+		}
+
+		this.timer = this._delay(function() {
+			this._close();
+			this._open( submenu );
+		}, this.delay );
+	},
+
+	_open: function( submenu ) {
+		var position = $.extend({
+			of: this.active
+		}, this.options.position );
+
+		clearTimeout( this.timer );
+		this.element.find( ".ui-menu" ).not( submenu.parents( ".ui-menu" ) )
+			.hide()
+			.attr( "aria-hidden", "true" );
+
+		submenu
+			.show()
+			.removeAttr( "aria-hidden" )
+			.attr( "aria-expanded", "true" )
+			.position( position );
+	},
+
+	collapseAll: function( event, all ) {
+		clearTimeout( this.timer );
+		this.timer = this._delay(function() {
+			// If we were passed an event, look for the submenu that contains the event
+			var currentMenu = all ? this.element :
+				$( event && event.target ).closest( this.element.find( ".ui-menu" ) );
+
+			// If we found no valid submenu ancestor, use the main menu to close all sub menus anyway
+			if ( !currentMenu.length ) {
+				currentMenu = this.element;
+			}
+
+			this._close( currentMenu );
+
+			this.blur( event );
+			this.activeMenu = currentMenu;
+		}, this.delay );
+	},
+
+	// With no arguments, closes the currently active menu - if nothing is active
+	// it closes all menus.  If passed an argument, it will search for menus BELOW
+	_close: function( startMenu ) {
+		if ( !startMenu ) {
+			startMenu = this.active ? this.active.parent() : this.element;
+		}
+
+		startMenu
+			.find( ".ui-menu" )
+				.hide()
+				.attr( "aria-hidden", "true" )
+				.attr( "aria-expanded", "false" )
+			.end()
+			.find( ".ui-state-active" ).not( ".ui-state-focus" )
+				.removeClass( "ui-state-active" );
+	},
+
+	_closeOnDocumentClick: function( event ) {
+		return !$( event.target ).closest( ".ui-menu" ).length;
+	},
+
+	_isDivider: function( item ) {
+
+		// Match hyphen, em dash, en dash
+		return !/[^\-\u2014\u2013\s]/.test( item.text() );
+	},
+
+	collapse: function( event ) {
+		var newItem = this.active &&
+			this.active.parent().closest( ".ui-menu-item", this.element );
+		if ( newItem && newItem.length ) {
+			this._close();
+			this.focus( event, newItem );
+		}
+	},
+
+	expand: function( event ) {
+		var newItem = this.active &&
+			this.active
+				.children( ".ui-menu " )
+				.find( this.options.items )
+				.first();
+
+		if ( newItem && newItem.length ) {
+			this._open( newItem.parent() );
+
+			// Delay so Firefox will not hide activedescendant change in expanding submenu from AT
+			this._delay(function() {
+				this.focus( event, newItem );
+			});
+		}
+	},
+
+	next: function( event ) {
+		this._move( "next", "first", event );
+	},
+
+	previous: function( event ) {
+		this._move( "prev", "last", event );
+	},
+
+	isFirstItem: function() {
+		return this.active && !this.active.prevAll( ".ui-menu-item" ).length;
+	},
+
+	isLastItem: function() {
+		return this.active && !this.active.nextAll( ".ui-menu-item" ).length;
+	},
+
+	_move: function( direction, filter, event ) {
+		var next;
+		if ( this.active ) {
+			if ( direction === "first" || direction === "last" ) {
+				next = this.active
+					[ direction === "first" ? "prevAll" : "nextAll" ]( ".ui-menu-item" )
+					.eq( -1 );
+			} else {
+				next = this.active
+					[ direction + "All" ]( ".ui-menu-item" )
+					.eq( 0 );
+			}
+		}
+		if ( !next || !next.length || !this.active ) {
+			next = this.activeMenu.find( this.options.items )[ filter ]();
+		}
+
+		this.focus( event, next );
+	},
+
+	nextPage: function( event ) {
+		var item, base, height;
+
+		if ( !this.active ) {
+			this.next( event );
+			return;
+		}
+		if ( this.isLastItem() ) {
+			return;
+		}
+		if ( this._hasScroll() ) {
+			base = this.active.offset().top;
+			height = this.element.height();
+			this.active.nextAll( ".ui-menu-item" ).each(function() {
+				item = $( this );
+				return item.offset().top - base - height < 0;
+			});
+
+			this.focus( event, item );
+		} else {
+			this.focus( event, this.activeMenu.find( this.options.items )
+				[ !this.active ? "first" : "last" ]() );
+		}
+	},
+
+	previousPage: function( event ) {
+		var item, base, height;
+		if ( !this.active ) {
+			this.next( event );
+			return;
+		}
+		if ( this.isFirstItem() ) {
+			return;
+		}
+		if ( this._hasScroll() ) {
+			base = this.active.offset().top;
+			height = this.element.height();
+			this.active.prevAll( ".ui-menu-item" ).each(function() {
+				item = $( this );
+				return item.offset().top - base + height > 0;
+			});
+
+			this.focus( event, item );
+		} else {
+			this.focus( event, this.activeMenu.find( this.options.items ).first() );
+		}
+	},
+
+	_hasScroll: function() {
+		return this.element.outerHeight() < this.element.prop( "scrollHeight" );
+	},
+
+	select: function( event ) {
+		// TODO: It should never be possible to not have an active item at this
+		// point, but the tests don't trigger mouseenter before click.
+		this.active = this.active || $( event.target ).closest( ".ui-menu-item" );
+		var ui = { item: this.active };
+		if ( !this.active.has( ".ui-menu" ).length ) {
+			this.collapseAll( event, true );
+		}
+		this._trigger( "select", event, ui );
+	},
+
+	_filterMenuItems: function(character) {
+		var escapedCharacter = character.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" ),
+			regex = new RegExp( "^" + escapedCharacter, "i" );
+
+		return this.activeMenu
+			.find( this.options.items )
+
+			// Only match on items, not dividers or other content (#10571)
+			.filter( ".ui-menu-item" )
+			.filter(function() {
+				return regex.test( $.trim( $( this ).text() ) );
+			});
+	}
+});
+
+}));
+
+
+
+
+
+/*!
+ * jQuery UI Autocomplete 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/autocomplete/
+ */
+
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
+
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery",
+			"./core",
+			"./widget",
+			"./position",
+			"./menu"
+		], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+}(function( $ ) {
+
+$.widget( "ui.autocomplete", {
+	version: "1.11.4",
+	defaultElement: "<input>",
+	options: {
+		appendTo: null,
+		autoFocus: false,
+		delay: 300,
+		minLength: 1,
+		position: {
+			my: "left top",
+			at: "left bottom",
+			collision: "none"
+		},
+		source: null,
+
+		// callbacks
+		change: null,
+		close: null,
+		focus: null,
+		open: null,
+		response: null,
+		search: null,
+		select: null
+	},
+
+	requestIndex: 0,
+	pending: 0,
+
+	_create: function() {
+		// Some browsers only repeat keydown events, not keypress events,
+		// so we use the suppressKeyPress flag to determine if we've already
+		// handled the keydown event. #7269
+		// Unfortunately the code for & in keypress is the same as the up arrow,
+		// so we use the suppressKeyPressRepeat flag to avoid handling keypress
+		// events when we know the keydown event was used to modify the
+		// search term. #7799
+		var suppressKeyPress, suppressKeyPressRepeat, suppressInput,
+			nodeName = this.element[ 0 ].nodeName.toLowerCase(),
+			isTextarea = nodeName === "textarea",
+			isInput = nodeName === "input";
+
+		this.isMultiLine =
+			// Textareas are always multi-line
+			isTextarea ? true :
+			// Inputs are always single-line, even if inside a contentEditable element
+			// IE also treats inputs as contentEditable
+			isInput ? false :
+			// All other element types are determined by whether or not they're contentEditable
+			this.element.prop( "isContentEditable" );
+
+		this.valueMethod = this.element[ isTextarea || isInput ? "val" : "text" ];
+		this.isNewMenu = true;
+
+		this.element
+			.addClass( "ui-autocomplete-input" )
+			.attr( "autocomplete", "off" );
+
+		this._on( this.element, {
+			keydown: function( event ) {
+				if ( this.element.prop( "readOnly" ) ) {
+					suppressKeyPress = true;
+					suppressInput = true;
+					suppressKeyPressRepeat = true;
+					return;
+				}
+
+				suppressKeyPress = false;
+				suppressInput = false;
+				suppressKeyPressRepeat = false;
+				var keyCode = $.ui.keyCode;
+				switch ( event.keyCode ) {
+				case keyCode.PAGE_UP:
+					suppressKeyPress = true;
+					this._move( "previousPage", event );
+					break;
+				case keyCode.PAGE_DOWN:
+					suppressKeyPress = true;
+					this._move( "nextPage", event );
+					break;
+				case keyCode.UP:
+					suppressKeyPress = true;
+					this._keyEvent( "previous", event );
+					break;
+				case keyCode.DOWN:
+					suppressKeyPress = true;
+					this._keyEvent( "next", event );
+					break;
+				case keyCode.ENTER:
+					// when menu is open and has focus
+					if ( this.menu.active ) {
+						// #6055 - Opera still allows the keypress to occur
+						// which causes forms to submit
+						suppressKeyPress = true;
+						event.preventDefault();
+						this.menu.select( event );
+					}
+					break;
+				case keyCode.TAB:
+					if ( this.menu.active ) {
+						this.menu.select( event );
+					}
+					break;
+				case keyCode.ESCAPE:
+					if ( this.menu.element.is( ":visible" ) ) {
+						if ( !this.isMultiLine ) {
+							this._value( this.term );
+						}
+						this.close( event );
+						// Different browsers have different default behavior for escape
+						// Single press can mean undo or clear
+						// Double press in IE means clear the whole form
+						event.preventDefault();
+					}
+					break;
+				default:
+					suppressKeyPressRepeat = true;
+					// search timeout should be triggered before the input value is changed
+					this._searchTimeout( event );
+					break;
+				}
+			},
+			keypress: function( event ) {
+				if ( suppressKeyPress ) {
+					suppressKeyPress = false;
+					if ( !this.isMultiLine || this.menu.element.is( ":visible" ) ) {
+						event.preventDefault();
+					}
+					return;
+				}
+				if ( suppressKeyPressRepeat ) {
+					return;
+				}
+
+				// replicate some key handlers to allow them to repeat in Firefox and Opera
+				var keyCode = $.ui.keyCode;
+				switch ( event.keyCode ) {
+				case keyCode.PAGE_UP:
+					this._move( "previousPage", event );
+					break;
+				case keyCode.PAGE_DOWN:
+					this._move( "nextPage", event );
+					break;
+				case keyCode.UP:
+					this._keyEvent( "previous", event );
+					break;
+				case keyCode.DOWN:
+					this._keyEvent( "next", event );
+					break;
+				}
+			},
+			input: function( event ) {
+				if ( suppressInput ) {
+					suppressInput = false;
+					event.preventDefault();
+					return;
+				}
+				this._searchTimeout( event );
+			},
+			focus: function() {
+				this.selectedItem = null;
+				this.previous = this._value();
+			},
+			blur: function( event ) {
+				if ( this.cancelBlur ) {
+					delete this.cancelBlur;
+					return;
+				}
+
+				clearTimeout( this.searching );
+				this.close( event );
+				this._change( event );
+			}
+		});
+
+		this._initSource();
+		this.menu = $( "<ul>" )
+			.addClass( "ui-autocomplete ui-front" )
+			.appendTo( this._appendTo() )
+			.menu({
+				// disable ARIA support, the live region takes care of that
+				role: null
+			})
+			.hide()
+			.menu( "instance" );
+
+		this._on( this.menu.element, {
+			mousedown: function( event ) {
+				// prevent moving focus out of the text field
+				event.preventDefault();
+
+				// IE doesn't prevent moving focus even with event.preventDefault()
+				// so we set a flag to know when we should ignore the blur event
+				this.cancelBlur = true;
+				this._delay(function() {
+					delete this.cancelBlur;
+				});
+
+				// clicking on the scrollbar causes focus to shift to the body
+				// but we can't detect a mouseup or a click immediately afterward
+				// so we have to track the next mousedown and close the menu if
+				// the user clicks somewhere outside of the autocomplete
+				var menuElement = this.menu.element[ 0 ];
+				if ( !$( event.target ).closest( ".ui-menu-item" ).length ) {
+					this._delay(function() {
+						var that = this;
+						this.document.one( "mousedown", function( event ) {
+							if ( event.target !== that.element[ 0 ] &&
+									event.target !== menuElement &&
+									!$.contains( menuElement, event.target ) ) {
+								that.close();
+							}
+						});
+					});
+				}
+			},
+			menufocus: function( event, ui ) {
+				var label, item;
+				// support: Firefox
+				// Prevent accidental activation of menu items in Firefox (#7024 #9118)
+				if ( this.isNewMenu ) {
+					this.isNewMenu = false;
+					if ( event.originalEvent && /^mouse/.test( event.originalEvent.type ) ) {
+						this.menu.blur();
+
+						this.document.one( "mousemove", function() {
+							$( event.target ).trigger( event.originalEvent );
+						});
+
+						return;
+					}
+				}
+
+				item = ui.item.data( "ui-autocomplete-item" );
+				if ( false !== this._trigger( "focus", event, { item: item } ) ) {
+					// use value to match what will end up in the input, if it was a key event
+					if ( event.originalEvent && /^key/.test( event.originalEvent.type ) ) {
+						this._value( item.value );
+					}
+				}
+
+				// Announce the value in the liveRegion
+				label = ui.item.attr( "aria-label" ) || item.value;
+				if ( label && $.trim( label ).length ) {
+					this.liveRegion.children().hide();
+					$( "<div>" ).text( label ).appendTo( this.liveRegion );
+				}
+			},
+			menuselect: function( event, ui ) {
+				var item = ui.item.data( "ui-autocomplete-item" ),
+					previous = this.previous;
+
+				// only trigger when focus was lost (click on menu)
+				if ( this.element[ 0 ] !== this.document[ 0 ].activeElement ) {
+					this.element.focus();
+					this.previous = previous;
+					// #6109 - IE triggers two focus events and the second
+					// is asynchronous, so we need to reset the previous
+					// term synchronously and asynchronously :-(
+					this._delay(function() {
+						this.previous = previous;
+						this.selectedItem = item;
+					});
+				}
+
+				if ( false !== this._trigger( "select", event, { item: item } ) ) {
+					this._value( item.value );
+				}
+				// reset the term after the select event
+				// this allows custom select handling to work properly
+				this.term = this._value();
+
+				this.close( event );
+				this.selectedItem = item;
+			}
+		});
+
+		this.liveRegion = $( "<span>", {
+				role: "status",
+				"aria-live": "assertive",
+				"aria-relevant": "additions"
+			})
+			.addClass( "ui-helper-hidden-accessible" )
+			.appendTo( this.document[ 0 ].body );
+
+		// turning off autocomplete prevents the browser from remembering the
+		// value when navigating through history, so we re-enable autocomplete
+		// if the page is unloaded before the widget is destroyed. #7790
+		this._on( this.window, {
+			beforeunload: function() {
+				this.element.removeAttr( "autocomplete" );
+			}
+		});
+	},
+
+	_destroy: function() {
+		clearTimeout( this.searching );
+		this.element
+			.removeClass( "ui-autocomplete-input" )
+			.removeAttr( "autocomplete" );
+		this.menu.element.remove();
+		this.liveRegion.remove();
+	},
+
+	_setOption: function( key, value ) {
+		this._super( key, value );
+		if ( key === "source" ) {
+			this._initSource();
+		}
+		if ( key === "appendTo" ) {
+			this.menu.element.appendTo( this._appendTo() );
+		}
+		if ( key === "disabled" && value && this.xhr ) {
+			this.xhr.abort();
+		}
+	},
+
+	_appendTo: function() {
+		var element = this.options.appendTo;
+
+		if ( element ) {
+			element = element.jquery || element.nodeType ?
+				$( element ) :
+				this.document.find( element ).eq( 0 );
+		}
+
+		if ( !element || !element[ 0 ] ) {
+			element = this.element.closest( ".ui-front" );
+		}
+
+		if ( !element.length ) {
+			element = this.document[ 0 ].body;
+		}
+
+		return element;
+	},
+
+	_initSource: function() {
+		var array, url,
+			that = this;
+		if ( $.isArray( this.options.source ) ) {
+			array = this.options.source;
+			this.source = function( request, response ) {
+				response( $.ui.autocomplete.filter( array, request.term ) );
+			};
+		} else if ( typeof this.options.source === "string" ) {
+			url = this.options.source;
+			this.source = function( request, response ) {
+				if ( that.xhr ) {
+					that.xhr.abort();
+				}
+				that.xhr = $.ajax({
+					url: url,
+					data: request,
+					dataType: "json",
+					success: function( data ) {
+						response( data );
+					},
+					error: function() {
+						response([]);
+					}
+				});
+			};
+		} else {
+			this.source = this.options.source;
+		}
+	},
+
+	_searchTimeout: function( event ) {
+		clearTimeout( this.searching );
+		this.searching = this._delay(function() {
+
+			// Search if the value has changed, or if the user retypes the same value (see #7434)
+			var equalValues = this.term === this._value(),
+				menuVisible = this.menu.element.is( ":visible" ),
+				modifierKey = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
+
+			if ( !equalValues || ( equalValues && !menuVisible && !modifierKey ) ) {
+				this.selectedItem = null;
+				this.search( null, event );
+			}
+		}, this.options.delay );
+	},
+
+	search: function( value, event ) {
+		value = value != null ? value : this._value();
+
+		// always save the actual value, not the one passed as an argument
+		this.term = this._value();
+
+		if ( value.length < this.options.minLength ) {
+			return this.close( event );
+		}
+
+		if ( this._trigger( "search", event ) === false ) {
+			return;
+		}
+
+		return this._search( value );
+	},
+
+	_search: function( value ) {
+		this.pending++;
+		this.element.addClass( "ui-autocomplete-loading" );
+		this.cancelSearch = false;
+
+		this.source( { term: value }, this._response() );
+	},
+
+	_response: function() {
+		var index = ++this.requestIndex;
+
+		return $.proxy(function( content ) {
+			if ( index === this.requestIndex ) {
+				this.__response( content );
+			}
+
+			this.pending--;
+			if ( !this.pending ) {
+				this.element.removeClass( "ui-autocomplete-loading" );
+			}
+		}, this );
+	},
+
+	__response: function( content ) {
+		if ( content ) {
+			content = this._normalize( content );
+		}
+		this._trigger( "response", null, { content: content } );
+		if ( !this.options.disabled && content && content.length && !this.cancelSearch ) {
+			this._suggest( content );
+			this._trigger( "open" );
+		} else {
+			// use ._close() instead of .close() so we don't cancel future searches
+			this._close();
+		}
+	},
+
+	close: function( event ) {
+		this.cancelSearch = true;
+		this._close( event );
+	},
+
+	_close: function( event ) {
+		if ( this.menu.element.is( ":visible" ) ) {
+			this.menu.element.hide();
+			this.menu.blur();
+			this.isNewMenu = true;
+			this._trigger( "close", event );
+		}
+	},
+
+	_change: function( event ) {
+		if ( this.previous !== this._value() ) {
+			this._trigger( "change", event, { item: this.selectedItem } );
+		}
+	},
+
+	_normalize: function( items ) {
+		// assume all items have the right format when the first item is complete
+		if ( items.length && items[ 0 ].label && items[ 0 ].value ) {
+			return items;
+		}
+		return $.map( items, function( item ) {
+			if ( typeof item === "string" ) {
+				return {
+					label: item,
+					value: item
+				};
+			}
+			return $.extend( {}, item, {
+				label: item.label || item.value,
+				value: item.value || item.label
+			});
+		});
+	},
+
+	_suggest: function( items ) {
+		var ul = this.menu.element.empty();
+		this._renderMenu( ul, items );
+		this.isNewMenu = true;
+		this.menu.refresh();
+
+		// size and position menu
+		ul.show();
+		this._resizeMenu();
+		ul.position( $.extend({
+			of: this.element
+		}, this.options.position ) );
+
+		if ( this.options.autoFocus ) {
+			this.menu.next();
+		}
+	},
+
+	_resizeMenu: function() {
+		var ul = this.menu.element;
+		ul.outerWidth( Math.max(
+			// Firefox wraps long text (possibly a rounding bug)
+			// so we add 1px to avoid the wrapping (#7513)
+			ul.width( "" ).outerWidth() + 1,
+			this.element.outerWidth()
+		) );
+	},
+
+	_renderMenu: function( ul, items ) {
+		var that = this;
+		$.each( items, function( index, item ) {
+			that._renderItemData( ul, item );
+		});
+	},
+
+	_renderItemData: function( ul, item ) {
+		return this._renderItem( ul, item ).data( "ui-autocomplete-item", item );
+	},
+
+	_renderItem: function( ul, item ) {
+		return $( "<li>" ).text( item.label ).appendTo( ul );
+	},
+
+	_move: function( direction, event ) {
+		if ( !this.menu.element.is( ":visible" ) ) {
+			this.search( null, event );
+			return;
+		}
+		if ( this.menu.isFirstItem() && /^previous/.test( direction ) ||
+				this.menu.isLastItem() && /^next/.test( direction ) ) {
+
+			if ( !this.isMultiLine ) {
+				this._value( this.term );
+			}
+
+			this.menu.blur();
+			return;
+		}
+		this.menu[ direction ]( event );
+	},
+
+	widget: function() {
+		return this.menu.element;
+	},
+
+	_value: function() {
+		return this.valueMethod.apply( this.element, arguments );
+	},
+
+	_keyEvent: function( keyEvent, event ) {
+		if ( !this.isMultiLine || this.menu.element.is( ":visible" ) ) {
+			this._move( keyEvent, event );
+
+			// prevents moving cursor to beginning/end of the text field in some browsers
+			event.preventDefault();
+		}
+	}
+});
+
+$.extend( $.ui.autocomplete, {
+	escapeRegex: function( value ) {
+		return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
+	},
+	filter: function( array, term ) {
+		var matcher = new RegExp( $.ui.autocomplete.escapeRegex( term ), "i" );
+		return $.grep( array, function( value ) {
+			return matcher.test( value.label || value.value || value );
+		});
+	}
+});
+
+// live region extension, adding a `messages` option
+// NOTE: This is an experimental API. We are still investigating
+// a full solution for string manipulation and internationalization.
+$.widget( "ui.autocomplete", $.ui.autocomplete, {
+	options: {
+		messages: {
+			noResults: "No search results.",
+			results: function( amount ) {
+				return amount + ( amount > 1 ? " results are" : " result is" ) +
+					" available, use up and down arrow keys to navigate.";
+			}
+		}
+	},
+
+	__response: function( content ) {
+		var message;
+		this._superApply( arguments );
+		if ( this.options.disabled || this.cancelSearch ) {
+			return;
+		}
+		if ( content && content.length ) {
+			message = this.options.messages.results( content.length );
+		} else {
+			message = this.options.messages.noResults;
+		}
+		this.liveRegion.children().hide();
+		$( "<div>" ).text( message ).appendTo( this.liveRegion );
+	}
+});
+
+return $.ui.autocomplete;
+
+}));
 /*
 Turbolinks 5.0.0
 Copyright © 2016 Basecamp, LLC
@@ -11569,6 +14236,2909 @@ Copyright © 2016 Basecamp, LLC
 
 (function(){(function(){(function(){this.Turbolinks={supported:function(){return null!=window.history.pushState&&null!=window.requestAnimationFrame}(),visit:function(e,r){return t.controller.visit(e,r)},clearCache:function(){return t.controller.clearCache()}}}).call(this)}).call(this);var t=this.Turbolinks;(function(){(function(){var e,r;t.copyObject=function(t){var e,r,n;r={};for(e in t)n=t[e],r[e]=n;return r},t.closest=function(t,r){return e.call(t,r)},e=function(){var t,e;return t=document.documentElement,null!=(e=t.closest)?e:function(t){var e;for(e=this;e;){if(e.nodeType===Node.ELEMENT_NODE&&r.call(e,t))return e;e=e.parentNode}}}(),t.defer=function(t){return setTimeout(t,1)},t.dispatch=function(t,e){var r,n,o,i,s;return i=null!=e?e:{},s=i.target,r=i.cancelable,n=i.data,o=document.createEvent("Events"),o.initEvent(t,!0,r===!0),o.data=null!=n?n:{},(null!=s?s:document).dispatchEvent(o),o},t.match=function(t,e){return r.call(t,e)},r=function(){var t,e,r,n;return t=document.documentElement,null!=(e=null!=(r=null!=(n=t.matchesSelector)?n:t.webkitMatchesSelector)?r:t.msMatchesSelector)?e:t.mozMatchesSelector}(),t.uuid=function(){var t,e,r;for(r="",t=e=1;36>=e;t=++e)r+=9===t||14===t||19===t||24===t?"-":15===t?"4":20===t?(Math.floor(4*Math.random())+8).toString(16):Math.floor(15*Math.random()).toString(16);return r}}).call(this),function(){t.Location=function(){function t(t){var e,r;null==t&&(t=""),r=document.createElement("a"),r.href=t.toString(),this.absoluteURL=r.href,e=r.hash.length,2>e?this.requestURL=this.absoluteURL:(this.requestURL=this.absoluteURL.slice(0,-e),this.anchor=r.hash.slice(1))}var e,r,n,o;return t.wrap=function(t){return t instanceof this?t:new this(t)},t.prototype.getOrigin=function(){return this.absoluteURL.split("/",3).join("/")},t.prototype.getPath=function(){var t,e;return null!=(t=null!=(e=this.absoluteURL.match(/\/\/[^\/]*(\/[^?;]*)/))?e[1]:void 0)?t:"/"},t.prototype.getPathComponents=function(){return this.getPath().split("/").slice(1)},t.prototype.getLastPathComponent=function(){return this.getPathComponents().slice(-1)[0]},t.prototype.getExtension=function(){var t,e;return null!=(t=null!=(e=this.getLastPathComponent().match(/\.[^.]*$/))?e[0]:void 0)?t:""},t.prototype.isHTML=function(){return this.getExtension().match(/^(?:|\.(?:htm|html|xhtml))$/)},t.prototype.isPrefixedBy=function(t){var e;return e=r(t),this.isEqualTo(t)||o(this.absoluteURL,e)},t.prototype.isEqualTo=function(t){return this.absoluteURL===(null!=t?t.absoluteURL:void 0)},t.prototype.toCacheKey=function(){return this.requestURL},t.prototype.toJSON=function(){return this.absoluteURL},t.prototype.toString=function(){return this.absoluteURL},t.prototype.valueOf=function(){return this.absoluteURL},r=function(t){return e(t.getOrigin()+t.getPath())},e=function(t){return n(t,"/")?t:t+"/"},o=function(t,e){return t.slice(0,e.length)===e},n=function(t,e){return t.slice(-e.length)===e},t}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.HttpRequest=function(){function r(r,n,o){this.delegate=r,this.requestCanceled=e(this.requestCanceled,this),this.requestTimedOut=e(this.requestTimedOut,this),this.requestFailed=e(this.requestFailed,this),this.requestLoaded=e(this.requestLoaded,this),this.requestProgressed=e(this.requestProgressed,this),this.url=t.Location.wrap(n).requestURL,this.referrer=t.Location.wrap(o).absoluteURL,this.createXHR()}return r.NETWORK_FAILURE=0,r.TIMEOUT_FAILURE=-1,r.timeout=60,r.prototype.send=function(){var t;return this.xhr&&!this.sent?(this.notifyApplicationBeforeRequestStart(),this.setProgress(0),this.xhr.send(),this.sent=!0,"function"==typeof(t=this.delegate).requestStarted?t.requestStarted():void 0):void 0},r.prototype.cancel=function(){return this.xhr&&this.sent?this.xhr.abort():void 0},r.prototype.requestProgressed=function(t){return t.lengthComputable?this.setProgress(t.loaded/t.total):void 0},r.prototype.requestLoaded=function(){return this.endRequest(function(t){return function(){var e;return 200<=(e=t.xhr.status)&&300>e?t.delegate.requestCompletedWithResponse(t.xhr.responseText,t.xhr.getResponseHeader("Turbolinks-Location")):(t.failed=!0,t.delegate.requestFailedWithStatusCode(t.xhr.status,t.xhr.responseText))}}(this))},r.prototype.requestFailed=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.NETWORK_FAILURE)}}(this))},r.prototype.requestTimedOut=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.TIMEOUT_FAILURE)}}(this))},r.prototype.requestCanceled=function(){return this.endRequest()},r.prototype.notifyApplicationBeforeRequestStart=function(){return t.dispatch("turbolinks:request-start",{data:{url:this.url,xhr:this.xhr}})},r.prototype.notifyApplicationAfterRequestEnd=function(){return t.dispatch("turbolinks:request-end",{data:{url:this.url,xhr:this.xhr}})},r.prototype.createXHR=function(){return this.xhr=new XMLHttpRequest,this.xhr.open("GET",this.url,!0),this.xhr.timeout=1e3*this.constructor.timeout,this.xhr.setRequestHeader("Accept","text/html, application/xhtml+xml"),this.xhr.setRequestHeader("Turbolinks-Referrer",this.referrer),this.xhr.onprogress=this.requestProgressed,this.xhr.onload=this.requestLoaded,this.xhr.onerror=this.requestFailed,this.xhr.ontimeout=this.requestTimedOut,this.xhr.onabort=this.requestCanceled},r.prototype.endRequest=function(t){return this.xhr?(this.notifyApplicationAfterRequestEnd(),null!=t&&t.call(this),this.destroy()):void 0},r.prototype.setProgress=function(t){var e;return this.progress=t,"function"==typeof(e=this.delegate).requestProgressed?e.requestProgressed(this.progress):void 0},r.prototype.destroy=function(){var t;return this.setProgress(1),"function"==typeof(t=this.delegate).requestFinished&&t.requestFinished(),this.delegate=null,this.xhr=null},r}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.ProgressBar=function(){function t(){this.trickle=e(this.trickle,this),this.stylesheetElement=this.createStylesheetElement(),this.progressElement=this.createProgressElement()}var r;return r=300,t.defaultCSS=".turbolinks-progress-bar {\n  position: fixed;\n  display: block;\n  top: 0;\n  left: 0;\n  height: 3px;\n  background: #0076ff;\n  z-index: 9999;\n  transition: width "+r+"ms ease-out, opacity "+r/2+"ms "+r/2+"ms ease-in;\n  transform: translate3d(0, 0, 0);\n}",t.prototype.show=function(){return this.visible?void 0:(this.visible=!0,this.installStylesheetElement(),this.installProgressElement(),this.startTrickling())},t.prototype.hide=function(){return this.visible&&!this.hiding?(this.hiding=!0,this.fadeProgressElement(function(t){return function(){return t.uninstallProgressElement(),t.stopTrickling(),t.visible=!1,t.hiding=!1}}(this))):void 0},t.prototype.setValue=function(t){return this.value=t,this.refresh()},t.prototype.installStylesheetElement=function(){return document.head.insertBefore(this.stylesheetElement,document.head.firstChild)},t.prototype.installProgressElement=function(){return this.progressElement.style.width=0,this.progressElement.style.opacity=1,document.documentElement.insertBefore(this.progressElement,document.body),this.refresh()},t.prototype.fadeProgressElement=function(t){return this.progressElement.style.opacity=0,setTimeout(t,1.5*r)},t.prototype.uninstallProgressElement=function(){return this.progressElement.parentNode?document.documentElement.removeChild(this.progressElement):void 0},t.prototype.startTrickling=function(){return null!=this.trickleInterval?this.trickleInterval:this.trickleInterval=setInterval(this.trickle,r)},t.prototype.stopTrickling=function(){return clearInterval(this.trickleInterval),this.trickleInterval=null},t.prototype.trickle=function(){return this.setValue(this.value+Math.random()/100)},t.prototype.refresh=function(){return requestAnimationFrame(function(t){return function(){return t.progressElement.style.width=10+90*t.value+"%"}}(this))},t.prototype.createStylesheetElement=function(){var t;return t=document.createElement("style"),t.type="text/css",t.textContent=this.constructor.defaultCSS,t},t.prototype.createProgressElement=function(){var t;return t=document.createElement("div"),t.className="turbolinks-progress-bar",t},t}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.BrowserAdapter=function(){function r(r){this.controller=r,this.showProgressBar=e(this.showProgressBar,this),this.progressBar=new t.ProgressBar}var n,o,i,s;return s=t.HttpRequest,n=s.NETWORK_FAILURE,i=s.TIMEOUT_FAILURE,o=500,r.prototype.visitProposedToLocationWithAction=function(t,e){return this.controller.startVisitToLocationWithAction(t,e)},r.prototype.visitStarted=function(t){return t.issueRequest(),t.changeHistory(),t.loadCachedSnapshot()},r.prototype.visitRequestStarted=function(t){return this.progressBar.setValue(0),t.hasCachedSnapshot()||"restore"!==t.action?this.showProgressBarAfterDelay():this.showProgressBar()},r.prototype.visitRequestProgressed=function(t){return this.progressBar.setValue(t.progress)},r.prototype.visitRequestCompleted=function(t){return t.loadResponse()},r.prototype.visitRequestFailedWithStatusCode=function(t,e){switch(e){case n:case i:return this.reload();default:return t.loadResponse()}},r.prototype.visitRequestFinished=function(t){return this.hideProgressBar()},r.prototype.visitCompleted=function(t){return t.followRedirect()},r.prototype.pageInvalidated=function(){return this.reload()},r.prototype.showProgressBarAfterDelay=function(){return this.progressBarTimeout=setTimeout(this.showProgressBar,o)},r.prototype.showProgressBar=function(){return this.progressBar.show()},r.prototype.hideProgressBar=function(){return this.progressBar.hide(),clearTimeout(this.progressBarTimeout)},r.prototype.reload=function(){return window.location.reload()},r}()}.call(this),function(){var e,r=function(t,e){return function(){return t.apply(e,arguments)}};e=!1,addEventListener("load",function(){return t.defer(function(){return e=!0})},!1),t.History=function(){function n(t){this.delegate=t,this.onPopState=r(this.onPopState,this)}return n.prototype.start=function(){return this.started?void 0:(addEventListener("popstate",this.onPopState,!1),this.started=!0)},n.prototype.stop=function(){return this.started?(removeEventListener("popstate",this.onPopState,!1),this.started=!1):void 0},n.prototype.push=function(e,r){return e=t.Location.wrap(e),this.update("push",e,r)},n.prototype.replace=function(e,r){return e=t.Location.wrap(e),this.update("replace",e,r)},n.prototype.onPopState=function(e){var r,n,o,i;return this.shouldHandlePopState()&&(i=null!=(n=e.state)?n.turbolinks:void 0)?(r=t.Location.wrap(window.location),o=i.restorationIdentifier,this.delegate.historyPoppedToLocationWithRestorationIdentifier(r,o)):void 0},n.prototype.shouldHandlePopState=function(){return e===!0},n.prototype.update=function(t,e,r){var n;return n={turbolinks:{restorationIdentifier:r}},history[t+"State"](n,null,e)},n}()}.call(this),function(){t.Snapshot=function(){function e(t){var e,r;r=t.head,e=t.body,this.head=null!=r?r:document.createElement("head"),this.body=null!=e?e:document.createElement("body")}return e.wrap=function(t){return t instanceof this?t:this.fromHTML(t)},e.fromHTML=function(t){var e;return e=document.createElement("html"),e.innerHTML=t,this.fromElement(e)},e.fromElement=function(t){return new this({head:t.querySelector("head"),body:t.querySelector("body")})},e.prototype.clone=function(){return new e({head:this.head.cloneNode(!0),body:this.body.cloneNode(!0)})},e.prototype.getRootLocation=function(){var e,r;return r=null!=(e=this.getSetting("root"))?e:"/",new t.Location(r)},e.prototype.getCacheControlValue=function(){return this.getSetting("cache-control")},e.prototype.hasAnchor=function(t){try{return null!=this.body.querySelector("[id='"+t+"']")}catch(e){}},e.prototype.isPreviewable=function(){return"no-preview"!==this.getCacheControlValue()},e.prototype.isCacheable=function(){return"no-cache"!==this.getCacheControlValue()},e.prototype.getSetting=function(t){var e,r;return r=this.head.querySelectorAll("meta[name='turbolinks-"+t+"']"),e=r[r.length-1],null!=e?e.getAttribute("content"):void 0},e}()}.call(this),function(){var e=[].slice;t.Renderer=function(){function t(){}var r;return t.render=function(){var t,r,n,o;return n=arguments[0],r=arguments[1],t=3<=arguments.length?e.call(arguments,2):[],o=function(t,e,r){r.prototype=t.prototype;var n=new r,o=t.apply(n,e);return Object(o)===o?o:n}(this,t,function(){}),o.delegate=n,o.render(r),o},t.prototype.renderView=function(t){return this.delegate.viewWillRender(this.newBody),t(),this.delegate.viewRendered(this.newBody)},t.prototype.invalidateView=function(){return this.delegate.viewInvalidated()},t.prototype.createScriptElement=function(t){var e;return"false"===t.getAttribute("data-turbolinks-eval")?t:(e=document.createElement("script"),e.textContent=t.textContent,r(e,t),e)},r=function(t,e){var r,n,o,i,s,a,u;for(i=e.attributes,a=[],r=0,n=i.length;n>r;r++)s=i[r],o=s.name,u=s.value,a.push(t.setAttribute(o,u));return a},t}()}.call(this),function(){t.HeadDetails=function(){function t(t){var e,r,i,s,a,u,c;for(this.element=t,this.elements={},c=this.element.childNodes,s=0,u=c.length;u>s;s++)i=c[s],i.nodeType===Node.ELEMENT_NODE&&(a=i.outerHTML,r=null!=(e=this.elements)[a]?e[a]:e[a]={type:o(i),tracked:n(i),elements:[]},r.elements.push(i))}var e,r,n,o;return t.prototype.hasElementWithKey=function(t){return t in this.elements},t.prototype.getTrackedElementSignature=function(){var t,e;return function(){var r,n;r=this.elements,n=[];for(t in r)e=r[t].tracked,e&&n.push(t);return n}.call(this).join("")},t.prototype.getScriptElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("script",t)},t.prototype.getStylesheetElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("stylesheet",t)},t.prototype.getElementsMatchingTypeNotInDetails=function(t,e){var r,n,o,i,s,a;o=this.elements,s=[];for(n in o)i=o[n],a=i.type,r=i.elements,a!==t||e.hasElementWithKey(n)||s.push(r[0]);return s},t.prototype.getProvisionalElements=function(){var t,e,r,n,o,i,s;r=[],n=this.elements;for(e in n)o=n[e],s=o.type,i=o.tracked,t=o.elements,null!=s||i?t.length>1&&r.push.apply(r,t.slice(1)):r.push.apply(r,t);return r},o=function(t){return e(t)?"script":r(t)?"stylesheet":void 0},n=function(t){return"reload"===t.getAttribute("data-turbolinks-track")},e=function(t){var e;return e=t.tagName.toLowerCase(),"script"===e},r=function(t){var e;return e=t.tagName.toLowerCase(),"style"===e||"link"===e&&"stylesheet"===t.getAttribute("rel")},t}()}.call(this),function(){var e=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;t.SnapshotRenderer=function(r){function n(e,r){this.currentSnapshot=e,this.newSnapshot=r,this.currentHeadDetails=new t.HeadDetails(this.currentSnapshot.head),this.newHeadDetails=new t.HeadDetails(this.newSnapshot.head),this.newBody=this.newSnapshot.body}return e(n,r),n.prototype.render=function(t){return this.trackedElementsAreIdentical()?(this.mergeHead(),this.renderView(function(e){return function(){return e.replaceBody(),e.focusFirstAutofocusableElement(),t()}}(this))):this.invalidateView()},n.prototype.mergeHead=function(){return this.copyNewHeadStylesheetElements(),this.copyNewHeadScriptElements(),this.removeCurrentHeadProvisionalElements(),this.copyNewHeadProvisionalElements()},n.prototype.replaceBody=function(){return this.activateBodyScriptElements(),this.importBodyPermanentElements(),this.assignNewBody()},n.prototype.trackedElementsAreIdentical=function(){return this.currentHeadDetails.getTrackedElementSignature()===this.newHeadDetails.getTrackedElementSignature()},n.prototype.copyNewHeadStylesheetElements=function(){var t,e,r,n,o;for(n=this.getNewHeadStylesheetElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},n.prototype.copyNewHeadScriptElements=function(){var t,e,r,n,o;for(n=this.getNewHeadScriptElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(this.createScriptElement(t)));return o},n.prototype.removeCurrentHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getCurrentHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.removeChild(t));return o},n.prototype.copyNewHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getNewHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},n.prototype.importBodyPermanentElements=function(){var t,e,r,n,o,i;for(n=this.getNewBodyPermanentElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],(t=this.findCurrentBodyPermanentElement(o))?i.push(o.parentNode.replaceChild(t,o)):i.push(void 0);return i},n.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getNewBodyScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},n.prototype.assignNewBody=function(){return document.body=this.newBody},n.prototype.focusFirstAutofocusableElement=function(){var t;return null!=(t=this.findFirstAutofocusableElement())?t.focus():void 0},n.prototype.getNewHeadStylesheetElements=function(){return this.newHeadDetails.getStylesheetElementsNotInDetails(this.currentHeadDetails)},n.prototype.getNewHeadScriptElements=function(){return this.newHeadDetails.getScriptElementsNotInDetails(this.currentHeadDetails)},n.prototype.getCurrentHeadProvisionalElements=function(){return this.currentHeadDetails.getProvisionalElements()},n.prototype.getNewHeadProvisionalElements=function(){return this.newHeadDetails.getProvisionalElements()},n.prototype.getNewBodyPermanentElements=function(){return this.newBody.querySelectorAll("[id][data-turbolinks-permanent]")},n.prototype.findCurrentBodyPermanentElement=function(t){return document.body.querySelector("#"+t.id+"[data-turbolinks-permanent]")},n.prototype.getNewBodyScriptElements=function(){return this.newBody.querySelectorAll("script")},n.prototype.findFirstAutofocusableElement=function(){return document.body.querySelector("[autofocus]")},n}(t.Renderer)}.call(this),function(){var e=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;t.ErrorRenderer=function(t){function r(t){this.html=t}return e(r,t),r.prototype.render=function(t){return this.renderView(function(e){return function(){return e.replaceDocumentHTML(),e.activateBodyScriptElements(),t()}}(this))},r.prototype.replaceDocumentHTML=function(){return document.documentElement.innerHTML=this.html},r.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},r.prototype.getScriptElements=function(){return document.documentElement.querySelectorAll("script")},r}(t.Renderer)}.call(this),function(){t.View=function(){function e(t){this.delegate=t,this.element=document.documentElement}return e.prototype.getRootLocation=function(){return this.getSnapshot().getRootLocation()},e.prototype.getSnapshot=function(){return t.Snapshot.fromElement(this.element)},e.prototype.render=function(t,e){var r,n,o;return o=t.snapshot,r=t.error,n=t.isPreview,this.markAsPreview(n),null!=o?this.renderSnapshot(o,e):this.renderError(r,e)},e.prototype.markAsPreview=function(t){return t?this.element.setAttribute("data-turbolinks-preview",""):this.element.removeAttribute("data-turbolinks-preview")},e.prototype.renderSnapshot=function(e,r){return t.SnapshotRenderer.render(this.delegate,r,this.getSnapshot(),t.Snapshot.wrap(e))},e.prototype.renderError=function(e,r){return t.ErrorRenderer.render(this.delegate,r,e)},e}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.ScrollManager=function(){function t(t){this.delegate=t,this.onScroll=e(this.onScroll,this)}return t.prototype.start=function(){return this.started?void 0:(addEventListener("scroll",this.onScroll,!1),this.onScroll(),this.started=!0)},t.prototype.stop=function(){return this.started?(removeEventListener("scroll",this.onScroll,!1),this.started=!1):void 0},t.prototype.scrollToElement=function(t){return t.scrollIntoView()},t.prototype.scrollToPosition=function(t){var e,r;return e=t.x,r=t.y,window.scrollTo(e,r)},t.prototype.onScroll=function(t){return this.updatePosition({x:window.pageXOffset,y:window.pageYOffset})},t.prototype.updatePosition=function(t){var e;return this.position=t,null!=(e=this.delegate)?e.scrollPositionChanged(this.position):void 0},t}()}.call(this),function(){t.SnapshotCache=function(){function e(t){this.size=t,this.keys=[],this.snapshots={}}var r;return e.prototype.has=function(t){var e;return e=r(t),e in this.snapshots},e.prototype.get=function(t){var e;if(this.has(t))return e=this.read(t),this.touch(t),e},e.prototype.put=function(t,e){return this.write(t,e),this.touch(t),e},e.prototype.read=function(t){var e;return e=r(t),this.snapshots[e]},e.prototype.write=function(t,e){var n;return n=r(t),this.snapshots[n]=e},e.prototype.touch=function(t){var e,n;return n=r(t),e=this.keys.indexOf(n),e>-1&&this.keys.splice(e,1),this.keys.unshift(n),this.trim()},e.prototype.trim=function(){var t,e,r,n,o;for(n=this.keys.splice(this.size),o=[],t=0,r=n.length;r>t;t++)e=n[t],o.push(delete this.snapshots[e]);return o},r=function(e){return t.Location.wrap(e).toCacheKey()},e}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.Visit=function(){function r(r,n,o){this.controller=r,this.action=o,this.performScroll=e(this.performScroll,this),this.identifier=t.uuid(),this.location=t.Location.wrap(n),this.adapter=this.controller.adapter,this.state="initialized",this.timingMetrics={}}var n;return r.prototype.start=function(){return"initialized"===this.state?(this.recordTimingMetric("visitStart"),this.state="started",this.adapter.visitStarted(this)):void 0},r.prototype.cancel=function(){var t;return"started"===this.state?(null!=(t=this.request)&&t.cancel(),this.cancelRender(),this.state="canceled"):void 0},r.prototype.complete=function(){var t;return"started"===this.state?(this.recordTimingMetric("visitEnd"),this.state="completed","function"==typeof(t=this.adapter).visitCompleted&&t.visitCompleted(this),this.controller.visitCompleted(this)):void 0},r.prototype.fail=function(){var t;return"started"===this.state?(this.state="failed","function"==typeof(t=this.adapter).visitFailed?t.visitFailed(this):void 0):void 0},r.prototype.changeHistory=function(){var t,e;return this.historyChanged?void 0:(t=this.location.isEqualTo(this.referrer)?"replace":this.action,e=n(t),this.controller[e](this.location,this.restorationIdentifier),this.historyChanged=!0)},r.prototype.issueRequest=function(){return this.shouldIssueRequest()&&null==this.request?(this.progress=0,this.request=new t.HttpRequest(this,this.location,this.referrer),this.request.send()):void 0},r.prototype.getCachedSnapshot=function(){var t;return!(t=this.controller.getCachedSnapshotForLocation(this.location))||null!=this.location.anchor&&!t.hasAnchor(this.location.anchor)||"restore"!==this.action&&!t.isPreviewable()?void 0:t},r.prototype.hasCachedSnapshot=function(){return null!=this.getCachedSnapshot()},r.prototype.loadCachedSnapshot=function(){var t,e;return(e=this.getCachedSnapshot())?(t=this.shouldIssueRequest(),this.render(function(){var r;return this.cacheSnapshot(),this.controller.render({snapshot:e,isPreview:t},this.performScroll),"function"==typeof(r=this.adapter).visitRendered&&r.visitRendered(this),t?void 0:this.complete()})):void 0},r.prototype.loadResponse=function(){return null!=this.response?this.render(function(){var t,e;return this.cacheSnapshot(),this.request.failed?(this.controller.render({error:this.response},this.performScroll),"function"==typeof(t=this.adapter).visitRendered&&t.visitRendered(this),this.fail()):(this.controller.render({snapshot:this.response},this.performScroll),"function"==typeof(e=this.adapter).visitRendered&&e.visitRendered(this),this.complete())}):void 0},r.prototype.followRedirect=function(){return this.redirectedToLocation&&!this.followedRedirect?(this.location=this.redirectedToLocation,this.controller.replaceHistoryWithLocationAndRestorationIdentifier(this.redirectedToLocation,this.restorationIdentifier),this.followedRedirect=!0):void 0},r.prototype.requestStarted=function(){var t;return this.recordTimingMetric("requestStart"),"function"==typeof(t=this.adapter).visitRequestStarted?t.visitRequestStarted(this):void 0},r.prototype.requestProgressed=function(t){var e;return this.progress=t,"function"==typeof(e=this.adapter).visitRequestProgressed?e.visitRequestProgressed(this):void 0},r.prototype.requestCompletedWithResponse=function(e,r){return this.response=e,null!=r&&(this.redirectedToLocation=t.Location.wrap(r)),this.adapter.visitRequestCompleted(this)},r.prototype.requestFailedWithStatusCode=function(t,e){return this.response=e,this.adapter.visitRequestFailedWithStatusCode(this,t)},r.prototype.requestFinished=function(){var t;return this.recordTimingMetric("requestEnd"),"function"==typeof(t=this.adapter).visitRequestFinished?t.visitRequestFinished(this):void 0},r.prototype.performScroll=function(){return this.scrolled?void 0:("restore"===this.action?this.scrollToRestoredPosition()||this.scrollToTop():this.scrollToAnchor()||this.scrollToTop(),this.scrolled=!0)},r.prototype.scrollToRestoredPosition=function(){var t,e;return t=null!=(e=this.restorationData)?e.scrollPosition:void 0,null!=t?(this.controller.scrollToPosition(t),!0):void 0},r.prototype.scrollToAnchor=function(){return null!=this.location.anchor?(this.controller.scrollToAnchor(this.location.anchor),!0):void 0},r.prototype.scrollToTop=function(){return this.controller.scrollToPosition({x:0,y:0})},r.prototype.recordTimingMetric=function(t){var e;return null!=(e=this.timingMetrics)[t]?e[t]:e[t]=(new Date).getTime()},r.prototype.getTimingMetrics=function(){return t.copyObject(this.timingMetrics)},n=function(t){switch(t){case"replace":return"replaceHistoryWithLocationAndRestorationIdentifier";case"advance":case"restore":return"pushHistoryWithLocationAndRestorationIdentifier"}},r.prototype.shouldIssueRequest=function(){return"restore"===this.action?!this.hasCachedSnapshot():!0},r.prototype.cacheSnapshot=function(){return this.snapshotCached?void 0:(this.controller.cacheSnapshot(),this.snapshotCached=!0)},r.prototype.render=function(t){return this.cancelRender(),this.frame=requestAnimationFrame(function(e){return function(){return e.frame=null,t.call(e)}}(this))},r.prototype.cancelRender=function(){return this.frame?cancelAnimationFrame(this.frame):void 0},r}()}.call(this),function(){var e=function(t,e){return function(){return t.apply(e,arguments)}};t.Controller=function(){function r(){this.clickBubbled=e(this.clickBubbled,this),this.clickCaptured=e(this.clickCaptured,this),this.pageLoaded=e(this.pageLoaded,this),this.history=new t.History(this),this.view=new t.View(this),this.scrollManager=new t.ScrollManager(this),this.restorationData={},this.clearCache()}return r.prototype.start=function(){return t.supported&&!this.started?(addEventListener("click",this.clickCaptured,!0),addEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.start(),this.startHistory(),this.started=!0,this.enabled=!0):void 0},r.prototype.disable=function(){return this.enabled=!1},r.prototype.stop=function(){return this.started?(removeEventListener("click",this.clickCaptured,!0),removeEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.stop(),this.stopHistory(),this.started=!1):void 0},r.prototype.clearCache=function(){return this.cache=new t.SnapshotCache(10)},r.prototype.visit=function(e,r){var n,o;return null==r&&(r={}),e=t.Location.wrap(e),this.applicationAllowsVisitingLocation(e)?this.locationIsVisitable(e)?(n=null!=(o=r.action)?o:"advance",this.adapter.visitProposedToLocationWithAction(e,n)):window.location=e:void 0},r.prototype.startVisitToLocationWithAction=function(e,r,n){var o;return t.supported?(o=this.getRestorationDataForIdentifier(n),this.startVisit(e,r,{restorationData:o})):window.location=e},r.prototype.startHistory=function(){return this.location=t.Location.wrap(window.location),this.restorationIdentifier=t.uuid(),this.history.start(),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.stopHistory=function(){return this.history.stop()},r.prototype.pushHistoryWithLocationAndRestorationIdentifier=function(e,r){return this.restorationIdentifier=r,this.location=t.Location.wrap(e),this.history.push(this.location,this.restorationIdentifier)},r.prototype.replaceHistoryWithLocationAndRestorationIdentifier=function(e,r){return this.restorationIdentifier=r,this.location=t.Location.wrap(e),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.historyPoppedToLocationWithRestorationIdentifier=function(e,r){var n;return this.restorationIdentifier=r,this.enabled?(n=this.getRestorationDataForIdentifier(this.restorationIdentifier),this.startVisit(e,"restore",{restorationIdentifier:this.restorationIdentifier,restorationData:n,historyChanged:!0}),this.location=t.Location.wrap(e)):this.adapter.pageInvalidated()},r.prototype.getCachedSnapshotForLocation=function(t){var e;return e=this.cache.get(t),e?e.clone():void 0},r.prototype.shouldCacheSnapshot=function(){return this.view.getSnapshot().isCacheable()},r.prototype.cacheSnapshot=function(){var t;return this.shouldCacheSnapshot()?(this.notifyApplicationBeforeCachingSnapshot(),t=this.view.getSnapshot(),this.cache.put(this.lastRenderedLocation,t.clone())):void 0},r.prototype.scrollToAnchor=function(t){var e;return(e=document.getElementById(t))?this.scrollToElement(e):this.scrollToPosition({x:0,y:0})},r.prototype.scrollToElement=function(t){return this.scrollManager.scrollToElement(t)},r.prototype.scrollToPosition=function(t){return this.scrollManager.scrollToPosition(t)},r.prototype.scrollPositionChanged=function(t){var e;return e=this.getCurrentRestorationData(),e.scrollPosition=t},r.prototype.render=function(t,e){return this.view.render(t,e)},r.prototype.viewInvalidated=function(){return this.adapter.pageInvalidated()},r.prototype.viewWillRender=function(t){return this.notifyApplicationBeforeRender(t)},r.prototype.viewRendered=function(){return this.lastRenderedLocation=this.currentVisit.location,this.notifyApplicationAfterRender()},r.prototype.pageLoaded=function(){return this.lastRenderedLocation=this.location,this.notifyApplicationAfterPageLoad()},r.prototype.clickCaptured=function(){return removeEventListener("click",this.clickBubbled,!1),addEventListener("click",this.clickBubbled,!1)},r.prototype.clickBubbled=function(t){var e,r,n;return this.enabled&&this.clickEventIsSignificant(t)&&(r=this.getVisitableLinkForNode(t.target))&&(n=this.getVisitableLocationForLink(r))&&this.applicationAllowsFollowingLinkToLocation(r,n)?(t.preventDefault(),e=this.getActionForLink(r),this.visit(n,{action:e})):void 0},r.prototype.applicationAllowsFollowingLinkToLocation=function(t,e){var r;return r=this.notifyApplicationAfterClickingLinkToLocation(t,e),!r.defaultPrevented},r.prototype.applicationAllowsVisitingLocation=function(t){var e;return e=this.notifyApplicationBeforeVisitingLocation(t),!e.defaultPrevented},r.prototype.notifyApplicationAfterClickingLinkToLocation=function(e,r){return t.dispatch("turbolinks:click",{target:e,data:{url:r.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationBeforeVisitingLocation=function(e){return t.dispatch("turbolinks:before-visit",{data:{url:e.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationAfterVisitingLocation=function(e){return t.dispatch("turbolinks:visit",{data:{url:e.absoluteURL}})},r.prototype.notifyApplicationBeforeCachingSnapshot=function(){return t.dispatch("turbolinks:before-cache")},r.prototype.notifyApplicationBeforeRender=function(e){return t.dispatch("turbolinks:before-render",{data:{newBody:e}})},r.prototype.notifyApplicationAfterRender=function(){return t.dispatch("turbolinks:render")},r.prototype.notifyApplicationAfterPageLoad=function(e){return null==e&&(e={}),t.dispatch("turbolinks:load",{data:{url:this.location.absoluteURL,timing:e}})},r.prototype.startVisit=function(t,e,r){var n;return null!=(n=this.currentVisit)&&n.cancel(),this.currentVisit=this.createVisit(t,e,r),this.currentVisit.start(),this.notifyApplicationAfterVisitingLocation(t)},r.prototype.createVisit=function(e,r,n){
 var o,i,s,a,u;return i=null!=n?n:{},a=i.restorationIdentifier,s=i.restorationData,o=i.historyChanged,u=new t.Visit(this,e,r),u.restorationIdentifier=null!=a?a:t.uuid(),u.restorationData=t.copyObject(s),u.historyChanged=o,u.referrer=this.location,u},r.prototype.visitCompleted=function(t){return this.notifyApplicationAfterPageLoad(t.getTimingMetrics())},r.prototype.clickEventIsSignificant=function(t){return!(t.defaultPrevented||t.target.isContentEditable||t.which>1||t.altKey||t.ctrlKey||t.metaKey||t.shiftKey)},r.prototype.getVisitableLinkForNode=function(e){return this.nodeIsVisitable(e)?t.closest(e,"a[href]:not([target])"):void 0},r.prototype.getVisitableLocationForLink=function(e){var r;return r=new t.Location(e.getAttribute("href")),this.locationIsVisitable(r)?r:void 0},r.prototype.getActionForLink=function(t){var e;return null!=(e=t.getAttribute("data-turbolinks-action"))?e:"advance"},r.prototype.nodeIsVisitable=function(e){var r;return(r=t.closest(e,"[data-turbolinks]"))?"false"!==r.getAttribute("data-turbolinks"):!0},r.prototype.locationIsVisitable=function(t){return t.isPrefixedBy(this.view.getRootLocation())&&t.isHTML()},r.prototype.getCurrentRestorationData=function(){return this.getRestorationDataForIdentifier(this.restorationIdentifier)},r.prototype.getRestorationDataForIdentifier=function(t){var e;return null!=(e=this.restorationData)[t]?e[t]:e[t]={}},r}()}.call(this),function(){var e,r,n;t.start=function(){return r()?(null==t.controller&&(t.controller=e()),t.controller.start()):void 0},r=function(){return null==window.Turbolinks&&(window.Turbolinks=t),n()},e=function(){var e;return e=new t.Controller,e.adapter=new t.BrowserAdapter(e),e},n=function(){return window.Turbolinks===t},n()&&t.start()}.call(this)}).call(this),"object"==typeof module&&module.exports?module.exports=t:"function"==typeof define&&define.amd&&define(t)}).call(this);
+$(function(){
+  // Array ends on line 2886
+  var drinkNames = ["A Furlong Too Late",
+"A Night In Old Mandalay",
+"A. J.",
+"Abbey Cocktail",
+"Abilene",
+"Acapulco",
+"Adam",
+"Adonis Cocktail",
+"Affair",
+"Affinity",
+"After Dinner Cocktail",
+"Alabama Slammer",
+"Alaska Cocktail",
+"Alexander",
+"Alexander #2",
+"Brandy Alexander",
+"Alexander's Big Brother",
+"Alexander's Sister",
+"Alfie Cocktail",
+"Algonquin",
+"Allegheny",
+"Allies Cocktail",
+"Almeria",
+"Almond Joy",
+"Amaretto And Cream",
+"Amaretto Rose",
+"Amaretto Stinger",
+"Ambrosia",
+"American Beauty",
+"Andalusia",
+"Angler's Cocktail",
+"Ante",
+"Antoine Special",
+"Apple Blow Fizz",
+"Apple Brandy Highball",
+"Apple Brandy Sour",
+"Apple Colada",
+"Apple Pie",
+"Apple Rum Rickey",
+"Applecar",
+"Appled Rum Cooler",
+"Apricot Anise Collins",
+"Apricot Cocktail",
+"Arcadia",
+"Archbishop",
+"Arise My Love",
+"Arthur Tompkins",
+"Artillery",
+"B And B",
+"Bacardi Cocktail",
+"Bahama Mama",
+"Balmoral",
+"Baltimore Bracer",
+"Baltimore Eggnog",
+"Banana Cow",
+"Banana Daiquiri",
+"Banana Punch #1",
+"Banana Rum Cream",
+"Baron Cocktail",
+"Barrier Breaker",
+"Barton Special",
+"Basic Bill",
+"Batida Mango",
+"Batida Morango",
+"Beachcomber",
+"Beal's Cocktail",
+"Beauty Spot Cocktail",
+"Bee Stinger",
+"Belles Of St. Mary's",
+"Bengal",
+"Bennett Cocktail",
+"Bentley",
+"Bermuda Highball",
+"Bermuda Rose",
+"Betsy Ross",
+"Between The Sheets",
+"Biffy Cocktail",
+"Bijou Cocktail",
+"Bikini",
+"Billy Taylor",
+"Bishop",
+"Bitch-On-Wheels",
+"Black Devil",
+"Black Hawk",
+"Blackjack #1",
+"Black Maria",
+"Black Monday",
+"Black Pagoda",
+"Black Russian",
+"Blackjack #2",
+"Blackthorn",
+"Blarney Stone Cocktail",
+"Blinder",
+"Bloodhound Cocktail",
+"Bloody Bull",
+"Bloody Maria",
+"Bloody Mary",
+"Blue Cowboy",
+"Blue Devil Cocktail",
+"Blue Hawaiian",
+"Blue Lagoon",
+"Blue Margarita",
+"Blue Mountain",
+"Bluebird",
+"Bobby Burns Cocktail",
+"Bolero",
+"Bombay Cocktail",
+"Boomerang",
+"Border Crossing",
+"Bosom Caresser",
+"Boston Cocktail",
+"Boston Sidecar",
+"Boston Sour",
+"Bourbon and Branch",
+"Bourbon Black Hawk",
+"Bourbon Black Hawk #2",
+"Bourbon Cobbler #1",
+"Bourbon Cobbler #2",
+"Bourbon Cooler",
+"Bourbon County Cowboy",
+"Bourbon Daisy",
+"Bourbon Fix",
+"Bourbon Flip",
+"Bourbon Highball",
+"Bourbon Milk Punch",
+"Bourbon Milk Punch #2",
+"Bourbon Milk Punch #3",
+"Classic Old-Fashioned",
+"Bourbon Sling",
+"Bourbon Sour",
+"Bourbon Swizzle",
+"Boxcar",
+"Brainstorm",
+"Brandied Egg Sour",
+"Brandied Madeira",
+"Brandy Alexander #2",
+"Brandy Alexander #3",
+"Brandy And Soda",
+"Brandy Blazer",
+"Brandy Cocktail",
+"Brandy Collins",
+"Brandy Cooler",
+"Brandy Daisy",
+"Brandy Fix",
+"Brandy Fizz",
+"Brandy Flip",
+"Brandy Highball",
+"Brandy Milk Punch",
+"Brandy Sangaree",
+"Brandy Sling",
+"Brandy Smash",
+"Brandy Sour",
+"Brandy Swizzle",
+"Brandy Toddy",
+"Brandy Vermouth Cocktail",
+"Brantini",
+"Brave Bull",
+"Brazil Cocktail",
+"Broken Spur Cocktail",
+"Bronx Cocktail (Dry)",
+"Bronx Golden Cocktail",
+"Bronx Silver Cocktail",
+"Bronx Terrace Cocktail",
+"Brown Cocktail",
+"Buck Jones",
+"Buddy's Favorite",
+"Bull's Eye",
+"Bull's Milk",
+"Bulldog Cocktail",
+"Bulldog Highball",
+"Bumbo",
+"Burgundy Bishop",
+"Burnt Embers",
+"Bushranger #1",
+"Bushranger #2",
+"Button Hook Cocktail",
+"Cabaret",
+"Cactus Bite",
+"Cafe de Paris",
+"Caleigh",
+"California Dream",
+"California Lemonade",
+"Campbell F. Craig",
+"Canadian Cocktail",
+"Canadian Pineapple",
+"Cape Of Good Will",
+"Cappucino Cocktail",
+"Capri",
+"Captain Cook",
+"Captain's Table",
+"Cardinal",
+"Caroli",
+"Carrol Cocktail",
+"Caruso",
+"Caruso Blanco",
+"Casa Blanca",
+"Casino Cocktail",
+"Casino Royale",
+"Catherine Of Sheridan Square",
+"Celtic Mix Cocktail",
+"Chapala",
+"Charles Cocktail",
+"Cherie",
+"Cherried Cream Rum",
+"Cherry Blossum",
+"Cherry Fizz",
+"Cherry Flip",
+"Cherry Rum",
+"Cherry Sling",
+"Chi-Chi",
+"Chicago Fizz",
+"Chocolate Black Russian",
+"Chocolate Cocktail",
+"Chocolate Mint Rum",
+"Chocolate Soldier",
+"Chocolatier",
+"Choker",
+"City Slicker",
+"Claridge Cocktail",
+"Climax",
+"Clove Cocktail",
+"Clover Club Cocktail",
+"Clover Leaf Cocktail",
+"Cocomacoque",
+"Coffee Sour",
+"Cognac Highball",
+"Colonial Cocktail",
+"Combo",
+"Comforting Tiger",
+"Communicator",
+"Compadre",
+"Continental",
+"Cooperstown Cocktail",
+"Cornell Cocktail",
+"Cornwall-Nash",
+"Coronation Cocktail",
+"Cosmos",
+"Country Club Cooler",
+"Creamy Screwdriver",
+"Creme De Gin Cocktail",
+"Creole",
+"Cuba Libre",
+"Haiku Martini",
+"Daiquiri",
+"Dance With A Dream Cocktail",
+"Daring Dylan",
+"David Bareface",
+"Deauville Cocktail",
+"Deep, Dark Secret",
+"Delmonico",
+"Delmonico #2",
+"Dempsey Cocktail",
+"Derby Daiquiri",
+"DeRosier",
+"Devil's Cocktail",
+"Diamond Fizz",
+"Dianne-On-The-Tower",
+"Dickie Ward",
+"Dinah Cocktail",
+"Dirty Dick's Downfall",
+"Dirty Mother",
+"Dirty White Mother",
+"Dixie Cocktail",
+"Dixie Dew",
+"Dixie Julep",
+"Dixie Stinger",
+"Dixie Whiskey Cocktail",
+"Doctor Dawson",
+"Doralto",
+"Dragonfly",
+"Dream Cocktail",
+"Dressed Up Like A Dogs Dinner",
+"Droog's Date Cocktail",
+"Dry Rob Roy",
+"Du Barry Cocktail",
+"Dubonnet Cocktail",
+"Dubonnet Fizz",
+"Duchess",
+"East India Cocktail #1",
+"East India Cocktail #2",
+"El Presidente Cocktail #1",
+"Elephant Lips",
+"Elk's Own Cocktail",
+"Emerald Forest",
+"Emerald Isle Cocktail",
+"Emerson",
+"English Highball",
+"English Rose Cocktail",
+"Entwistle's Error",
+"Ethel Duffy Cocktail",
+"European",
+"Everybody's Irish Cocktail",
+"Executive Sunrise",
+"Eye-Opener",
+"Fairy Belle Cocktail",
+"Fallen Angel",
+"Fancy Bourbon",
+"Fancy Brandy",
+"Fancy Gin",
+"Fancy Scotch",
+"Fancy Whiskey",
+"Fantasio Cocktail",
+"Farmer Giles",
+"Farmer's Cocktail",
+"Fastlap",
+"Fat Face",
+"Favorite Cocktail",
+"Fifth Avenue",
+"Fifty-Fifty",
+"Fifty-fifty Cocktail",
+"Fino Martini",
+"Fireman's Sour",
+"Flamingo Cocktail",
+"Fleet Street",
+"Flirting With The Sandpiper",
+"Florida",
+"Flying Dutchman",
+"Flying Scotchman",
+"Fog Cutter",
+"Fontainebleau Special",
+"Fort Lauderdale",
+"Fox And Hounds",
+"Fox River Cocktail",
+"Foxy Lady",
+"Frankenjack Cocktail",
+"Freddy Fudpucker",
+"Free Silver",
+"French 75",
+"French 125",
+"French Connection",
+"Froth Blower Cocktail",
+"Frozen Apple",
+"Frozen Berkeley",
+"Frozen Brandy And Rum",
+"Frozen Daiquiri",
+"Frozen Margarita #1",
+"Frozen Matador",
+"Frozen Mint Daiquiri",
+"Frozen Pineapple Daiquiri",
+"Gareth Glowworm",
+"Gates Of Hell",
+"Gauguin",
+"Gent Of The Jury",
+"Gentleman's Club",
+"Gilroy Cocktail",
+"Gimlet",
+"Gin And Bitter Lemon",
+"Gin And Pink",
+"Gin And Sin",
+"Gin And Tonic",
+"Gin Cobbler",
+"Gin Cocktail",
+"Gin Daisy",
+"Gin Fix",
+"Gin Fizz",
+"Gin Highball",
+"Gin Milk Punch",
+"Gin Rickey",
+"Gin Sling",
+"Gin Smash",
+"Gin Sour",
+"Gin Toddy",
+"Godchild",
+"Godmother",
+"Golden Bronx",
+"Golden Daze",
+"Golden Fizz",
+"Grand Master",
+"Grapefruit Cocktail",
+"Grapefruit Nog",
+"Grass Skirt",
+"Grasshopper",
+"Green Demon",
+"Green Devil",
+"Green Dragon",
+"Green Fizz",
+"Green Opal",
+"Greenback",
+"Greenham's Grotto",
+"Greyhound",
+"Grog",
+"Gypsy",
+"Gypsy Cocktail",
+"H.P.W. Cocktail",
+"Haidin-Haidin",
+"Harvard Cooler",
+"Harvey Wallbanger",
+"Hasty Cocktail",
+"Hat Trick #1",
+"Hat Trick #2",
+"Havana Cocktail",
+"Hawaiian Cocktail",
+"Highland Fling Cocktail",
+"Highland Sling",
+"Hokkaido Cocktail",
+"Hole-In-One",
+"Honeymoon Cocktail",
+"Honolulu Cocktail No. 2",
+"Hornpipe",
+"Horse And Jockey",
+"Horse's Neck",
+"Horsley's Honor",
+"Hot Gold",
+"Hot Springs Cocktail",
+"Hotel Plaza Cocktail",
+"Howell Says So",
+"Hudson Bay",
+"Ice-Cream Flip",
+"Ice Palace",
+"Ideal Cocktail",
+"Iguana",
+"Immaculata",
+"Imperial Fizz",
+"Irish Rickey",
+"Irish Spring",
+"Italian Delight",
+"Italian Heather",
+"Italian Sombrero",
+"J. R.'s Godchild",
+"J. R.'s Revenge",
+"Jack Rose Cocktail",
+"Jack-In-The-Box",
+"Jade",
+"Jamaican Banana",
+"James The Second Comes First",
+"Japanese",
+"Japanese Fizz",
+"Jersey Lightning",
+"Jet Black",
+"Jewel Cocktail",
+"Jeyplak Cocktail",
+"Jillionaire",
+"Jock Collins",
+"Jock-In-A-Box",
+"Jocose Julep",
+"Joe Collins",
+"Johnnie Cocktail",
+"Jonesey",
+"Joulouville",
+"Journalist Cocktail",
+"Joy-To-The-World",
+"K.G.B. Cocktail",
+"Kamikaze",
+"Kentucky B And B",
+"Kentucky Colonel",
+"King Cole Cocktail",
+"Kiss-In-The-Dark",
+"Klondike Cooler",
+"Knickerbocker Cocktail",
+"Krazee Keith",
+"Kretchma Cocktail",
+"L'aird Of Summer Isle",
+"La Jolla",
+"La Stephanique",
+"Lady Be Good",
+"Lady Finger",
+"Lamb Brothers",
+"Lawhill Cocktail",
+"Leap Frog Highball",
+"Leave-It-To-Me Cocktail",
+"Lil Naue",
+"Linstead Cocktail",
+"Little Princess Cocktail",
+"Loch Lomond",
+"London Buck",
+"London Town",
+"Lone Tree Cocktail",
+"Long Island Tea",
+"Lord And Lady",
+"Love For Toby",
+"Ludwig And The Gang",
+"Lugger",
+"Ma Bonnie Wee Hen",
+"Ma Wee Hen",
+"Macbeth's Dream",
+"Madras",
+"Maestro",
+"Mai Tai",
+"Maiden's Blush",
+"Maiden's Prayer",
+"Maiden-No-More",
+"Malibu Wave",
+"Mallelieu",
+"Mamie Gilroy",
+"Man Of The Moment",
+"Mandeville",
+"Manhasset",
+"Manhattan Dry #2",
+"Manila Fizz",
+"Mardee Mine",
+"Margaret In The Marketplace",
+"Margarita #2",
+"Martinez Cocktail",
+"Martini #2",
+"Martini #3",
+"Martini #4",
+"Martini (Dry) (5-to-1)",
+"Martini (Sweet)",
+"Mary Garden Cocktail",
+"Mary Pickford Cocktail",
+"Mary's Dream",
+"Max The Silent",
+"Maxim",
+"Mcclelland Cocktail",
+"Melon Cocktail",
+"Menage A Trois",
+"Merry Widow",
+"Merry Widow Fizz",
+"Metropolitan",
+"Metropolitan Cocktail",
+"Mexicola",
+"Midnight Cowboy",
+"Mikado",
+"Mikado Cocktail",
+"Million-Dollar Cocktail",
+"Mimosa",
+"Mint Collins",
+"Mint Gin Cocktail",
+"Mint Julep #1",
+"Mint Julep #2",
+"Miss Belle",
+"Mississippi Planters Punch",
+"Mister Christian",
+"Mithering Bastard",
+"Mocha Mint",
+"Modern Cocktail",
+"Monkey Gland Cocktail",
+"Monkey Wrench",
+"Montana",
+"Montezuma",
+"Montmartre Cocktail",
+"Montreal Club Bouncer",
+"Montreal Gin Sour",
+"Moon Quake Shake",
+"Morgan's Mountain",
+"Morning Glory Fizz",
+"Morro",
+"Mostly Mal",
+"Mozart",
+"Mumbo Jumbo",
+"Mumsicle",
+"Mutiny",
+"Narragansett",
+"Netherland",
+"Nevada Cocktail",
+"Nevins",
+"New Orleans Buck",
+"New York Sour",
+"Nightmare",
+"North Pole Cocktail",
+"Oaxaca Jim",
+"Old Pal Cocktail",
+"Old-Fashioned",
+"Olympia",
+"Once-Upon-A-Time",
+"Opal Cocktail",
+"Opening Cocktail",
+"Opera Cocktail",
+"Orange Blossom",
+"Orange Buck",
+"Orange Oasis",
+"Orgasm",
+"Oriental Cocktail",
+"Other Original Singapore Sling",
+"Outrigger",
+"Owen Moore",
+"P.T.O.",
+"Paisley Martini",
+"Palm Beach Cocktail",
+"Palmer Cocktail",
+"Palmetto Cocktail",
+"Panther",
+"Papaya Sling",
+"Parisian",
+"Park Avenue",
+"Passion Daiquiri",
+"Passion Mimosa",
+"Peach Blow Fizz",
+"Peach Bunny",
+"Peach Treat",
+"Peggy Cocktail",
+"Pendennis",
+"Peppermint Stick",
+"Peregrine's Peril",
+"Perfect Cocktail",
+"Perfect Rob Roy",
+"Peter Pan Cocktail",
+"Piccadilly Cocktail",
+"Pineapple Cooler",
+"Ping-Pong Cocktail",
+"Pink Gin",
+"Pink Lady",
+"Pink Pussycat",
+"Piper At Arms",
+"Piper At The Gates Of Dawn",
+"Plaza Cocktail",
+"Polo Cocktail",
+"Polonaise",
+"Polynesian Cocktail",
+"Poop Deck Cocktail",
+"Poppy Cocktail",
+"Port And Starboard",
+"Port Wine Cocktail",
+"Port Wine Flip",
+"Prairie Chicken",
+"Preakness Cocktail",
+"Presbyterian",
+"Prince's Smile",
+"Princeton Cocktail",
+"Puerto Apple",
+"Puffer",
+"Purple Mask",
+"Quaker's Cocktail",
+"Quarter Deck Cocktail",
+"Queen Charlotte",
+"Queen Elizabeth",
+"Quentin",
+"Ragged Company",
+"Raspberry Cream",
+"Rattlesnake Cocktail",
+"Rebel Yell",
+"Red Apple",
+"Red Cloud",
+"Red Gin",
+"Red Raider",
+"Red Ruby",
+"Redcoat",
+"Reform Cocktail",
+"Remsen Cooler",
+"Resolute Cocktail",
+"Riley's Sparrow",
+"Ritz Fizz",
+"Rob Roy",
+"Robin's Nest",
+"Robson Cocktail",
+"Rolls-Royce",
+"Root Beer Fizz",
+"Root Beer Float",
+"Rory O'more",
+"Rose Cocktail (English)",
+"Rose Cocktail (French)",
+"Roselyn Cocktail",
+"Rouge Martini",
+"Royal Cocktail",
+"Royal Fizz",
+"Royal Gin Fizz",
+"Royal Smile Cocktail",
+"Royalty Fizz",
+"Ruby Fizz",
+"Ruby In The Rough",
+"Rum Cobbler",
+"Rum Collins",
+"Rum Cooler",
+"Rum Daisy",
+"Rum Dubonnet",
+"Rum Eggnog",
+"Rum Fix",
+"Rum Gimlet",
+"Rum Highball",
+"Rum Martini",
+"Rum Milk Punch",
+"Rum Screwdriver",
+"Rum Swizzle",
+"Rum Toddy",
+"Russian Cocktail",
+"Rusty Nail",
+"Rye Whiskey Cocktail",
+"Saketini",
+"Salty Dog",
+"Sand-Grown-Un",
+"Sand-Martin Cocktail",
+"Sandra Buys A Dog",
+"Santiago Cocktail",
+"Saratoga Cocktail",
+"Saucy Sue Cocktail",
+"Savannah",
+"Saxon Cocktail",
+"Sazerac",
+"Scooter",
+"Scotch And Water",
+"Scotch Bird Flyer",
+"Scotch Bishop Cocktail",
+"Scotch Cobbler",
+"Scotch Cooler",
+"Scotch Daisy",
+"Scotch Fix",
+"Scotch Flip",
+"Scotch Holiday Sour",
+"Scotch Mist",
+"Scotch Old-Fashioned",
+"Scotch Rickey",
+"Scotch Sour",
+"Screaming Banana Banshee",
+"Screwdriver",
+"Seaboard",
+"Secret Place",
+"Sensation Cocktail",
+"September Morning",
+"Seventh Heaven Cocktail",
+"Sevilla Cocktail #2",
+"Shalom",
+"Shanghai Cocktail",
+"Sherry Eggnog",
+"Sherry Flip",
+"Sherry Milk Punch",
+"Shriner Cocktail",
+"Sidecar",
+"Sidecar Cocktail",
+"Silent Broadsider",
+"Silk Stockings",
+"Silver Bronx",
+"Silver Cocktail",
+"Silver King Cocktail",
+"Silver Stallion Fizz",
+"Singapore Sling",
+"Sir Walter Cocktail",
+"Sister Starseeker",
+"Sitarski",
+"Skip And Go Naked",
+"Sloe Gin Collins",
+"Sloe Gin Flip",
+"Sloe Gin Rickey",
+"Sloe Vermouth",
+"Sloeberry Cocktail",
+"Sloppy Joe's Cocktail No. 1",
+"Sloppy Joe's Cocktail No. 2",
+"Slow Comfortable Screw",
+"Sly Goes To Havana",
+"Smart Christine",
+"Smile Cocktail",
+"Smiler Cocktail",
+"Smith And Kearns",
+"Snyder",
+"Sol Y Sombra",
+"Sombrero",
+"Son Of Adam",
+"Sonny Gets Kissed",
+"Soother Cocktail",
+"Soul Kiss Cocktail",
+"South Of The Border",
+"Southern Belle",
+"Southern Bride",
+"Southern Gin Cocktail",
+"Soviet",
+"Spark In The Night",
+"Special Rough Cocktail",
+"Sphinx Cocktail",
+"Spring Feeling Cocktail",
+"St. Charles Punch",
+"St. Patrick's Day",
+"Stanley Cocktail",
+"Stanley Senior",
+"Starseeker",
+"Stiletto",
+"Stinger",
+"Stirrup Cup",
+"Stone Cocktail",
+"Stone Fence",
+"Stone Sour",
+"Stranger-In-Town",
+"Strawberries And Cream",
+"Strawberry Daiquiri",
+"Strawberry Dawn",
+"Strawberry Fields Forever",
+"Strawberry Margarita",
+"Sue Riding High",
+"Sugar Daddy",
+"Sunshine Cocktail",
+"Surf Rider",
+"Surrey Slider",
+"Susan Littler",
+"Sweet Maria",
+"Sweet Patootie Cocktail",
+"Swiss Family Cocktail",
+"T.N.T. No. 2",
+"Tailspin Cocktail",
+"Tango Cocktail",
+"Tartan Swizzle",
+"Tartantula",
+"Temptation Cocktail",
+"Tempter Cocktail",
+"Ten Quidder",
+"Tequila Fizz",
+"Tequila Manhattan",
+"Tequila Matador",
+"Tequila Old-Fashioned",
+"Tequila Sour",
+"Tequila Sunset",
+"Tequini",
+"Thanksgiving Special",
+"The Bronx Ain't So Sweet",
+"The Original Singapore Sling",
+"The Shoot",
+"Third-Rail Cocktail",
+"Three Miller Cocktail",
+"Thriller",
+"Thunder",
+"Thunder-And-Lightning",
+"Thunderclap",
+"Tidbit",
+"Tipperary Cocktail",
+"To Hell With Swords And Garter",
+"Tom Collins",
+"Top Banana",
+"Torridora Cocktail",
+"Tovarich Cocktail",
+"Triad",
+"Trilby Cocktail",
+"Trinity Cocktail",
+"Tropical Cocktail",
+"Tuxedo Cocktail",
+"Twin Hills",
+"Twister",
+"Ulanda Cocktail",
+"Union Jack Cocktail",
+"Valencia Cocktail",
+"Van Vleet",
+"Velvet Hammer #1",
+"Verboten",
+"Vermouth Cassis",
+"Vesuvio",
+"Vicious Sid",
+"Victor",
+"Victory Collins",
+"Viva Villa",
+"Vodka 7",
+"Vodka And Apple Juice",
+"Vodka And Tonic",
+"Vodka Collins",
+"Vodka Gimlet",
+"Vodka Grasshopper",
+"Vodka Salty Dog",
+"Vodka Sling",
+"Vodka Stinger",
+"Waikiki Beachcomber",
+"Wallick Cocktail",
+"Ward Eight",
+"Warsaw Cocktail",
+"Washington Cocktail",
+"Watermelon",
+"Webster Cocktail",
+"Wedding Belle Cocktail",
+"Weep-No-More Cocktail",
+"Wembly Cocktail",
+"Western Rose",
+"What The Hell",
+"Whip Cocktail",
+"Whiskey Collins",
+"Whiskey Eggnog",
+"Whiskey Fix",
+"Whiskey Highball",
+"Whiskey Milk Punch",
+"Whiskey Rickey",
+"Whiskey Sour",
+"White Heart",
+"White Lady",
+"White Lily Cocktail",
+"White Lion Cocktail",
+"White Russian",
+"White Way Cocktail",
+"Why Not?",
+"Widow Woods' Nightcap",
+"Widow's Kiss",
+"Will Rogers",
+"Woo Woo",
+"Woodward Cocktail",
+"X.Y.Z. Cocktail",
+"Xanthia Cocktail",
+"Xeres Cocktail",
+"Yale Cocktail",
+"Yellow Rattler",
+"Yellow Strawberry",
+"Yolanda",
+"Afterglow",
+"Alice Cocktail",
+"Apple Karate",
+"Berry-Berry",
+"Black & Blue Berries",
+"Bobby Cocktail",
+"Bora Bora",
+"Cranberry Juice Cocktail",
+"End Wrench",
+"Grapefruit and Orange Cocktail",
+"Grapefruit Lemonade",
+"Hot Buttered Rum Batter #1",
+"Hot Buttered Rum Batter #2",
+"Hot Lemonade",
+"Kanaan",
+"Lemon Cocktail",
+"Lemon Flip",
+"Honey Lemonade",
+"Lucky Driver",
+"Mint Julep #3",
+"Grenadine Cocktail",
+"Orangatang",
+"Orange Cocktail",
+"Orange Cooler",
+"Orange Flip",
+"Orange Smile",
+"Orange Squash",
+"Orange Velvet",
+"Orangeade",
+"Orgeat Lemonade",
+"Parisette",
+"Pineapple Lemonade",
+"Pineapple Power",
+"Pussy Foot",
+"Rail Splitter",
+"Rose de Mai Cocktail",
+"Shirley Temple",
+"Tomato Cocktail",
+"Grape Flip",
+"Tropical",
+"Sammensurium (Mix up)",
+"Ishav",
+"Homemade Ginger Beer",
+"Homemade Snapple",
+"Banana Milk Shake",
+"Banana Strawberry Shake Daiquiri-type",
+"Cool Cow",
+"Crazy Cow",
+"Earth Shake",
+"Egg Cream",
+"Fruit Cooler",
+"Fruit Flip-Flop",
+"Fruit Shake",
+"Grapple",
+"Great Grapes",
+"Hot Cider",
+"Hot Mulled Cider #1",
+"Hot Spiced Cider #1",
+"Jungle Juice #2",
+"Just a Moonmint",
+"Lassi - A South Indian Drink",
+"Lassi Khara",
+"Vegan - Hot indian 'milk' drink",
+"Lemouroudji",
+"Imperial Cocktail",
+"Banana Cantaloupe Smoothie",
+"Apple Berry Smoothie",
+"Kiwi Papaya Smoothie",
+"Mango Orange Smoothie",
+"Pineapple Gingerale Smoothie",
+"Kill the cold Smoothie",
+"Strawberry Shivers",
+"Sweet Bananas",
+"Tomato Tang",
+"Yoghurt Cooler",
+"Castillian Hot Chocolate",
+"Chocolate Beverage",
+"Chocolate Drink",
+"Drinking Chocolate",
+"Hot Chocolate #1",
+"Microwave Hot Cocoa",
+"Nuked Hot Chocolate",
+"Orange Scented Hot Chocolate",
+"Spanish chocolate",
+"Lemon Shot",
+"Sex on the Beach",
+"Autodafé",
+"Gagliardo",
+"Grizzly Bear",
+"Karsk",
+"Happy Skipper",
+"Frappé",
+"Iced Coffee",
+"Iced Coffee Fillip",
+"Masala Chai",
+"Melya",
+"Russian Tea #1",
+"Spiking coffee",
+"Thai Coffee",
+"Thai Iced Coffee",
+"Thai Iced Tea",
+"Absinthe #1",
+"Absinthe #2",
+"Amaretto Liqueur",
+"Angelica Liqueur",
+"Caribbean Orange Liqueur",
+"Coffee-Vodka",
+"Cranberry Cordial",
+"Cream Cordial",
+"Creamy Rum Liqueur",
+"Creme de Menthe",
+"Daiquiri Liqueur",
+"Fresh Mint Liqueur",
+"Galliano",
+"Grand Orange-Cognac Liqueur",
+"Honey Liquor",
+"Irish Cream",
+"Irish Cream - Bailey's #1",
+"Irish Cream - Bailey's #2",
+"Irish Cream - Bailey's #3",
+"Irish Cream Liqueur #1",
+"Irish Cream Liqueur #2",
+"Irish Cream Liqueur #3",
+"Kahlua #1",
+"Kahlua #2",
+"Kahlua #3",
+"Kahlua #4",
+"Kahlua #5",
+"Kvas",
+"Medd",
+"Mexican Coffee Liqueur",
+"Pineapple Liqueur",
+"Plum Liqueur",
+"Scottish Highland Liqueur",
+"Tia-Maria",
+"Vanilla-Coffee Liqueur",
+"Vanilla Liqueur",
+"Aloha Fruit punch",
+"Apple Cider Punch #1",
+"Apple Cider Punch #2",
+"Voodoo Juice",
+"Artillery Punch",
+"Bahamas Rum Punch",
+"Banana Punch #2",
+"Berry Deadly",
+"Boo Punch",
+"Champagne Punch #2",
+"Chowning's Tavern Wine Cooler",
+"Cold Duck Punch",
+"Coquito",
+"Cranberry Punch",
+"Cranberry Tea Hot Punch",
+"Egg Nog - Kahlua",
+"Egg Nog - Williamsburg",
+"Egg Nog - Cooked",
+"Egg Nog - Katie's",
+"Egg Nog Ice-Cream",
+"Egg Nog #1",
+"Egg Nog #2",
+"Egg Nog #3",
+"Egg Nog #4",
+"Egg Nog #5",
+"Egg-Nog - Classic Cooked",
+"Egg Nog - Healthy",
+"Eggnog - Spiked",
+"Eggnog - Kentucky-style",
+"Fruit and Sherbet Punch",
+"Ginger Syllabub",
+"Glogg Extract",
+"Glogg in the Microwave",
+"Glogg #1",
+"Glogg #2",
+"Glogg - Christmas",
+"Glogg - Grandfather's",
+"Glogg - Grandmother's",
+"Gluehwein",
+"Gogl-Mogl",
+"Golden Glow Punch",
+"Holiday Cheer",
+"Holloween Punch",
+"Hop Skip and Go Naked Punch",
+"Hot Buttered Cranberry Punch",
+"Hot Devilish Daiquiri",
+"Hot Mulled Cider #2",
+"Hot Spiced Cider #2",
+"Hot-Buttered Rum",
+"Jamaica Me Crazy",
+"Lady's Punsch",
+"Lemon Sherbert Punch",
+"Mock Pink Champagne #1",
+"Mock Pink Champagne #2",
+"Monarchy Luau Punch",
+"Monster Slime Juice",
+"Mulled Wine",
+"Null & Void Punch",
+"Old Fashioned Hot Buttered Rum",
+"Party Punch",
+"Party Slush Punch #1",
+"Party Slush Punch #2",
+"Party Slush Punch #3",
+"Pineapple Punch",
+"Ponche de Pina",
+"Porch Crawlers",
+"Punch #1",
+"Punch #2",
+"Purple Jesus",
+"Raspberry Sherbet Punch",
+"Sangria #1",
+"Sangria #2",
+"Sweet Sangria",
+"Sangria - The World's Best",
+"Sauterne",
+"Sima",
+"Spiced Peach Punch",
+"Strawberry Bolle",
+"Strawberry Lemonade",
+"Strawberry Punch #1",
+"Strawberry Punch #2",
+"Sunny Holiday Punch",
+"Syllabub",
+"Tea Punch",
+"Truck Punch",
+"Wassail #1",
+"Wassail #2",
+"Wine Cooler",
+"Wine Punch",
+"Margarita",
+"Polarbear #1",
+"Bruce's Puce",
+"Brave Bull Shooter",
+"Fahrenheit 5000",
+"Popped cherry",
+"The Incredible Hulk",
+"Alabama Riot",
+"Reggae Ambassador",
+"Mind Eraser",
+"Pamela",
+"Atomic Lokade",
+"Mexican Mouthwash",
+"Pecker Head",
+"Colorado Bulldog",
+"Carribean pineapple",
+"Bullfrog",
+"Cucaracha",
+"Hillinator",
+"Tequila Mockingbird",
+"Irish Coffee #2",
+"B-52 #1",
+"Wahoo",
+"Creamy punani",
+"The Shearer Special",
+"Amy's Tattoo",
+"Malibu juice",
+"Bailey's Banana Colada (bbc)",
+"Russian Roulette",
+"Diesel",
+"Reptile",
+"Dogg piss",
+"Harsh",
+"Yo mama cocktail",
+"La Mamila",
+"Fruit Tingle",
+"Blue iguana",
+"Red Death #2",
+"Is Paris Burning",
+"Motor Oil",
+"Jack & Coke",
+"Cement Mixer",
+"Reptile (Orginal)",
+"Mona-Lisa",
+"Afternoon",
+"Blow Job #1",
+"Prairie Fire #1",
+"Gray Hound",
+"Nutty Russian",
+"Power screwdriver",
+"Jolly Jumper",
+"Mudslide #1",
+"Long Island Iced Tea #1",
+"Midori Sunrise",
+"Long Island Sunset",
+"Stevie Ray Vaughn",
+"Romulan Ale",
+"Malibu Bay Breeze",
+"Kool-Aid Shot",
+"National Aquarium",
+"Damned if you do",
+"Long vodka",
+"Quick F**K",
+"Owen's Grandmother's Revenge",
+"Flaming Dr. Pepper",
+"New York Lemonade",
+"Caipirissima",
+"Captain Do",
+"Southampton Slam",
+"Piscola",
+"Pisco Sour",
+"Mogul Masher",
+"Prairie Fire #2",
+"Chocolate Martini",
+"Big Red",
+"Freight Train",
+"Sicilian Kiss",
+"Mister Wu",
+"Snakebite #1",
+"The Shanaynay",
+"Patmcpacke",
+"Superb Cosmopolitan",
+"H-Bomb",
+"Bearded Boy",
+"Instant Death",
+"Flaming Huscroft",
+"Blood Clot #1",
+"Eat Hot Death",
+"Tuve Nightmare",
+"Moscow Mule",
+"Oatmeal Cookie",
+"Cowboy Cocksucker",
+"Liquid Cocaine #1",
+"Kish Wacker",
+"The Fuzzy Pissbomb",
+"Piggelin #2",
+"Piggelin #1",
+"Wobbler",
+"South Bank",
+"Dreamsicle #1",
+"Midori Sour Ultra",
+"Black & Tan",
+"Peltikatto",
+"Trial of the Century",
+"Santa Shot",
+"Go Girl!",
+"Green Hell",
+"Alexandra",
+"Gingerbread Man",
+"Love Juice (LJ)",
+"Kevin's special blend",
+"Flaming Dr. Pepper #2",
+"Screaming Nazi",
+"Captain Louie",
+"Horny Mohican",
+"Bloody Caesar",
+"B-52 #2",
+"Cherry Bomb",
+"Chocolate Milk",
+"B-53",
+"Strip and Go Naked",
+"Shark's tooth",
+"Brain Tumor",
+"Spearmint Lifesaver",
+"Duck Fart",
+"Chocolate Monk",
+"Rum Runner by Charles",
+"Bob's Moscow Mule",
+"Caribbean Screwdriver",
+"Chocolate Toasted Almond",
+"Flaming D-",
+"Yellow Bird",
+"Dew-Driver",
+"D.O.A.",
+"Mount Red",
+"Estonian Forest-fire",
+"Harvey Cowpuncher",
+"German Hooker (Die Deutsche Nutte)",
+"Sunoco 251",
+"Incredible Hulk #3",
+"Seabreeze",
+"Long Island",
+"Slacker's Slammer",
+"Ragnar #1",
+"Hangover",
+"Ha Ha Tonka",
+"Snake Bite (UK)",
+"Screaming Blue Messiah",
+"Puerto Rican Monkey Fuck",
+"Southern Pink Flamingo",
+"Booger",
+"Meister Mind Meld",
+"Mint Russki, or Spearmint Ivan",
+"Brainteaser",
+"Cartwheel",
+"Brain Hemmorage",
+"Extraterrestrial",
+"Russian funk",
+"Porch Climber",
+"Eskimo Joe",
+"Atlantic Sun",
+"Mike Samm's Purple Passionate Punch",
+"Mojito",
+"Fjellbekk (Mountain Stream)",
+"Cowboy Roy",
+"Lynchburg Lemonade",
+"Jellyfish",
+"Hawaiin Punch from Hell",
+"Beetlejuice",
+"Three Wise Men #2",
+"Surputte",
+"Surfer on Acid",
+"Mai Tai, Michael's Ultimate",
+"Fire Engine",
+"Fire Engine With Alarm",
+"Mikey Mike",
+"Dambuster",
+"Urban Violence",
+"Grovschpol",
+"Long Island Iced Tea #3",
+"Rattlesnake",
+"Veterinary",
+"Tootsie Roll",
+"Squished Smurf",
+"Michelada",
+"Brain Hemorage",
+"Snitchee's Cider",
+"Caribbean Kiss",
+"Green Goblin",
+"Oreo Mudslide",
+"ABC",
+"Marvellaid",
+"Planter's Punch",
+"Something Peachie #1",
+"Velvet Hammer #2",
+"Red Eye",
+"Prarie Dog",
+"Doh",
+"Napalm",
+"Cape Codder",
+"Peppermint Beach",
+"Sizzler",
+"Falix",
+"Pink Panty Pulldowns",
+"Yukon Cornelius",
+"Ice Pick #1",
+"Frothy Redhead",
+"Mojito #2",
+"Something Peachie #2",
+"Maèek",
+"Boilermaker",
+"Ice Pick #2",
+"Mad Cow",
+"Hard Core",
+"Godhead",
+"Slippery Nipple #1",
+"Sex on the Beach #2",
+"Boozy Maria",
+"Alien Urine Sample",
+"Blueberry Tea",
+"Liquid cocaine 8 ball",
+"Killer Kool-Aid",
+"All American",
+"Peach 200",
+"Mexican Virgin",
+"Liquid Cocaine #2",
+"Key Largo Kooler",
+"Mike Tyson",
+"Green Cow",
+"Brutal Hammer",
+"Rangers Rocker",
+"Purple Hooter #1",
+"Scarlet Fever",
+"Red Death (MAC style)",
+"Stop Light",
+"GSM",
+"The Crying Game",
+"Bushwacker #2",
+"Scorpion",
+"Friar Tuck",
+"Tequila Sunrise",
+"Brown cow",
+"Screaming Orgasm",
+"Poor Man's Mommosa",
+"Dark Nightmare",
+"Keremiki",
+"Albysjön",
+"Danny Q's Aruba Rum Punch",
+"Hina Blast",
+"Jamaican Beer",
+"Beeaauu's Rum and Coke",
+"Pjolter Bay",
+"Graveyard (light)",
+"Graveyard",
+"King of Denmark",
+"Frozen Mudslide",
+"Pain Killer",
+"Green Frog",
+"Brendan's PUnch of happiness",
+"Liquid Asphault",
+"Russian Brunch",
+"StumbleFuck",
+"Christer Petterson",
+"Felix's feast",
+"Flander's Flake-Out",
+"Sneaky Pete",
+"Tidal Wave",
+"Brown Pelican",
+"Apple Slammer",
+"Pussy Paws",
+"Manhattan Sweet #2",
+"Texas Rose",
+"Cynar Cocktail",
+"Fire in Heaven",
+"Obadoba",
+"Bacardi Gold & Cola",
+"Pink Lemonade",
+"Georgian Sunrise",
+"Præriebål (Norwegian version of Prairie Fire)",
+"The Beavis",
+"Roswell",
+"North Polar",
+"STP (the motor oil of course)",
+"Cramit",
+"Gorilla Fart #1",
+"Patsy mix",
+"Amaretto Sour",
+"Ground Zero",
+"Hawaiian Screw",
+"Blue PolarBear",
+"Silver Bullet #2",
+"Peanut Butter and Jelly",
+"Screaming Viking",
+"Wong Tong Cocktail",
+"Vincent Vega",
+"Cuba Libra",
+"Russian Boilermaker",
+"Wild Ass Indian",
+"An Arif",
+"French Sailor",
+"D+d lay",
+"Mellon Collie and The Infinite Gladness",
+"Kermit The Frog Piss",
+"Gorilla's Puke",
+"Black Martini #1",
+"Slippery Dick",
+"Jelly Bean",
+"Dirty Girl Scout",
+"Spunky Monkey",
+"Swamp Water",
+"Patti's Blow Job",
+"Cold Shower",
+"Broken down golf cart",
+"Orange Climax",
+"Wet Dream",
+"JimPop's Margarita",
+"Fishbone",
+"Three Wise Men",
+"Loud-Mouth",
+"After Five",
+"Andrea's Colada Collision",
+"Urine",
+"Harlee's Planters Punch",
+"Don's Bloody Mary",
+"Brandy Manhattan",
+"Pink Elephant Ears",
+"Southern Sunrise",
+"Eye of the Storm",
+"Nazi Helmet",
+"Whoomp",
+"Kir Royale",
+"Manhattan",
+"Lash",
+"The Extinguisher",
+"Jackhammer",
+"Midori Sour - Frozen",
+"Flaming Dr. Pepper (alternative)",
+"Flaming Jesse or Tropical SunShine",
+"Hurricane Hugo",
+"L&C",
+"Nutty Irishman",
+"Greazy Deigo",
+"Harley Davidson #1",
+"Carmel Coke",
+"Modified Duck Fart",
+"Vit Ryss",
+"Windex",
+"Five dollar shake",
+"Neon Ghost",
+"Buttery Nipple #2",
+"Gold Driver",
+"Iron Hindu",
+"Strawberry Storm",
+"Aranov",
+"Grateful Dead #1",
+"Lemon Drop #1",
+"Sex under the bleachers with a KU cheerleader",
+"Chocolate Raspberry Delight",
+"Pineapple Tea",
+"3 Wise Men",
+"Mountain Dew #1",
+"The Breakfast Drink",
+"Irish Cream, Home Made",
+"Rolf's Scandinavian Glogg",
+"Lloyd Special",
+"Canadian Funky Electric Cider",
+"The Boiling Panther",
+"Jersey Devil",
+"Fat Hooker",
+"Galliano Hotshot",
+"Blue Blazer",
+"Tanqueray and Tonic",
+"Grateful Dead #2",
+"Butterfinger",
+"Dead green frog",
+"Hot Damn",
+"Bloody Brain",
+"Fart In the Ocean",
+"Miami Vice",
+"AT&T",
+"69 Special",
+"Machine",
+"Golden Eye",
+"Joe Cocker",
+"Nuts and Berries #1",
+"John's Bomb",
+"Long Island Iced Tea #4",
+"South Side",
+"Cherry Martinsen",
+"Pink Police",
+"French Pirate",
+"Bushwacker #3",
+"Four Horsemen",
+"Dublin Doubler",
+"Irish Coffee (Simple)",
+"Afterburner #2",
+"Mocha Mint Irish Cream Cappuccino",
+"Ersh",
+"Ekatherina Andreevna",
+"Crack Juice",
+"Screaming Orgasm II",
+"Sex on the Beach #3",
+"Burning Nazi",
+"Spicey Scot",
+"Apple Pie Shot #1",
+"Fuzzy Navel",
+"Chocolate Chip",
+"Tequillya",
+"Whiskey Sour Old-Fashioned",
+"Toolkit",
+"Big Red Hooter",
+"Catalina Margarita",
+"Sloe Tequila",
+"Wild Thing",
+"Fraustadt",
+"Mudwrestle",
+"Blue Tahoe",
+"Pineapple Bomb",
+"Fin N' Tonic",
+"Kurant",
+"'57 Chevy with a White License Plate",
+"Desert Water",
+"Cape Cod Crush",
+"Sweet Flower",
+"Sweet Temptation",
+"Violent fuck",
+"Fuzzy Chartreuse",
+"Chapman",
+"Bloody O.J.",
+"Dead Dog Vomit",
+"Stabilizer",
+"Mother's Milk",
+"The Triple",
+"Sinfonian",
+"Dickhead's Delight",
+"Kilted Black Leprechaun",
+"Irish Monk #2",
+"Zippy's Revenge",
+"Sangrita",
+"Coco Cognac",
+"Belgian Blue",
+"B-52 #3",
+"Black and White",
+"Pure White Evil",
+"Evil Slider",
+"Screaming Orgasm (San Francisco Style)",
+"Gladiator",
+"Hard Green Bricaki",
+"Red Snapper",
+"Shamrocks",
+"Russian Qualude",
+"Triple Asp",
+"Jamaica Kiss",
+"PEZ",
+"Robyn",
+"White Spider #1",
+"Copenheering",
+"Squashed Frog",
+"Absolut Summertime",
+"The Jack Hammer",
+"Paralyzer #1",
+"Pink Panther #2",
+"Red Alert",
+"The Terminator",
+"San Juan Tea",
+"Smooth Sailin'",
+"Buzzer's red cream soda",
+"Formula 3",
+"Leg spreader",
+"Gorilla Milk",
+"Golden Miller",
+"Cosmopolitan Martini",
+"Strawberry Surprise",
+"Rensselaer Slam",
+"Firetruck",
+"Brevann (Springwater)",
+"Carrot Cake #1",
+"Dit Kicker",
+"Slimer",
+"Reynolds Special",
+"Carrot Cake #2",
+"Woody Woodpecker",
+"Ziemes Martini Apfelsaft",
+"Pitbull on Crack #1",
+"Bullshot",
+"Salty Dog #2",
+"Fiery Balls of Death",
+"Vodka Martini",
+"KiBa",
+"Passion Chi-Chi",
+"Volga Boatman",
+"Shark Bite",
+"Honolulu Cooler",
+"Pepper Slammer",
+"Cafe Savoy",
+"Pearl Harbour",
+"Fireball",
+"Italian Ice",
+"Barcardi Volcano",
+"Hot Shot",
+"Irish Coffee #3",
+"Snowball",
+"Cokaretto",
+"Tripple Pleasure",
+"Robot",
+"Green Orange",
+"Kalimocho",
+"Mocha-Berry",
+"Tahitian Tea",
+"C*m Shot",
+"Navel Caribbean Love",
+"Clam Eye",
+"Afterburner #1",
+"Midori Splice",
+"Somebird",
+"Dr. Pepper #1",
+"Gumbys' Ruby Red",
+"747",
+"Southern Doctor",
+"Strawberry Bomb",
+"Pisang Garuda",
+"Green Dinosaur #1",
+"Comfort Driver",
+"Hot Whiskey",
+"Vodka & Schweppes",
+"Chocolate Covered Cherry",
+"Nägermeister",
+"Mussaka",
+"Black Watch",
+"Buffalo Sweat",
+"All Night Long",
+"Pan Galactic Gargle Blaster",
+"Bay Breeze",
+"Water (the original)",
+"Lemon Drop #2",
+"Bourbon and sprite",
+"Thunder king",
+"Bongs Anfield Slammer",
+"Addison Special",
+"Party Death",
+"Ozone",
+"Cranberry Blast",
+"Wiggle Worm",
+"California Root Beer",
+"Nikki Delight",
+"Malibu Dreams",
+"Blackbeard",
+"Backdraft",
+"Jo-Jo Cool-Aid",
+"The Whammie",
+"Rocket Fuel",
+"The Vaitkus",
+"Lysekil's groggen",
+"Hot Dick #1",
+"BAV(BAW)",
+"Amaretto Stone Sour",
+"Elmer Fuddpucker",
+"Cosmopolitan #2",
+"Frozen Mudslide #2",
+"Tropical Storm Jack",
+"Rum a'la Olof",
+"Bailey's Hot Shot",
+"Light and Dark",
+"Pink Elephants On Parade",
+"White Spider #2",
+"Brown Cow from Hell",
+"Apple Pie Shot #2",
+"Stardust",
+"Kahlua and Cream",
+"Top Shelf Margarita",
+"Blue Lemonade",
+"Jeweler's Hammer",
+"Derailer",
+"Lemon Drop #3",
+"Lemon Drop #4",
+"Antifreeze",
+"Warp Core Breach",
+"Shogun",
+"Christmas Cheer",
+"Amoco Shot",
+"Blind Russian",
+"Tummy Blower",
+"Absolut Sex",
+"Alien Secretion",
+"Aztec Punch",
+"Lemon Drop #5",
+"Apfel Orange",
+"Vaina",
+"Absolut limousine",
+"Absolut Evergreen",
+"Smeraldo",
+"Lunch Box",
+"Starla's Waver",
+"Sacrilicious",
+"Pinky Colinky Dinky",
+"Secret Blue",
+"Super Sangria",
+"Traffic Light Cooler",
+"Snakebite (Aus)",
+"Sjarsk",
+"Shut the hell up",
+"Sloe comfortable screw against the wall",
+"Root Beer Barrel",
+"Smarty",
+"Sex under the boardwalk",
+"The Lunchbox",
+"The Roni",
+"Green wave",
+"Milky Way",
+"Cardicas",
+"Pucker",
+"The Liver Transplant",
+"Fuzzy Ethan",
+"What She's Having",
+"Feel like holiday",
+"SD Special",
+"Satin Angel",
+"Jenny's Concoction",
+"Rafu Eighteen",
+"Nuts and Berries #2",
+"Coppertone Punch",
+"Fatkid on the Rocks",
+"Sweet-tart Lollipop",
+"Kool-Aid Slammer",
+"Liquid Heroine",
+"Oil Slick #2",
+"Scope",
+"Gin Blossam",
+"Kurant Tea",
+"Superfly",
+"Peach Margarita",
+"Cocaine Lady",
+"Woodpecker",
+"Salisbury Special",
+"Dick Deming Martini",
+"Die ruhige Sturm",
+"Darkwood Sling",
+"Soft Serbian",
+"Headcrush",
+"Tina Baker",
+"Big Bull",
+"Buzz Inducer",
+"Dephaekt",
+"Bambi's Iced Tea",
+"Bartender's Wet Dream",
+"YoYo Blow Out",
+"Pyro",
+"Prince of Norway",
+"Inferno",
+"Bailey's Dream Shake",
+"Dirty Banana",
+"Carmina Burana",
+"Cape Breton Lemonade",
+"Monkey Spam",
+"Coon Dawg Punch",
+"Cactus Bowl",
+"Japanese Slipper #2",
+"The Green One",
+"Bull's sweat",
+"Bumble Bee #1",
+"BonBon",
+"Bali Dream",
+"Lime Time",
+"Galliano Hotshot #2",
+"Captain Pepper",
+"Bailey's Comet #2",
+"Watermelon Shooter #4",
+"Bartender's Margarita",
+"Pulp Vega",
+"Platina Blonde",
+"A.D.M. (After Dinner Mint)",
+"Twinkle My Lights",
+"A Splash of Nash",
+"Screaming White Orgasm",
+"Spider's Web",
+"Illusion",
+"Earthquake #2",
+"Pink Panther Shake",
+"Sun Shake",
+"Amaretto Sunrise",
+"Matty's Magic Mixture",
+"My Antonella",
+"Arizona Stingers",
+"Orange Push-up",
+"151 Florida Bushwacker",
+"Beam Me Up Scottie Mac",
+"Watermelon Shooter #3",
+"Zizi Coin-coin",
+"Banana Cream Pi",
+"50/50",
+"Sex On Acid",
+"Tequila Surprise",
+"Gary's Poison",
+"Laser Beam",
+"Cream Soda",
+"ACID",
+"Agent Orange",
+"Grape Crush",
+"Alien Secretion #2",
+"Southern Blues",
+"Darth Vader",
+"Arctic Fish",
+"Alligator",
+"Crocodile",
+"Gege",
+"Finn Roses",
+"Lady Scarlett",
+"Scanex",
+"Yaka",
+"Passcack Valley Orgasm",
+"Grim Reaper",
+"Grateful Dead",
+"Sweets to the Sweet",
+"Richie Family",
+"Juicy Lucy",
+"Blue Kisok",
+"Speedball",
+"San Diego Seabreeze",
+"Russian Quallude",
+"Fuck You",
+"Leche de Monja",
+"The Dragon",
+"Harry Alligator",
+"Lighthouse",
+"Red Snapper #2",
+"Satan's Revenge",
+"Psycho Joe",
+"The Pernod Demon",
+"Irish Cream Special",
+"El Presidente Cocktail #2",
+"Golden Furnace",
+"Sancho Panza",
+"Freddy Kruger",
+"Red Baron",
+"Golden Star",
+"Forest Fire",
+"Vodka Orange",
+"Firehammer",
+"Italian Ice #2",
+"Luftwaffe",
+"Giraffe",
+"Concord",
+"Lava Flow",
+"Pink Gin #2",
+"Purple Crayon",
+"Feel The Burn",
+"Vanilla Vargas",
+"Golden Cola",
+"Full Moon Fever",
+"Hunch Punch",
+"Smashing Pumpkin",
+"Caribbean Smoked Torch",
+"Bubble Gum",
+"Bahama Mama Sunrise",
+"Bakkus",
+"Gun Barrel",
+"Peppermint Patty",
+"Frogster",
+"Snowball #2",
+"Blue Bay",
+"Moonlight Serenade",
+"Peach Bowl",
+"Cool Coco",
+"Kiwi Lemon",
+"Terminator",
+"Virgin Manhattan",
+"Green angel",
+"Joel's Pet Monkey",
+"Wave Runner (a.k.a. Rave Gunner)",
+"Urine Sample",
+"Wooly Mitten",
+"Dr. Pepper #2",
+"The Piledriver",
+"Spiced apple",
+"Smooch",
+"Nuthugger",
+"Pink Squirrel #2",
+"Kill Me Now",
+"Hot Creamy Bush",
+"Hot Peppermint Chocolate",
+"Exotic summernight",
+"Walker's Revenge",
+"Booty Juice",
+"Naked Navel",
+"Jan's Jello Shots",
+"Grendel",
+"Sex on the Pool Table",
+"Three Wise Men (vodka)",
+"Ruby Relaxer",
+"Raspberry kamikaze",
+"Nightcap",
+"Pinky",
+"Plead the 5th",
+"Passed Out Naked on the Bathroom Floor",
+"Wild Sex",
+"Cazuela",
+"Lifesaver",
+"Voodoo Dew",
+"Hispaniola",
+"Geting",
+"Jack Daniel's Lynchburg Lemonade",
+"Lemon Splash Martini",
+"Moonlight Drive",
+"The Drink",
+"Pablo's shot",
+"Midnight Mint",
+"Creole Scream",
+"Chocolate Martini #2",
+"Gimlet #2",
+"Hawaiian Shooter",
+"Hot Nuts",
+"Tiatip",
+"Grandmom's slipper",
+"Coco Rush",
+"Talos Coffee",
+"Harlem Mugger",
+"Ganggreen",
+"Goombay Smash",
+"Ecto Cooler",
+"Hurricane Leah",
+"Tequila Slammer",
+"Ankle Breaker",
+"Flaming Gorilla",
+"Buttafuoco",
+"Butternut Rum Lifesaver",
+"Luteåtdæ",
+"Zinger",
+"Malibu Milk Shake",
+"Demon Drop",
+"Tornado",
+"Slow Painful Movement",
+"Memachau",
+"The G.O.A.T.",
+"Leaving Las Vegas",
+"Karlsson",
+"Cherry Bomb, Traditional",
+"Sweet Death",
+"Lasseman's Partysaver",
+"Fruitopia",
+"Mad Scientist",
+"Fairytale",
+"Liquid Crack",
+"Southern Joe",
+"Springtime",
+"Hillbilly Bob's Mountaindrink",
+"Pine Needle",
+"Photon Torpedo",
+"Submarine (conventional)",
+"Submarine (nuclear)",
+"Monkey Brain #2",
+"Multiple Orgasm #2",
+"Caesar",
+"R.B. Winter",
+"Blue Balls",
+"Acid Cookie",
+"Black Jack WV",
+"Fruit Loop",
+"B-54",
+"Peach Smoothie",
+"Pure Pleasure",
+"Jello shots",
+"The Real Cuba Libre",
+"Purple Heart",
+"Cran-Ram",
+"In and Out Martini",
+"Killer Kool-Aid (Rhode Island)",
+"Purple Haze Shooter",
+"Cherry Bon Bon",
+"Ken and Kirsten's top shelf Margarita",
+"Nystedt",
+"Rum Punch",
+"Pensacola Bushwacker",
+"Southern Smile",
+"The Hot Churchill",
+"Hot Dick",
+"Green Dinosaur #2",
+"Electric Watermellon",
+"K-V-S Kaboom",
+"Liquid Jello",
+"Exotica",
+"Honolulu Action",
+"Blood Clot #2",
+"Original Sin",
+"Turkeyball",
+"Exploding Cherry",
+"Mint Russki",
+"Beeraquirilla",
+"Nutty Irishman (without milk)",
+"Creamy Tan",
+"Raging Indian",
+"Lady-Killer",
+"Absolutely Cranberry Smash",
+"Kiss me Quick",
+"Ersh (Russian)",
+"Malaria Killer",
+"Canadian Hunter",
+"Dew-Driver #2",
+"Sloe Comfortable Screw #1",
+"Rocky Mountain Bear Fucker",
+"Red Beard",
+"Berlin martini",
+"Georgia Tea",
+"Yellow Birdie",
+"Nazi Taco",
+"Ru's Snap Shot",
+"Captain's Cream Soda",
+"Fuquay Friday Night",
+"Grape Nehi",
+"Brass Balls",
+"Seaside-Summerbliss",
+"Shlagerfloat",
+"Cookie Tosser",
+"Blood of Satan",
+"Jamaican Me Crazy",
+"Yucca",
+"Banana Colada #2",
+"Sex on the Beach #4",
+"BlackJack Margarita",
+"Opera House Special",
+"Royal Flush",
+"The Drink of Champions",
+"Limona Corona",
+"Screaming Dead Nazi",
+"Pysch Vitamin Light",
+"Good Morning To You My Love",
+"IAS-Special",
+"Puerto Rican Punch",
+"Kongepjolter",
+"Olsen Driver",
+"Dream",
+"Apello",
+"Belle Melon",
+"By The Pool",
+"Alamo Splash",
+"Cactus Berry",
+"Hairy Sunrise",
+"Hot Pants",
+"La Bomba",
+"Mexicana",
+"Mexican Madras",
+"Pacific Sunshine",
+"Purple Gecko",
+"Purple Pancho",
+"Rosita",
+"Tequila Canyon",
+"Tequila Collins",
+"Tequila Pink",
+"Tequila (Straight)",
+"Tequonic",
+"Toreador",
+"Ocean Drive",
+"Knacky",
+"Sloe Comfortable Screw #2",
+"Think Pink",
+"Finnish Passion",
+"LimLer",
+"Lambada",
+"Alexander (Original)",
+"Panama Deluxe",
+"Goombay Smash #2",
+"Buttery Nipple #1",
+"Lethal Weapon",
+"Nazi Surfer",
+"Strawberry Smoothie",
+"Texas Rattlesnake",
+"Caribbean Punch",
+"After sex",
+"San Francisco",
+"Rum Rickey",
+"Far West",
+"Pic-Walsh",
+"Amaretto Shake",
+"Crickets",
+"Rain Man",
+"A Day at the Beach",
+"Smooth Dog",
+"Bellini #2",
+"Flaming Lamborgini",
+"Tiffany Marshall",
+"Down Home Punch #1",
+"The Big Banana!",
+"Banana Cream Pie",
+"Polar Bear, Swedish",
+"Sex On The Beach #5",
+"Malibu Twister",
+"Space Odyssey",
+"Gibson",
+"Down Home Punch #2",
+"Urine Sample #2",
+"Tokyo Ice Tea",
+"Sex on the Beach #7",
+"Sperm",
+"Fuzzy Monkey",
+"Klondyke",
+"Tropical Lifesaver #1",
+"Scooby Snack #1",
+"Scooby Snack #2",
+"Zenmeister",
+"Barrier Reef",
+"Banana Boat",
+"Monkey Brain #1",
+"Glacier Mint",
+"Exotic Finn",
+"Avalon",
+"B-57",
+"Electric Jello",
+"Dark'n Dirty",
+"Schnider",
+"Snowball #3",
+"White Out",
+"Nuts and Berries #3",
+"Green Dinosaur #3",
+"Gorilla Fart #2",
+"252",
+"Klingon Disrupter",
+"Fuzzy F**ker",
+"Irish Comfort",
+"Welcome delight",
+"3-Mile Long Island Iced Tea",
+"Blue Nut",
+"Velvet Crush",
+"Jack Sprite",
+"RumRunner's Easy Margarita",
+"RumRunner's RubyRed",
+"Tequila Comfort",
+"Bambus",
+"Vulcan Mind-Probe",
+"Suicide #1",
+"French Afternoon",
+"Aggravation",
+"Banshee",
+"Ramos Fizz #2",
+"Orange Crush",
+"Purple Haze #1",
+"Cumulus #1",
+"Stinger Shot",
+"Cinnamon Road",
+"Apricot adventure",
+"Snakebite #2",
+"Green Dinosaur #4",
+"155 Belmont",
+"Hashi Bashi",
+"Liquid After-Eight",
+"Crimson Tide",
+"Cyberlady",
+"Net surfer",
+"Old Crusty",
+"Whiskey Manhattan",
+"Sex On The Beach #6",
+"Olle Goop",
+"Polar Bear #2",
+"Hell Mary",
+"Lemon Shooters",
+"En sånn en",
+"Dr. Pepper #4",
+"Polar Bear #3",
+"Poison Apple",
+"Karma Chameleon",
+"Dr. Pepper #3",
+"Knockout Punch",
+"P.S. I Love you",
+"Penguino",
+"Vodka Russian",
+"Vodka Bitter lemon",
+"Malibu and Soda",
+"Danbooka",
+"Summer Tea",
+"Tropical Life Saver #2",
+"Sex on the Beach #8",
+"Buttery Nipple #3",
+"Grainslide",
+"110 in the shade",
+"Suicide #2",
+"Grand Blue",
+"Jelly Bean #2",
+"Solaris",
+"Pepito Lolito",
+"Green delight",
+"Summertime",
+"Cool Kid",
+"Kretchma",
+"Soviet Cocktail",
+"Cossack Charge",
+"St. Petersburg",
+"Black Magic",
+"Siberian Sunrise",
+"Fuzzy Navel (original)",
+"Whop Me Down Sweet Jesus",
+"Absolut Stress #1",
+"Highball",
+"Killing Light",
+"The Tony Kelly",
+"Snowshoe",
+"Slider",
+"Slam Dunk",
+"New Orleans Salty Dog",
+"Orgasm #2",
+"Love Potion",
+"Prairie Fire #3",
+"Freson",
+"Detroit Red Wing",
+"Berry Me In The Sand",
+"Black Army",
+"Southern Special",
+"Ice Bear",
+"Gorilla",
+"Copper Camel",
+"Dr. Daniel",
+"Doctor",
+"Ugly",
+"Bullfrog (The Party Mix)",
+"God's Great Creation",
+"Texas Sweat",
+"Baby Eskimo",
+"Red Ox",
+"Tennesee Mud",
+"Snow White",
+"Swedish Coffee",
+"Duck's Ass",
+"Lombomba",
+"Slippery Nipple #2",
+"The Betty Ford",
+"Dead Dog",
+"Lemonsquash a la vermouth",
+"Casablanca #2",
+"Breathalizer",
+"Nuts and Berries #4",
+"Russian Qualude #2",
+"Saint Paul",
+"Horny Toad",
+"Negroni",
+"Snake Piss",
+"Sweet Tart",
+"Naked Twister",
+"DJ Shooters",
+"Red Square",
+"Mad Scientist #2",
+"Juniata Juice",
+"Big Stick",
+"Adam Sunrise",
+"Harley Davidson #2",
+"Brain Tumor #2",
+"C*m in a Hot Tub",
+"Foggy Morning",
+"Rainy Night",
+"Dancing Dutchman",
+"Niagara Falls",
+"William's Rainbow",
+"Nestle",
+"Red Witch",
+"Lee's Drink",
+"French Whore",
+"Butcherblock",
+"Cosmopolitan #3",
+"Absolut Stress #2",
+"Timberwolf",
+"Vodka Kick",
+"Morning Milk",
+"Nutty Irishman #2",
+"Baso",
+"Green Death",
+"Sangria Classic",
+"Melzinho",
+"Chocolate Monkey",
+"Brandy Alexandra",
+"Shark's Bite",
+"Comfortable Screw",
+"Cucaracha #2",
+"Maria Theresa",
+"Mango Mint",
+"Belfast Bomber",
+"Schwartzy",
+"Napalm-Death",
+"Bonecrusher",
+"Baltimore Zoo",
+"Texas Sling",
+"Whippet",
+"Bull Shot #2",
+"T.K.O.",
+"Red Wine Punch",
+"Mansion Margarita",
+"Candy",
+"Peach Death",
+"Flying Tiger",
+"Sweet Dream",
+"Caffine attack",
+"Concrete",
+"TGV",
+"Love Potion #9",
+"Smurfs Up",
+"Hot Apple Pie",
+"Melonball",
+"A midsummernight dream",
+"Amaretto Stone Sour #2",
+"Midori Margarita",
+"Black Gold",
+"Cherry Blow Pop",
+"Gorilla Fart #3",
+"Jolly Green Giant",
+"Dirty Moma",
+"Zoksel",
+"Smurf fart",
+"Bull Shot #3",
+"Nazi Cola",
+"Dirty Grasshopper",
+"Pan Galactic Gargle Blaster #2",
+"CoonDogg",
+"Caribbean Cruise",
+"Vik 'n' Rum",
+"Tipsy Island",
+"Toxic Antifreeze",
+"Purple Plague",
+"Tanga",
+"Doug's Modified Cement Mixer",
+"Twisted Screw",
+"Harley Davidson (the company way)",
+"Karlsson's dream",
+"Virulent Death",
+"Simpson Bronco",
+"Hand-Shaken Margarita on the Rocks",
+"White Lightening",
+"Gorilla's Tit",
+"Rontini",
+"Monkey's Lunch",
+"Fuzzy Asshole",
+"Pit Bull on Crack #2",
+"Dick-in-the-Dirt",
+"Rooster Piss",
+"Flaming Dr.",
+"Donivan Flowers' Rocks",
+"Pineappleless Pineapple Juice",
+"Quick-sand",
+"Navy Grog",
+"Smurf",
+"Root Beer",
+"Jay In Your Tummy",
+"Crack Pipe",
+"Phillips Screwdriver",
+"Extended Jail Sentence",
+"Ostrich Shit",
+"The Juice",
+"Skane-i-fier",
+"Ponderosa",
+"Snakebite and Black",
+"Fuzzy Peachclari",
+"Öxnäs Temptation",
+"Neon Iguana",
+"Fu** me like a beast",
+"Zimadori Zinger",
+"Golden shower",
+"Wild Peppertini",
+"Blue Smurf Piss",
+"Fuzzy Russian",
+"Moilanen",
+"Herbal flame",
+"Lemonade Bomb",
+"Slemmig Slyna",
+"Green Apple #1",
+"Summer Sunset",
+"Missle Pop",
+"Jamaican Coffee",
+"Hot Afternoon",
+"Wild Wild West",
+"Strawberry Quick",
+"Ball Hooter",
+"Rambo Shot",
+"Killer Koolade",
+"Simpson Solution",
+"Mojito #3",
+"Bumble Bee #2",
+"Flaming Soda",
+"White Mess",
+"Apricot punch",
+"Apricot Smoothie",
+"B-52 #4",
+"Unknown Warrior",
+"Rok-Shasa",
+"Copperhead",
+"Blue Shark",
+"Double Jack",
+"Skydiver",
+"Black Irish",
+"Weakness",
+"Screwdriver á la Carla",
+"Speedy Gonzales",
+"Zombie #2",
+"Zombie #3",
+"Purple Cow",
+"Field Of Hearts",
+"B-52 #5",
+"Suntan Lotion",
+"Naked Yellow Bird",
+"Apple Cobbler",
+"Three Stages of Friendship",
+"Wet Back",
+"Devil's Piss",
+"Tossed Salad",
+"Black Swedish Virgin",
+"Hot Lunch",
+"Green Apple #2",
+"Hairy Buffalo",
+"Scooby Snack #3",
+"Purple Hooter #2",
+"Smurf #2",
+"Sydney Sunrise Sunshine Cocktail",
+"Moment Brutale",
+"Caipiroska",
+"Love-me Tender",
+"Malibu Jello",
+"Strawberry Shortcake",
+"El Bastardo",
+"Standard Cream",
+"Zambeer",
+"Root Beer Float #2",
+"Nuclear Waste",
+"Flip Juice",
+"Americano",
+"Waldorf-Astoria Eggnog",
+"Scope #2",
+"Lemon Drop #6",
+"Black Forest Shake",
+"Yaps",
+"Juicy Tiger",
+"Cherry coke from hell",
+"Malibu Smash",
+"Headcrack",
+"Horny Girlscout",
+"Bluesberry Cooler",
+"Hot Spot",
+"Mule",
+"Selena Jo",
+"Flaming Nazi",
+"Fruit Hippy",
+"Schnapp It Up",
+"The Frad",
+"Bahama Mama #2",
+"Jaq'ed Up Screwdriver",
+"Electric Tea",
+"Cherry Cola",
+"Mortini",
+"Nanc's Iced-Coffee",
+"Sunset Island",
+"Jedi Mind Trick",
+"GG",
+"Fuka",
+"Dr. Pepper #5",
+"Jamaican Zombie",
+"Shoot",
+"Russian Sarin",
+"Orange Warthog",
+"Purple stealth",
+"Brush Fire",
+"Sky Pilot",
+"Rattlesnake Shot",
+"Long Island Iced Tea (By a Long Islander)",
+"Japanese Slipper #1",
+"Bit of Russiaan Honey",
+"Rotten Pussy",
+"Blue Banana",
+"Radler",
+"Earthquake #1",
+"Scarlet O'Hara",
+"Paralyzer #2",
+"Mudslinger",
+"The Finnely",
+"The Black Death",
+"Campari Beer",
+"Coco Channel",
+"Boot Blaster",
+"Bastardized Screwdriver",
+"Ejhazz",
+"Pan Galactic Gargle Blaster #3",
+"Sex with the Captain",
+"Foreplay",
+"Cool Cucumber",
+"Tiffany's Wet and Ready",
+"David Caradine",
+"Leatherneck",
+"Tropical dream",
+"Jihad",
+"Jay's Rootbeer Dream",
+"Purple Devil",
+"Almond Chocolate Coffee",
+"Tropical Teaser",
+"Greek Lightning",
+"Ethnic Sugar",
+"Rum Aid",
+"Southern Chase",
+"Purple Haze #2",
+"Red Tequila",
+"Polkagris",
+"Amaretto Stone Sour #3",
+"Rick",
+"FireBall Shooter",
+"9 1/2 Weeks",
+"Aqua Fodie",
+"Butch's Pink Panties",
+"Buckshot",
+"Noah",
+"The Skunk Pussy",
+"Christmas Tree Water",
+"Creamsicle Dream",
+"Whoop Juice",
+"Monsoon",
+"Neutron Bomb",
+"Jello-shot Supreme",
+"Absolutly Screwed Up",
+"Texas Cool-Aid",
+"Green Iguana",
+"Chicken Drop",
+"The World's Best Pina Colada",
+"Grain Punch",
+"Warped Thursday",
+"The Quan",
+"Peppermint Patty (Northern Style)",
+"Long Island Iced Tea #5",
+"Amazon Street Lemonade",
+"Shot in the pot",
+"Whitecap Margarita",
+"Liquid Cocaine #3",
+"Morning Dew",
+"Torpedo",
+"Smooth Pink Lemonade",
+"Lady 52",
+"Fourth of July",
+"On the Deck",
+"Jamaican Qualude",
+"Bellini Martini",
+"Jitterbug",
+"Good Morning!",
+"The Fucking Shit",
+"Mexican Flag",
+"Mark and Coke",
+"Mudslide #3",
+"Shark Tank",
+"Monkey Spanker",
+"Raspberry Kamakazie",
+"Moranguito",
+"Pedra (stone)",
+"Kryptonite kooler",
+"Amaretto Sweet & Sour",
+"Liquid Courage",
+"Psycho Citrus",
+"Fucked up Float",
+"Johnny Cat",
+"Green Zone",
+"Milk of Amnesia",
+"Jack Frost",
+"Born on the 4th of July",
+"Toblerone #1",
+"Sunburn",
+"Snake in the grass",
+"Bigger better Blue Lagoon",
+"French Toast",
+"The Icelandic way",
+"Raspberry Stupid",
+"Flaming Goat",
+"Spring",
+"The Graveyard",
+"Toblerone #2",
+"Screwdriver (modified)",
+"Roadrunner Punch",
+"Rum Runner",
+"Ginelico",
+"Blitz",
+"Orgasm a la Denmark",
+"More Orgasms",
+"Horse's Ass",
+"H.D.",
+"Horse Jizz",
+"Long Island Iced Tea #6",
+"Cowboy Cocksucker #2",
+"Blow Job #3",
+"The Evil Blue Thing",
+"Shark Attack",
+"Jack's Vanilla Coke",
+"Viscous Robert",
+"The Pink Drink",
+"Sid's Special",
+"Tripwire",
+"Ambijaxtrious",
+"Mutated Mothers Milk",
+"Apple Grande",
+"Tequila Press",
+"Bleeding Surgeon",
+"Kansas City Ice Water",
+"Suicide Stop Light",
+"Spikey Hedgehog",
+"Epidural",
+"Cayman Sunset",
+"Hazelnut Martini",
+"Algae",
+"Island Girl",
+"Sensei on the Rocks",
+"Sweet Sunset",
+"Suicide The Shot",
+"The Power of Milk",
+"Pedro Collins",
+"Bitchin' Apple Cider",
+"Apple Cider Slider",
+"Adam Bomb",
+"Three Wise Men (on a farm)",
+"Royal Scandal",
+"Harry Denton Martini",
+"Sizz Snot",
+"MVP's Strawberry Bomb",
+"Duck Fart #2",
+"Arizona Antifreeze",
+"Purple Elastic Thunder Fuck",
+"Perfect Flaming Dr. Pepper",
+"Extreme Valentine",
+"Dirty Oatmeal",
+"Venom",
+"Lay Down and Shut Up!",
+"Sax with T.",
+"Bazooka Joe",
+"Stormcloud",
+"Velvet Presley",
+"Gin-Dew-It",
+"DewRunRum",
+"Sunny Sex",
+"Tattooed Love Goddess",
+"Pisang cold",
+"Latin Love",
+"Sex on the Beach #9",
+"Rootbeer Floatie",
+"Real Romulan Ale",
+"Kamikaze #2",
+"Black and Brown",
+"A Piece of Ass",
+"Three-Legged Monkey",
+"The Shiwala",
+"Sex With An Alligator",
+"Southern Dew",
+"Highlander",
+"Avalanche",
+"Root Beer Float #3",
+"Golden Nipple",
+"Salem Witch",
+"Boom box",
+"Spudgun",
+"Jake-Knife",
+"FuzzB@ll",
+"Golden Sunrise",
+"Winegum",
+"B-52 #6",
+"Romona Banana",
+"Brandon and Will's Coke Float",
+"Mosstrooper",
+"Triplesex",
+"SkyLab",
+"Eben's Magic Juice (Orange)",
+"Sex on the Beach #10",
+"Malibu Tequichi",
+"Tequila BoomBoom",
+"Blow Job #2",
+"Gorilla Snot #2",
+"Chocolate Almond",
+"Chocolate Shock",
+"Apertif d'Absinthe",
+"Diablo's Blood",
+"Dragon's Breath",
+"Green Milkshake",
+"Schnapp Pop",
+"Eliminator",
+"Flaming Lamborghini",
+"Death Wish",
+"Shandy",
+"Otter Pop",
+"Pink Banana",
+"Dolt Bolt",
+"Richie 50",
+"Lube Job",
+"Iceberg in Radioactive water",
+"Southern Peach",
+"Zipperhead",
+"A Gilligan's Island",
+"Danger",
+"Terror From the Deep",
+"Grapefruit Teaser",
+"Berrynice",
+"Volvo",
+"The Nog",
+"Kioki Coffee",
+"The Pineapple Drink",
+"Pure Ecstacy",
+"Sake Bomb",
+"Tiger Woods",
+"Umbrella Man Special",
+"Irish Mint",
+"Apple Pie with A Crust",
+"The Peg",
+"Flaming Moz",
+"Cajun Martini",
+"Zorbatini",
+"Black-Eyed Susan",
+"Vodka Fizz",
+"Killer Kool-Aid #2",
+"Gorilla Fart #4",
+"Bloated Bag of Monkey Spunk",
+"Big Dumb Russian",
+"Dewing the Captain",
+"Sit On My Face Mary Jane",
+"Electric Screwdriver",
+"Wicked Tasty Treat",
+"Witch's Clit",
+"Easy does it",
+"Skip And Go Naked #2",
+"Satan's Piss",
+"P.M.F.",
+"Radioactive Long Island Iced Tea",
+"Shot-gun",
+"Bible Belt",
+"Irish Curdling Cow",
+"Creamsicle #2",
+"Fuck in the Graveyard",
+"Sweet Tooth",
+"Downshift",
+"Pink Penocha",
+"Angel's Tit",
+"Orange Whip",
+"Chocolate Slam",
+"Bruised Heart",
+"Fireball #2",
+"Electric Lemonade #1",
+"Gideon's Green Dinosaur",
+"Sit on my face",
+"Rearbuster",
+"A True Amaretto Sour",
+"Kool First Aid",
+"Tickle me Elmo",
+"Cookie Monster #1",
+"Hop, Skip, and Go Naked",
+"Kool-Aid (Boulder style)",
+"Super Sprite",
+"Tootsy Pop",
+"Rumka",
+"Aqua",
+"Irish Russian",
+"Tequila and Tonic",
+"Wolfsbane",
+"Chocolate Covered Banana",
+"Smooth Black Russian",
+"Auburn Headbanger",
+"Paisano",
+"Kamikaze Version",
+"Body Shot",
+"Green Froggy",
+"Pink Panty Pulldowns #2",
+"Zima Blaster",
+"Colorado Pitbull",
+"Rockin' Killer Koolaid",
+"Cherry Cheesecake",
+"Unabomber",
+"Jet Pilot",
+"Buccaneer",
+"Gin Bucket",
+"The Moby",
+"Bushwacker #1",
+"Coco's Cocktail",
+"Miami Ice",
+"Popper",
+"Electric Lemonade #2",
+"Homemade Kahlua",
+"Coconut Frappe",
+"Blow Job #4",
+"Orgasm #3",
+"Multiple Orgasm #1",
+"Screaming Multiple Orgasm",
+"Twains Orgasm",
+"Dirty Orgasm",
+"Vibrator",
+"Chastity Belt",
+"Martian Hard On",
+"Suitor",
+"Prarie Fire",
+"Screwdriver with Color",
+"Purple Cow #2",
+"Witch's Brew",
+"24k nightmare",
+"Yellow Parakeet",
+"Red Royal",
+"Eerie Witch's Brew",
+"Caribbean Boilermaker",
+"Army special",
+"Sweetie",
+"Swift kick in the Ass",
+"Frog in a blender",
+"French Monkey",
+"Black Russian #2",
+"Heilig",
+"Sex on the Beach #11",
+"Green-eyed Bi",
+"Lucky Lindeman",
+"Boswandeling (A walk in the woods)",
+"Baby Guinness",
+"Nelson special",
+"Rye & Pepper",
+"Delilah",
+"Rum and Coke",
+"G. T. O.",
+"Smurf-o-tonic",
+"Jesus is Here",
+"Russian Qualude #3",
+"The Italian Job",
+"Texas Prairie Fire",
+"Citron my face",
+"Elmer Fudpucker",
+"Peach Fuzz",
+"Alice in Wonderland",
+"Fuzzy Cooter",
+"Flying Monkey",
+"Blue Dog",
+"Columbia Gold",
+"Fuzzy Ass",
+"Bushwacker #4",
+"Root Canal",
+"Summer Mind Eraser",
+"501 Blue",
+"Airhead",
+"Coke and Drops",
+"Walk Me Down",
+"Flying Squadron",
+"I.V. (Italian Valium)",
+"Juicy Lucy #2",
+"Separator",
+"Ruby Tuesday",
+"Peppermint Pattie",
+"Sweet Tart - Loyalist Rez",
+"Arctic Mouthwash",
+"No Problem!",
+"Brain Fart",
+"Black Martini #2",
+"Royal Bitch",
+"Psycho",
+"Purple Motherfucker #2",
+"Iceberg in Radioactive water #2",
+"Lina",
+"Big Apple",
+"Small Bomb #2",
+"Nan's special",
+"Wet Snatch",
+"Dogs Bollocks",
+"Purple Shroud",
+"Hairball",
+"Duck Shit Inn",
+"Citrus Coke",
+"Off your ass in a glass",
+"Dakota",
+"Snow Blinder",
+"Skylab Fallout",
+"Ethiopian Camel Basher",
+"Smut",
+"Brown Cow #2",
+"Silk Panties",
+"The Feckin Bolox",
+"Titty Excreation",
+"Dirty Mexican Lemonade",
+"Hot Apple Pie #2",
+"Skull",
+"Bend Me Over",
+"Apple Slut",
+"Fulminator",
+"Scotty Boy",
+"Lemon Lightning",
+"The Party Girl",
+"The Three Wise Men",
+"Death of a Virgin",
+"Dirtiest Ernie",
+"Gangbuster Punch",
+"Pixie Stick",
+"Red Lion",
+"Oatmeal Raisin Cookie",
+"Bjorns Moscow Mule",
+"Field of Green",
+"Raspberry Cooler",
+"Amaretto Sunset",
+"Crantini",
+"Jamaican Screw",
+"The Lip Twister",
+"Easy Sweet",
+"Cherry Electric Lemonade",
+"Girl From Ipanema",
+"Ipamena",
+"Dark Caipirinha",
+"Jam Donut"];
+
+  alert('test');
+  
+  // setup autocomplete function pulling from drinkNames[] array
+  $('#autocompleteDrink').autocomplete({
+    source: function(request, response) {
+      var results = $.ui.autocomplete.filter(drinkNames, request.term);
+      response(results.slice(0, 10))
+    },
+    select: function(event, ui) {
+      $(this).val(ui.item.value);
+      $('#searchByDrink').submit()
+    }
+  });
+
+});
 (function() {
   var slice = [].slice;
 
@@ -12180,6 +17750,10 @@ var o,i,s,a,u;return i=null!=n?n:{},a=i.restorationIdentifier,s=i.restorationDat
 
 
 }).call(this);
+(function() {
+
+
+}).call(this);
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //
@@ -12192,6 +17766,7 @@ var o,i,s,a,u;return i=null!=n?n:{},a=i.restorationIdentifier,s=i.restorationDat
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
 
 
 
