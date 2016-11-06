@@ -2,10 +2,10 @@
 <div class="row">
   <div class="col-md-3 col-md-offset-3">
     <label for="Username">Username</label> <%= text_field_tag :Username, params[:Username] %>
-    <label for="Password">Old Password</label> <%= text_field_tag :Password, parms[:Password] %>
-    <label for="Password">New Password</label> <%= text_field_tag :Password, parms[:Password] %>
+    <label for="Password">Old Password</label> <%= text_field_tag :old_password, parms[:old_password] %>
+    <label for="Password">New Password</label> <%= text_field_tag :Password, parms[:password] %>
     <label for="Password">Confirm New Password</label> <%= text_field_tag :Password, parms[:Password] %>
-    <%= form_for(@user = :Username) do %>
+    <%= form_for(@user = :user_params) do %>
 <%= submit_tag "Submit" %>
 <%end%>
 </div>

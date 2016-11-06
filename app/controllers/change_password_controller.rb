@@ -1,22 +1,14 @@
 class ChangePasswordController < ApplicationController
-    def change
-      if user = User.find_by_Username(params[:Username])
-        redirect_to root_url
-      end
-    end
+def change
+  @password = params[:Password]
+  @user = User.find_by_Username (params[:Username])
+  if @user
+    @user.update_attributes(Password: @password)
+  else
+    flash.now[:danger] = "Username not found"
   end
-  def update
-      if params[:user][:password].empty?                  # Case (3)
-        @user.errors.add(:password, "can't be empty")
-        render 'edit'
-      elsif @user.update_attributes(user_params)          # Case (4)
-        log_in @user
-        flash[:success] = "Password has been reset."
-        redirect_to @user
-      else
-        render 'edit'                                     # Case (2)
-      end
-    end
-    def user_params
-       params.require(:user).permit(:password, :password_confirmation)
-     end
+end
+def user_params
+  params.require(:user, :old_password).permit(:password, :password_confirmation)
+end
+end
