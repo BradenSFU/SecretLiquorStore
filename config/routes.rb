@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
-  get 'change_password/change'
-
-  get 'change_password/success'
-
   get "log_in" => "sessions#new", :as => "log_in"
-  
-  match ':controller(/:action(/:id))', :via => :get
+  get "/searchdrink", to: 'welcome#drink', as: "drink_search"
+  get "/404", to: 'errors#not_found', as: "error_404"
 
+  get "log_out" => "sessions#destroy", :as => "log_out"
+  get "sign_up" => "users#new", :as => "sign_up"
+
+  match ':controller(/:action(/:id))', :via => :get
   match ':controller(/:action(/:id))', :via => :post
 
   root 'welcome#index'
