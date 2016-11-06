@@ -6,9 +6,13 @@ def change
   @user = User.find_by_Username (params[:Username])
   if @user
     if  @user.Password == @old_password
-      if @password == @password_confirmation and @password != nil and @password_confirmation != nil
-        @user.update_attributes(Password: @password)
-        flash.alert = "Password has been updated"
+      if @password == @password_confirmation
+        if @password_confirmation.blank?
+          flash.alert = "Password should not be empty"
+        else
+          @user.update_attributes(Password: @password)
+          flash.alert = "Password has been updated"
+        end
       else
         flash.alert = "Invalid Password Confirmation"
       end
