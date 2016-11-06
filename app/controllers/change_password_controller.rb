@@ -1,12 +1,12 @@
 class ChangePasswordController < ApplicationController
 def change
+  @old_password = params[:old_password]
   @password = params[:password]
   @password_confirmation = params[:password_confirmation]
-  @old_password = params[:old_password]
   @user = User.find_by_Username (params[:Username])
   if @user
-    if @old_password = @user.Password
-      if @password = @password_confirmation
+    if  @user.Password == @old_password
+      if @password == @password_confirmation and @password != nil and @password_confirmation != nil
         @user.update_attributes(Password: @password)
         flash.alert = "Password has been updated"
       else
