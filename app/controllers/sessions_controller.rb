@@ -3,18 +3,16 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.authenticate(params[:email],params[:password])
+    user = User.authenticate(params[:email],params[:Password])
     if user
-      session[:user_id] = user.id
-      redirect_to root_url, :notice => "Logged in!"
+      session[:user_id] = u ser.id
+      redirect_to root_url
     else
-      flash.now[:notice] = "Invalid login"
       render "new"
     end
   end
 
   def destroy
     session[:user_id]=nil
-    redirect_to root_url, :notice => "Logged out"
   end
 end
