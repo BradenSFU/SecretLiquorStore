@@ -1,2 +1,16 @@
-Drink Page WIP. Drink searched (or first result) was: <%= @drink['strDrink'] %>
-<p>Actual page coming soon(tm)</p>
+<div class="drinkImage">
+  <%= image_tag( "#{@drink['strDrinkThumb']}", size: "200x200", alt: "Image not found.") %>
+</div>
+<div class="drinkDetails">
+  <h1><%= @drink['strDrink']%></h1>
+  <ul class="ingredients">
+    <%= for i in 1..15 do %>
+      <% if @drink["strIngredient#{i}"] == "" then %>
+        <% break %>
+      <% end %>
+      <li><%= @drink["strMeasure#{i}"] %><%= @drink["strIngredient#{i}"]%></li>
+    <% end %>
+  </ul>
+  <p class="instructions"><%= @drink['strInstructions'] %></p>
+</div>
+<!-- Comments section will probably go down here -->
