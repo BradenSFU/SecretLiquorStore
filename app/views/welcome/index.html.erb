@@ -1,9 +1,23 @@
-<p style="font-size:50px;"> hello </p>
+<body>
+    <div class="jumbotron vertical-center" style="background-image: url('assets/backgroundpicture1.jpg'); min-height: 100%; min-height: 100vh; display: flex;  align-items: center;">
+      <div class = "container-fluid">
+        <div class="row">
+          <div class ="logo">
+            <p style="font-size:50px; text-align: center;"> <%= image_tag( 'logo2.png', :style => "border: solid; border-color:white;") %></p>
+          </div>
 
-<div id="searchDrinkfieldMain" class="searchbar form-group col-lg-5">
-    <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain") do %>
-      <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg" name="searchBarDrink" id="autocompleteDrinkMain">
-      <%= submit_tag 'Search' , style: "width:80%" %>
-    <% end %>
-  <!-- @end #searchfield -->
-</div>
+
+          <div id="searchDrinkfieldMain" class="searchbar form-group col-lg-8 col-sm-offset-2">
+              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain") do %>
+                <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg " name="searchBarDrink" id="autocompleteDrinkMain" style="text-align: center;">
+                <br>
+                <div class ="col-lg-6 col-sm-offset-3">
+                          <%= submit_tag( 'Search' , :class =>"btn btn-inverse")%>
+                </div>
+              <% end %>
+            <!-- @end #searchfield -->
+          </div>
+        </div>
+      </div>
+  </div>
+</body>
