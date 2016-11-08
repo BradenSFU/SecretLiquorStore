@@ -1,9 +1,9 @@
+<p style="font-size:50px; color:white;"> hello </p>
 
-   <p style="font-size:50px; color:white;"> hello </p>
-
-   <div class ="form-group col-lg-5">
-     <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink") do %>
-       <input type="text" placeholder="Search by Drink Name" class="form-control input-lg" name="searchBarDrink" id="autocompleteDrink">
-       <%= submit_tag("Search", :style=>"width:80%") %>
-     <% end %>
-  <div>
+<div id="searchDrinkfieldMain" class="searchbar form-group col-lg-5">
+    <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain") do %>
+      <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg" name="searchBarDrink" id="autocompleteDrinkMain">
+      <%= submit_tag 'Search' , style: "width:80%" %>
+    <% end %>
+  <!-- @end #searchfield -->
+</div>
