@@ -9,9 +9,6 @@ Rails.application.routes.draw do
   get "log_out" => "sessions#destroy", :as => "log_out"
   get "sign_up" => "users#new", :as => "sign_up"
 
-  #match ':controller(/:action(/:id))', :via => :get
-  #match ':controller(/:action(/:id))', :via => :post
-
   root 'welcome#index'
 
   resources :users
