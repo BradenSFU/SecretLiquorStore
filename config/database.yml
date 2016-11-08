@@ -23,6 +23,7 @@ default: &default
 development:
   <<: *default
   database: Project_development
+
   #database: Project_development
 
   # The specified database role being used to connect to postgres.
@@ -58,6 +59,7 @@ development:
 test:
   <<: *default
   database: Project_development_test
+
   #database: Project_development_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
