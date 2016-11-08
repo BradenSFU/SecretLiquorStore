@@ -11,8 +11,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
 
-  <body>
-    <nav class = "navbar navbar-inverse">
+  <body style="background-color:black; ">
+    <nav class = "navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-logo"> <%= link_to "Mixbook", "/" ,{:style=>'font-size:32px; float:left; position: relative;  margin: 0px 15px 0px 10px; line-height:50px;'}%> </a>
@@ -24,7 +24,7 @@
           <li><a href="#">About us</a></li>
 
           <% if current_user %>
-            <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
+            <li style="float:right;color:#999; vertical-align:middle;">Logged in as <%= current_user.Username %></li>
             <li style="float:right"><%= link_to "Log out", log_out_path %></li>
           <% else %>
             <li style="float:right">  <%= link_to "Sign up", sign_up_path %></li>
