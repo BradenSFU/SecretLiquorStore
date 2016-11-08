@@ -3,7 +3,6 @@
   <head>
     <title>Project</title>
     <%= csrf_meta_tags %>
-
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -16,29 +15,31 @@
     <nav class = "navbar navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-logo" href='#'> MixBook </a>
+          <a class="navbar-logo"> <%= link_to "Mixbook", "/" ,{:style=>'font-size:32px; float:left; position: relative;  margin: 0px 15px 0px 10px; line-height:50px;'}%> </a>
         </div>
-        <ul class =" nav navbar-nav">
+
+        <ul class =" nav navbar-nav" style ="float:right">
           <li><a href="#">Profile</a></li>
           <li><a href="#">Publish</a></li>
-          <li><a href="#">Search</a></li>
-          <li><a href="#l">About us</a></li>
-          <li>
-            <div id="searchDrinkfield" class="searchbar">
-              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink") do %>
-                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink">
-                <%= submit_tag 'Search' %>
-              <% end %>
-            </div><!-- @end #searchfield -->
-          </li>
+          <li><a href="#">About us</a></li>
 
           <% if current_user %>
-            <li style="float:right;color:#999">Logged in as <%= current_user.Username %></li>
+            <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
             <li style="float:right"><%= link_to "Log out", log_out_path %></li>
           <% else %>
             <li style="float:right">  <%= link_to "Sign up", sign_up_path %></li>
             <li style="float:right"><%= link_to "Log in", log_in_path %></li>
           <% end %>
+
+          <li id="searchDrinkfield" class="searchbar">
+              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink") do %>
+                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink">
+                <%= submit_tag 'Search' %>
+              <% end %>
+            <!-- @end #searchfield -->
+          </li>
+
+
 
         </ul>
       </div>
