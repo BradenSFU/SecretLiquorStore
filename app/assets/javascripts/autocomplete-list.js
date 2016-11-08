@@ -2887,7 +2887,7 @@ $(function(){
 "Jam Donut"];
 
   // setup autocomplete function pulling from drinkNames[] array
-  $('#autocompleteDrink').autocomplete({
+  $('.biginput').autocomplete({
     source: function(request, response) {
       var results = $.ui.autocomplete.filter(drinkNames, request.term);
       response(results.slice(0, 10))
@@ -2897,5 +2897,7 @@ $(function(){
       $('#searchByDrink').submit()
     }
   });
+
+
 
 });
