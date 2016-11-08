@@ -25,8 +25,14 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
+    @passwordC = params[:Password_confirmation]
+    if @user.Password == @passwordC
+      redirect_to sign_up_url, :notice => "Passwords do not match"
+      @user.destroy
+      return;
+    end
     if @user.save
-      redirect_to root_url, :notice => "Signed up!"
+      redirect_to just_logged_in_url, :notice => "Signed up!"
     else
       render "new"
     end

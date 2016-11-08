@@ -3,11 +3,14 @@ Rails.application.routes.draw do
   get "/searchdrink", to: 'welcome#drink', as: "drink_search"
   get "/404", to: 'errors#not_found', as: "error_404"
 
+  get "just_logged_in", to: 'welcome#just_logged_in', as: "just_logged_in"
+  get "about_us", to: 'welcome#about_us', as: "about_us"
+
   get "log_out" => "sessions#destroy", :as => "log_out"
   get "sign_up" => "users#new", :as => "sign_up"
 
-  match ':controller(/:action(/:id))', :via => :get
-  match ':controller(/:action(/:id))', :via => :post
+  #match ':controller(/:action(/:id))', :via => :get
+  #match ':controller(/:action(/:id))', :via => :post
 
   root 'welcome#index'
 

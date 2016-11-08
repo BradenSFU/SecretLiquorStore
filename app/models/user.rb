@@ -8,9 +8,9 @@ class User < ApplicationRecord
   validates :Password, :presence => true, :confirmation => true, :length => 6..20
 
   def CreateHashedPassword
-    return unless :password.present?
+    return unless self.Password.present?
     self.saltedpassword = BCrypt::Engine.generate_salt
-    self.hashedpassword = BCrypt::Engine.hash_secret(:Password, saltedpassword)
+    self.hashedpassword = BCrypt::Engine.hash_secret(self.Password, saltedpassword)
   end
 
   def self.authenticate(email_or_username, password)
