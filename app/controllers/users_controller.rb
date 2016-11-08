@@ -26,7 +26,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      redirect_to root_url, :notice => "Signed up!"
+      redirect_to just_logged_in_url, :notice => "Signed up!"
     else
       render "new"
     end
@@ -75,6 +75,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:Username, :Password, :Email, :Biography, :Isadmin)
+      params.require(:user).permit(:Username, :Password, :Password_confirmation, :Email, :Biography, :Isadmin)
     end
 end
