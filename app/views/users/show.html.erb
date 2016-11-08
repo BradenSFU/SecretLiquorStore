@@ -4,11 +4,7 @@
   <strong>Username:</strong>
   <%= @user.Username %>
 </p>
-
-<p>
-  <strong>Password:</strong>
-  <%= @user.Password %>
-</p>
+s
 
 <p>
   <strong>Email:</strong>
@@ -20,20 +16,11 @@
   <%= @user.Biography %>
 </p>
 
-<p>
-  <strong>Isadmin:</strong>
-  <%= @user.Isadmin %>
-</p>
-
-<p>
-  <strong>hashedpassword:</strong>
-  <%= @user.hashedpassword %>
-</p>
 
 <p>
   <strong>User.id:</strong>
   <%= @user.id %>
 </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Change Password', change_password_url %> |
 <%= link_to 'Back', users_path %>
