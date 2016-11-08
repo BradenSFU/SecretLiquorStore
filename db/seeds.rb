@@ -6,4 +6,5 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-User.create(Username: 'admin', Password: 'admin', Email: 'null', Biography:'null',Isadmin:true)
+admin = User.create(Username: 'admin', Password: 'admin', :Password_confirmation: 'admin', Email: 'null', Biography:'null',Isadmin:true)
+admin.toggle!(:admin)

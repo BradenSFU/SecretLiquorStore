@@ -25,12 +25,6 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-    @passwordC = params[:Password_confirmation]
-    if @user.Password == @passwordC
-      redirect_to sign_up_url, :notice => "Passwords do not match"
-      @user.destroy
-      return;
-    end
     if @user.save
       redirect_to just_logged_in_url, :notice => "Signed up!"
     else
@@ -81,6 +75,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:Username, :Password, :Email, :Biography, :Isadmin)
+      params.require(:user).permit(:Username, :Password, :Password_confirmation, :Email, :Biography, :Isadmin)
     end
 end
