@@ -2,7 +2,7 @@
   <%= image_tag( "#{@drink['strDrinkThumb']}", size: "200x200", alt: "Image not found.") %>
 </div>
 <div class="drinkDetails">
-  <h1><%= @drink['strDrink']%></h1>
+  <h1 style="color:white"><%= @drink['strDrink']%></h1>
   <ul class="ingredients">
     <%= for i in 1..15 do %>
       <% if @drink["strIngredient#{i}"] == "" then %>
