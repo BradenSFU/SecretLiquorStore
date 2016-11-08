@@ -15,9 +15,6 @@
     <nav class = "navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
       <div class="container-fluid">
         <div class="navbar-header">
-
-        </div>
-
           <a class="navbar-logo"> <%= link_to "Mixbook", "/" ,{:style=>'font-size:32px; float:left; position: relative;  margin: 0px 15px 0px 10px; line-height:50px;'}%> </a>
         </div>
 
@@ -42,7 +39,7 @@
 
           <li id="searchDrinkfield" class="searchbar">
               <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink") do %>
-                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink">
+                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black">
                 <%= submit_tag 'Search' %>
               <% end %>
             <!-- @end #searchfield -->

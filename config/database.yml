@@ -19,14 +19,10 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
   <<: *default
-  database: cmpt276
-  username: cmpt276
-  password: thecmpt276Passw0rd
-  host: localhost
+  database: Project_development
   #database: Project_development
 
   # The specified database role being used to connect to postgres.
@@ -61,10 +57,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: cmpt276_test
-  username: cmpt276
-  password: thecmpt276Passw0rd
-  host: localhost
+  database: Project_development_test
   #database: Project_development_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
