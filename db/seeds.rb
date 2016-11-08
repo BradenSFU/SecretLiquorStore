@@ -6,5 +6,10 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-admin = User.create(Username: 'admin', Password: 'admin', :Password_confirmation: 'admin', Email: 'null', Biography:'null',Isadmin:true)
-admin.toggle!(:admin)
+admin = User.create(Username: 'admin', hashedpassword: $2a$10$xaN7fMCNDsX6ZCNthvp2BeimP95.NWuk8aKusxQX5rKrhmRofYTBq, saltedpassword: $2a$10$xaN7fMCNDsX6ZCNthvp2Be, Email: 'admin@admin.edu', Biography:'null',Isadmin:true)
+#admin.toggle!(:admin)
+=begin
+username: admin
+email: admin@admin.edu
+password: theAdminzPa55w0rd
+=end

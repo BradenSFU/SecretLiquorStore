@@ -23,7 +23,7 @@
 
         <ul class =" nav navbar-nav" style ="float:right">
           <% if current_user %>
-            <li><a href="#">Profile</a></li>
+            <li><%= link_to 'Profile', current_user%></li>
             <li><a href="#">Publish</a></li>
           <% else %>
             <li><%= link_to 'Profile', sign_up_url%></li>
@@ -47,8 +47,6 @@
               <% end %>
             <!-- @end #searchfield -->
           </li>
-
-
 
         </ul>
       </div>
