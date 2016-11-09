@@ -20,6 +20,14 @@
 
         <ul class =" nav navbar-nav" style ="float:right">
           <% if current_user %>
+            <% if current_user.Isadmin == true %>
+
+              <li >  <%= link_to "Users", users_url %></li>
+            
+            <% end %>
+          <% end %>
+
+          <% if current_user %>
             <li><%= link_to 'Profile', current_user%></li>
             <li><a href="#">Publish</a></li>
           <% else %>

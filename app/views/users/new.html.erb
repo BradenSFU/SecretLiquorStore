@@ -33,6 +33,15 @@
     <%= f.password_field :Password_confirmation %>
   </div>
 
+  <% if current_user %>
+    <% if current_user.Isadmin == true %>
+    <div class="field">
+      <%= f.label :Isadmin %>
+      <%= f.check_box :Isadmin %>
+    </div>
+    <% end %>
+  <% end %>
+
   <div class="actions">
     <%= f.submit %>
   </div>

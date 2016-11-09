@@ -2,6 +2,9 @@ class WelcomeController < ApplicationController
   def index
   end
   def drink
+    if params[:searchBarDrink] == ''
+      redirect_to error_404_url
+    end
     url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{params[:searchBarDrink]}"
     uri = URI(url)
     response = Net::HTTP.get(uri)
