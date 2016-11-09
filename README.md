@@ -1,10 +1,8 @@
 # README
 
-CMPT276: MixBook Application
-Requirements and Specification Document
-11/07/2016, Version 0XFF000000
-Rafael Pena, Sen Lin, Yongzhe Le,
-Braden Emerson, Kevin Chung
+CMPT276: MixBook Application Requirements and Specification Document
+- 11/07/2016, Version 0XFF000000
+- Rafael Pena, Sen Lin, Yongzhe Le, Braden Emerson, Kevin Chung
 
 1. Abstract:
 
