@@ -25,10 +25,16 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-    @user.Isadmin = false
+    if @user.Isadmin == ''
+      @user.Isadmin = false
+    end
     if @user.save
-      redirect_to just_logged_in_url, :notice => "Signed up!"
-      session[:user_id] = @user.id
+      if @user.Isadmin == false
+        redirect_to just_logged_in_url, :notice => "Signed up!"
+        session[:user_id] = @user.id
+      else
+        redirect_to users_url
+      end
     else
       render "new"
     end

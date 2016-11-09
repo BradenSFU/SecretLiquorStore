@@ -7,14 +7,14 @@
 
       <ul>
       <% @user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+        <li style="color:black"><%= message %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
 
   <div class="field">
-    <%= f.label :Username %>
+    <%= f.label :Username, :autofocus=>true%>
     <%= f.text_field :Username %>
   </div>
 
@@ -39,6 +39,7 @@
       <%= f.label :Isadmin %>
       <%= f.check_box :Isadmin %>
     </div>
+
     <% end %>
   <% end %>
 

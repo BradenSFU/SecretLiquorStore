@@ -5,7 +5,7 @@
 <%= form_tag sessions_path do %>
   <p class = 'field'>
     <%= label_tag :username_or_email %><br />
-    <%= text_field_tag :email, params[:email] %>
+    <%= text_field_tag :email, params[:email], :autofocus=>true %>
   </p>
   <p class = 'field'>
     <%= label_tag :password %><br />
