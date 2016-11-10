@@ -1,4 +1,5 @@
 class WelcomeController < ApplicationController
+  before_filter :randomvariable
   def index
   end
   def drink
@@ -17,4 +18,11 @@ class WelcomeController < ApplicationController
       # redirect_to rearch results page
     end
   end
+
+  def randomvariable
+    @rannum = rand(2886)
+    
+  end
+
+
 end

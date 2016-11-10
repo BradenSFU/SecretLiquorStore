@@ -1,35 +1,37 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Users</h1>
+<div class="container">
+  <h1>Admin User Console</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Username</th>
-      <th>Password</th>
-      <th>Email</th>
-      <th>Biography</th>
-      <th>Isadmin</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @users.each do |user| %>
+  <table>
+    <thead>
       <tr>
-        <td><%= user.Username %></td>
-        <td><%= user.Password %></td>
-        <td><%= user.Email %></td>
-        <td><%= user.Biography %></td>
-        <td><%= user.Isadmin %></td>
-        <td><%= link_to 'Show', user %></td>
-        <td><%= link_to 'Edit', edit_user_path(user) %></td>
-        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th class="rowhead">Username</th>
+        <th class="rowhead">Email</th>
+        <th class="rowhead">Isadmin</th>
+        <th class="rowhead" colspan="3">Options</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <td class="column"><%= user.Username %></td>
+          <td class="column"><%= user.Email %></td>
+          <td class="column"><%= user.Isadmin %></td>
+          <td class="column"><%= link_to 'Show', user %></td>
+          <% if user.Username != 'admin' %>
+            <td class="column"><%= link_to 'Edit', edit_user_path(user) %></td>
+          <% end %>
+          <% if user.Username != 'admin' %>
+            <td class="column"><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<%= link_to 'New User', new_user_path %>
+  <br>
+
+  <%= link_to 'Make new User', new_user_path %>
+</div>

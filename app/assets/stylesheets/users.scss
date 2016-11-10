@@ -3,7 +3,15 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 
-#error_explanation{
-  color: black;
+.rowhead{
+  font-size: 20px;
+  padding-right: 20px;
+}
 
+.column{
+  padding-right: 20px;
+}
+
+table{
+  color: white;
 }
