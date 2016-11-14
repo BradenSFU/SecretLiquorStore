@@ -1,0 +1,2 @@
+class Publish < ApplicationRecord
+end
