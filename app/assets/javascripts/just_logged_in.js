@@ -1,6 +1,8 @@
-$(function(){
-  // Array ends on line 2886
-  var drinkNames = ["A Furlong Too Late",
+//var array = drinkNames.slice(0);
+//document.write("<p>" + array[0] "</p>");
+var random = Math.floor(Math.random() * 2884)  ;
+
+var drinkNames = ["A Furlong Too Late",
 "A Night In Old Mandalay",
 "A. J.",
 "Abbey Cocktail",
@@ -2886,19 +2888,91 @@ $(function(){
 "Dark Caipirinha",
 "Jam Donut"];
 
+var randomdrink = drinkNames[random];
+//document.write(randomdrink);
+/*for (var i=0; i<5; i++) {
+document.write("<tr><td>Number " + i + " is:</td>");
+document.write("<td>" + drinkNames[i] + "</td></tr>");
+}*/
+var urlhead = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s="
+var url = urlhead.concat(randomdrink);
+//document.write(url);
 
+$.getJSON(url, function(data) {
+  //document.write(data);
 
-  // setup autocomplete function pulling from drinkNames[] array
-  $('.biginput').autocomplete({
-    source: function(request, response) {
-      var results = $.ui.autocomplete.filter(drinkNames, request.term);
-      response(results.slice(0, 10))
-    },
-    select: function(event, ui) {
-      $(this).val(ui.item.value);
-      $('#searchByDrink').submit()
-    }
-  });
+   //var json = {"drinks":[{"idDrink":"11381","strDrink":"French Connection","strCategory":"Ordinary Drink","strAlcoholic":"Alcoholic","strGlass":"Old-fashioned glass","strInstructions":"Pour ingredients into a old-fashioned glass over ice, stir, and serve.","strDrinkThumb":null,"strIngredient1":"Cognac","strIngredient2":"Amaretto","strIngredient3":"","strIngredient4":"","strIngredient5":"","strIngredient6":"","strIngredient7":"","strIngredient8":"","strIngredient9":"","strIngredient10":"","strIngredient11":"","strIngredient12":"","strIngredient13":"","strIngredient14":"","strIngredient15":"","strMeasure1":"1 1\/2 oz ","strMeasure2":"3\/4 oz ","strMeasure3":" ","strMeasure4":" ","strMeasure5":" ","strMeasure6":" ","strMeasure7":" ","strMeasure8":"","strMeasure9":"","strMeasure10":"","strMeasure11":"","strMeasure12":"","strMeasure13":"","strMeasure14":"","strMeasure15":"","dateModified":null}]}
+  var json =data;
+  /*var obj = JSON.parse(data);
+  document.write(obj[0].strCategory);
+  alert(obj[0].strCategory);*/
+  //alert(json.drinks[0].idDrink);
+  //alert(json.drinks[0].strDrink);
+  //alert(json_obj.drinks.idDrink);
+  //alert(json.drinks[0].strIngredient1);
+  if(json==null){
+    console.log("ERROR NULL PARAMS");
+  }
 
-
+  if(json.drinks[0].idDrink){
+    document.getElementById("drinkName").innerHTML = 'Drink Name: ' + json.drinks[0].idDrink;
+  }
+  if(json.drinks[0].strDrink){
+    document.getElementById("drinkID").innerHTML = 'Drink ID: '+ json.drinks[0].strDrink;
+  }
+  if (json.drinks[0].strDrinkThumb){
+    $("#drinkimage").attr("src", json.drinks[0].strDrinkThumb);
+    //document.getElementById("drinkPicture").innerHTML = json.drinks[0].strDrinkThumb;
+  }
+  else{
+    console.log("image not found");
+  }
+  console.log(json.drinks[0].strMeasure1);
+  if(json.drinks[0].strIngredient1 != "" && json.drinks[0].strMeasure1 != " "){
+    document.getElementById("ingredient1").innerHTML = 'Ingredient 1: ' + json.drinks[0].strMeasure1 + json.drinks[0].strIngredient1;
+  }
+  if(json.drinks[0].strIngredient2 != ""){
+    document.getElementById("ingredient2").innerHTML = 'Ingredient 2: ' + json.drinks[0].strMeasure2 + json.drinks[0].strIngredient2;
+  }
+  if(json.drinks[0].strIngredient3 != ""){
+    document.getElementById("ingredient3").innerHTML = 'Ingredient 3: ' + json.drinks[0].strMeasure3 + json.drinks[0].strIngredient3;
+  }
+  if(json.drinks[0].strIngredient4 != ""){
+    document.getElementById("ingredient4").innerHTML = 'Ingredient 4: ' + json.drinks[0].strMeasure4 +  json.drinks[0].strIngredient4;
+  }
+  if(json.drinks[0].strIngredient5 != ""){
+    document.getElementById("ingredient5").innerHTML = 'Ingredient 5: ' + json.drinks[0].strMeasure5 + json.drinks[0].strIngredient5;
+  }
+  if(json.drinks[0].strIngredient6 != ""){
+    document.getElementById("ingredient6").innerHTML = 'Ingredient 6: ' + json.drinks[0].strMeasure6 + json.drinks[0].strIngredient6;
+  }
+  if(json.drinks[0].strIngredient7 != ""){
+    document.getElementById("ingredient7").innerHTML = 'Ingredient 7: ' + json.drinks[0].strMeasure7 + json.drinks[0].strIngredient7;
+  }
+  if(json.drinks[0].strIngredient8 != ""){
+    document.getElementById("ingredient8").innerHTML = 'Ingredient 8: ' + json.drinks[0].strMeasure8 + json.drinks[0].strIngredient8;
+  }
+  if(json.drinks[0].strIngredient9 != ""){
+    document.getElementById("ingredient9").innerHTML = 'Ingredient 9: ' + json.drinks[0].strMeasure9 + json.drinks[0].strIngredient9;
+  }
+  if(json.drinks[0].strIngredient10 != ""){
+    document.getElementById("ingredient10").innerHTML = 'Ingredient 10: ' + json.drinks[0].strMeasure10 + json.drinks[0].strIngredient10;
+  }
+  if(json.drinks[0].strIngredient11 != ""){
+    document.getElementById("ingredient11").innerHTML = 'Ingredient 11: ' + json.drinks[0].strMeasure11 + json.drinks[0].strIngredient11;
+  }
+  if(json.drinks[0].strIngredient12 != ""){
+    document.getElementById("ingredient12").innerHTML = 'Ingredient 12: ' + json.drinks[0].strMeasure12 + json.drinks[0].strIngredient12;
+  }
+  if(json.drinks[0].strIngredient13 != ""){
+    document.getElementById("ingredient13").innerHTML = 'Ingredient 13: ' + json.drinks[0].strMeasure13 + json.drinks[0].strIngredient13;
+  }
+  if(json.drinks[0].strIngredient14 != ""){
+    document.getElementById("ingredient14").innerHTML = 'Ingredient 14: ' + json.drinks[0].strMeasure14 + json.drinks[0].strIngredient14;
+  }
+  if(json.drinks[0].strIngredient15 != ""){
+    document.getElementById("ingredient15").innerHTML = 'Ingredient 15: ' + json.drinks[0].strMeasure15 + json.drinks[0].strIngredient15;
+  }
 });
+
+//alert(json_obj.drinks.idDrink);

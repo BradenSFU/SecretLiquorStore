@@ -3,6 +3,7 @@ class WelcomeController < ApplicationController
   def index
   end
   def drink
+    
     if params[:searchBarDrink] == ''
       redirect_to error_404_url
     end
@@ -21,7 +22,7 @@ class WelcomeController < ApplicationController
 
   def randomvariable
     @rannum = rand(2886)
-    
+
   end
 
 
