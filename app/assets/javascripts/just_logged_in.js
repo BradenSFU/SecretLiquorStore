@@ -1,6 +1,7 @@
 //var array = drinkNames.slice(0);
 //document.write("<p>" + array[0] "</p>");
 var random = Math.floor(Math.random() * 2884)  ;
+console.log(random);
 document.getElementById("random").innerHTML = "randomnumber = " + random;
 var drinkNames = ["A Furlong Too Late",
 "A Night In Old Mandalay",
@@ -2894,7 +2895,7 @@ var randomdrink = drinkNames[random];
 document.write("<tr><td>Number " + i + " is:</td>");
 document.write("<td>" + drinkNames[i] + "</td></tr>");
 }*/
-var urlhead = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s="
+var urlhead = "https://www.thecocktaildb.com/api/json/v1/1/search.php?s="
 var url = urlhead.concat(randomdrink);
 //document.write(url);
 
