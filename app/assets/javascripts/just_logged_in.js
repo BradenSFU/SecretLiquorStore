@@ -2,7 +2,7 @@
 //document.write("<p>" + array[0] "</p>");
 var random = Math.floor(Math.random() * 2884)  ;
 console.log(random);
-document.getElementById("random").innerHTML = "randomnumber = " + random;
+//document.getElementById("random").innerHTML = "randomnumber = " + random;
 var drinkNames = ["A Furlong Too Late",
 "A Night In Old Mandalay",
 "A. J.",
