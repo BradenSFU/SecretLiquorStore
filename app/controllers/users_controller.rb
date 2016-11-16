@@ -25,9 +25,7 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-    if @user.Isadmin == ''
-      @user.Isadmin = false
-    end
+    @user.Isadmin = false if @user.Isadmin == ''
     if @user.save
       if @user.Isadmin == false
         redirect_to just_logged_in_url, :notice => "Signed up!"
@@ -87,6 +85,6 @@ class UsersController < ApplicationController
     end
 
     def check_admin
-      redirect_to(root_url) unless current_user.Isadmin?
+      #redirect_to(root_url) unless current_user && current_user.Isadmin?
     end
 end

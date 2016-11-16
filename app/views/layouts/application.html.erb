@@ -4,7 +4,7 @@
     <title>Project</title>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    
+
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -30,7 +30,7 @@
 
           <% if current_user %>
             <li><%= link_to 'Profile', current_user%></li>
-            <li><a href="#">Publish</a></li>
+            <li><%= link_to 'Publish', new_publish_path%></li>
           <% else %>
             <li><%= link_to 'Profile', sign_up_url%></li>
             <li><%= link_to 'Publish', sign_up_url%></li>
@@ -42,7 +42,7 @@
             <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
             <li style="float:right"><%= link_to "Log out", log_out_path %></li>
           <% else %>
-            <li style="float:right">  <%= link_to "Sign up", sign_up_path %></li>
+            <li style="float:right"><%= link_to "Sign up", sign_up_path %></li>
             <li style="float:right"><%= link_to "Log in", log_in_path %></li>
           <% end %>
 

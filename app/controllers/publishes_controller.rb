@@ -28,6 +28,9 @@ class PublishesController < ApplicationController
 
     respond_to do |format|
       if @publish.save
+
+        current_user.publishes << @publish
+
         format.html { redirect_to @publish, notice: 'Publish was successfully created.' }
         format.json { render :show, status: :created, location: @publish }
       else
