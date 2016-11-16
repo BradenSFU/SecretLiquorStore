@@ -2922,13 +2922,18 @@ $.getJSON(url, function(data) {
     document.getElementById("drinkID").innerHTML = 'Drink ID: '+ json.drinks[0].strDrink;
   }
   if (json.drinks[0].strDrinkThumb){
-    $("#drinkimage").attr("src", json.drinks[0].strDrinkThumb);
+    console.log("image exists!");
+    document.getElementById("drinkImage").innerHTML += '<img src="' + json.drinks[0].strDrinkThumb + '" alt="No image found", height="200px", width="200px">';
     //document.getElementById("drinkPicture").innerHTML = json.drinks[0].strDrinkThumb;
   }
   else{
     console.log("image not found");
+    document.getElementById("drinkImage").innerHTML += '<img class="drinkPicture" alt="No image found", height="200px", width="200px">';
   }
-  console.log(json.drinks[0].strMeasure1);
+  //console.log(json.drinks[0].strMeasure1);
+  if(json.drinks[0].strInstructions){
+    document.getElementById("instructions").innerHTML =  json.drinks[0].strInstructions;
+  }
   if(json.drinks[0].strIngredient1 != "" && json.drinks[0].strMeasure1 != " "){
     document.getElementById("ingredient1").innerHTML = 'Ingredient 1: ' + json.drinks[0].strMeasure1 + json.drinks[0].strIngredient1;
   }
@@ -2977,3 +2982,13 @@ $.getJSON(url, function(data) {
 });
 
 //alert(json_obj.drinks.idDrink);
+/*function showblock(){
+  document.getElementById("randomblock").style.display = "block";
+  console.log("WERE HERE");
+}*/
+
+$(document).ready(function(){
+    $("button").click(function(){
+        $("#randomblock").toggle(500);
+    });
+});
