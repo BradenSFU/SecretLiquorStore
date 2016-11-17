@@ -29,10 +29,10 @@ class UsersController < ApplicationController
     if @user.save
       if @user.Isadmin == false
         redirect_to just_logged_in_url, :notice => "Signed up!"
-        session[:user_id] = @user.id
       else
         redirect_to users_url
       end
+      session[:user_id] = @user.id
     else
       render "new"
     end

@@ -1,3 +1,4 @@
+<%= flash_message %>
 <div class="drinkImage">
   <%= image_tag( "#{@drink['strDrinkThumb']}", size: "200x200", alt: "Image not found.") %>
 </div>
@@ -13,4 +14,7 @@
   </ul>
   <p class="instructions"><%= @drink['strInstructions'] %></p>
 </div>
+
+<%= render "like_or_dislike" %>
+
 <!-- Comments section will probably go down here -->

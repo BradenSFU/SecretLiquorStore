@@ -25,12 +25,16 @@ class PublishesController < ApplicationController
   # POST /publishes.json
   def create
     @publish = Publish.new(publish_params)
-
+    @publish.user_id = current_user.id
+    if @publish.save
+      redirect_to @publish
+      flash[:success] = "Drink successfully created."
+    else
+      render 'new'
+    end
+=begin
     respond_to do |format|
       if @publish.save
-
-        current_user.publishes << @publish
-
         format.html { redirect_to @publish, notice: 'Publish was successfully created.' }
         format.json { render :show, status: :created, location: @publish }
       else
@@ -38,6 +42,7 @@ class PublishesController < ApplicationController
         format.json { render json: @publish.errors, status: :unprocessable_entity }
       end
     end
+=end
   end
 
   # PATCH/PUT /publishes/1

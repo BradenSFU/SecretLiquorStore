@@ -5,15 +5,13 @@
   <%= @publish.Rname %>
 </p>
 
-<p>
-  <strong>User:</strong>
-  <%= @publish.user_id %>
-</p>
+<strong>User:</strong>
+  <% if @publish.user == nil %>
+    <%= "The user who made this recipe was banned"  %>
+  <% else %>
+    <%= link_to @publish.user.Username, @publish.user %>
+<% end %>
 
-<p>
-  <strong>Drink:</strong>
-  <%= @publish.drink_id %>
-</p>
-
-<%= link_to 'Edit', edit_publish_path(@publish) %> |
-<%= link_to 'Back', publishes_path %>
+<% if @publish.user && current_user && @publish.user.id == current_user.id %>
+  | <%= link_to 'Edit', edit_publish_path(@publish) %>
+<% end %>

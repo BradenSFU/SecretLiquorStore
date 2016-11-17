@@ -12,6 +12,11 @@
   <% end %>
 
   <div class="field">
+    <%= f.label :user_id %>
+    <%= ": " + current_user.Username %>
+  </div>
+
+  <div class="field">
     <%= f.label :Rname %>
     <%= f.text_field :Rname %>
   </div>

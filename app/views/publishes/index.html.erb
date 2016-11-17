@@ -19,8 +19,8 @@
         <td><%= publish.user_id %></td>
         <td><%= publish.drink_id %></td>
         <td><%= link_to 'Show', publish %></td>
-        <td><%= link_to 'Edit', edit_publish_path(publish) %></td>
-        <td><%= link_to 'Destroy', publish, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <!--<td><%= link_to 'Edit', edit_publish_path(publish) %></td>
+        <td><%= link_to 'Destroy', publish, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
       </tr>
     <% end %>
   </tbody>
@@ -28,4 +28,6 @@
 
 <br>
 
-<%= link_to 'New Publish', new_publish_path %>
+<% if current_user %>
+  <%= link_to 'New Publish', new_publish_path %>
+<% end %>
