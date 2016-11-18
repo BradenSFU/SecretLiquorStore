@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   get "log_in" => "sessions#new", :as => "log_in"
-  get "/searchdrink", to: 'welcome#drink', as: "drink_search"
+  get "/drinks", to: 'welcome#drink', as: "drink_search"
+  get "/drinks/search", to: 'welcome#drinksearch', as: 'drink_results'
 
   get "/404", to: 'errors#not_found', as: "error_404"
 

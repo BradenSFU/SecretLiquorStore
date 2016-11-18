@@ -2888,8 +2888,8 @@ $(function(){
 
 
 
-  // setup autocomplete function pulling from drinkNames[] array
-  $('.biginput').autocomplete({
+  // setup autocomplete functions pulling from drinkNames[] array
+  $('#autocompleteDrink').autocomplete({
     source: function(request, response) {
       var results = $.ui.autocomplete.filter(drinkNames, request.term);
       response(results.slice(0, 10))
@@ -2897,6 +2897,17 @@ $(function(){
     select: function(event, ui) {
       $(this).val(ui.item.value);
       $('#searchByDrink').submit()
+    }
+  });
+
+  $('#autocompleteDrinkMain').autocomplete({
+    source: function(request, response) {
+      var results = $.ui.autocomplete.filter(drinkNames, request.term);
+      response(results.slice(0, 10))
+    },
+    select: function(event, ui) {
+      $(this).val(ui.item.value);
+      $('#searchByDrinkMain').submit()
     }
   });
 
