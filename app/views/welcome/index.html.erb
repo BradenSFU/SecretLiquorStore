@@ -7,8 +7,8 @@
           </div>
 
           <div id="searchDrinkfieldMain" class="searchbar form-group col-lg-8 col-sm-offset-2">
-              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain", :class => "drinkInputForm") do %>
-                <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg " name="searchBarDrink" id="autocompleteDrinkMain" style="text-align: center; ">
+              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain", :class => "drinkInputForm", :autocomplete => :off) do %>
+                <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg " name="searchBarDrink" id="autocompleteDrinkMain" autofocus style="text-align: center; ">
               <% end %>
             <!-- @end #searchfield -->
           </div>
