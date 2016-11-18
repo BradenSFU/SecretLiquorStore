@@ -1,35 +1,27 @@
 class ChangePasswordController < ApplicationController
 def change
-  @old_password = params[:Password]
+  @username = params[:username]
+  @old_password = params[:old_password]
   @password = params[:password]
   @password_confirmation = params[:password_confirmation]
-  @user = User.find_by_Username(params[:Username])
-    if  usercheck
-      if @password.length > 5
-        if @password != @password_confirmation
-          flash.alert = "Invalid Password Confirmation"
+  @user = current_user
+  flash.alert = @user.Username,2,@old_password
+    if User.authenticate(@user.Username, @old_password)
+      if @password == @password_confirmation
+        if @password.length <= 5
+          flash.alert = "Password should not be empty"
         else
           @user.update_attributes(Password: @password)
           flash.alert = "Password has been updated"
         end
       else
-        flash.alert = "Password is too short"
+        flash.alert = "Invalid Password Confirmation"
       end
     else
-      flash.alert = "Invalid Username"
+      flash.alert = "Invalid Old Password"
     end
 end
 def user_params
-  params.require(:user, :old_password).permit(:password, :password_confirmation)
+  params.require(:username, :old_password).permit(:password, :password_confirmation)
 end
-end
-
-def usercheck
-  user = User.find_by_Username(params[:Username])
-  password = User.find_by_hashedpassword (params[:Password])
-  if user || password
-    return true
-  else
-    nil
-  end
 end
