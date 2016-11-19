@@ -15,11 +15,59 @@
   <%= @user.Biography %>
 </p>
 
-<p>
-  <strong>User.id:</strong>
-  <%= @user.id %>
-</p>
 
+<h3><%= "Recipes made by " + @user.Username%></h3>
+
+<% if @user.publishes.size > 0 %>
+  <table id="publishes">
+    <% @user.publishes.each do |d| %>
+      <tr>
+        <td><%= link_to d.Rname, d %></td>
+        <td>
+          <% if d.image.blank? %>
+            <p>Image not found</p>
+          <% else %>
+            <%= image_tag d.image.thumb.url %>
+          <% end %>
+        </td>
+        <td><%= d.ingredients %></td>
+        <td><%= d.instructions %></td>
+        <% if current_user %>
+          <td><%= link_to 'Edit', edit_publish_path(d) %></td>
+          <td><%= link_to 'Delete', d, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <p>This user did not publish any recipes</p>
+<% end %>
+
+<br>
+
+<h3>Likes</h3>
+
+<% if @user.likes.size > 0 %>
+  <table id="Likes">
+    <% @user.likes.each do |l| %>
+      <tr>
+        <!-- Add drink attributes here -->
+        <% if current_user %>
+          <td><%= link_to 'Remove', d, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <p>This user has no likes</p>
+<% end %>
+
+
+<br></br>
+<% if current_user && @user.id == current_user.id %>
+  <%= link_to 'Edit Profile / Change Settings', edit_user_path(@user) %>
+<% elsif current_user %>
+<% end %>
+<!--<%= link_to 'Back', users_path %>-->
 
 <%= link_to 'Change Password', change_password_url %> |
-<%= link_to 'Back', users_path %>

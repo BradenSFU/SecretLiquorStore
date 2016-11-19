@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :likes
+  resources :publishes
   get "log_in" => "sessions#new", :as => "log_in"
   get "/drinks/searched" => 'drinks#drinksearch', as: 'drink_search'
   get "/drinks/show", to: 'drinks#show', as: "drink_show"
@@ -14,7 +16,7 @@ Rails.application.routes.draw do
 
   get "change_password" => "change_password#change", :as => "change_password"
   post "change_password" => "change_password#change", :as => "change_password/success"
-  
+
   root 'welcome#index'
 
   resources :users

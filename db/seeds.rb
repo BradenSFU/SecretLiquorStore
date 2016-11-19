@@ -7,9 +7,4 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 admin = User.create!(Username: 'admin', Password: 'password', Email: 'admin@admin.edu', Biography:'null',Isadmin:true)
-#admin.toggle!(:admin)
-=begin
-username: admin
-email: admin@admin.edu
-password: theAdminzPa55w0rd
-=end
+admin.toggle!(:admin)

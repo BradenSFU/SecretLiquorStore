@@ -1,0 +1,38 @@
+<p id="notice"><%= notice %></p>
+
+<h2>
+  <%= @publish.Rname %>
+</h3><br>
+
+<strong>User:</strong>
+<% if @publish.user == nil %>
+  <%= "The user who made this recipe was banned"  %>
+<% else %>
+  <%= link_to @publish.user.Username, @publish.user %>
+<% end %>
+
+<br></br>
+
+<p>
+  <strong>
+    <% if @publish.image.blank? %>
+      <p>Image not found</p>
+    <% else %>
+      <%= image_tag @publish.image.thumb.url %>
+    <% end %>
+  </strong>
+</p>
+
+<p>
+  ingredients:<br>
+  <strong>
+    <%= @publish.ingredients %>
+  </strong>
+</p>
+
+<p>
+<strong>
+  Instructions:<br>
+  <%= @publish.instructions %>
+</strong>
+</p>
