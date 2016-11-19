@@ -7,8 +7,8 @@ def change
   @user = current_user
     if User.authenticate(@user.Email, @old_password)
       if @password == @password_confirmation
-        if @password.length <= 5
-          flash.alert = "Password should not be empty"
+        if @password.blank? || @password.length <= 5
+          flash.alert = "Password should have at least 6 characters"
         else
           @user.update_attributes(Password: @password)
           redirect_to root_url, :notice => "Password has been updated!"
