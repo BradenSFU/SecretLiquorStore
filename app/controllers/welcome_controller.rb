@@ -1,7 +1,8 @@
-class WelcomeController < ApplicationController
+  class WelcomeController < ApplicationController
   before_filter :randomvariable
   def index
   end
+
   def drink
     if params[:searchBarDrink] == ''
       redirect_to error_404_url
