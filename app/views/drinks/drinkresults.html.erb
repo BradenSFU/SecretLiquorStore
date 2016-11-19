@@ -9,9 +9,9 @@ This isn't needed for this search it seems, but will be useful later -->
   <% @results.each do |drink| %>
     <div style="clear:both">
       <div class="drinkImage">
-        <%= image_tag( "#{drink['strDrinkThumb']}", size: "100x100", alt: "") %>
+        <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
       </div>
-      <h1 class="drinkName"><%= drink['strDrink'] %></h1>
+      <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
     </div>
   <% end %>
 </div>

@@ -1,6 +1,8 @@
 class DrinksController < ApplicationController
 def show
-  # @drink = params[:drink]
+  if @drink == nil
+    @drink = params[:drink]
+  end
 end
 
 def drinksearch

@@ -1,5 +1,5 @@
 <div class="drinkImage">
-  <%= image_tag( "#{@drink['strDrinkThumb']}", size: "200x200", alt: "Image not found.") %>
+  <%= image_tag(@drink['strDrinkThumb'] ? "#{@drink['strDrinkThumb']}" : "no-image.jpg", size: "200x200", alt: "Image not found.") %>
 </div>
 <div class="drinkDetails">
   <h1 class="drinkName"><%= @drink['strDrink']%></h1>
