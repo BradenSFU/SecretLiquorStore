@@ -9,6 +9,7 @@
   font-size: 1.2em;
   white-space: nowrap;
   overflow: hidden;
+  color: black;
 }
 .ui-state-focus {
   background: #f0f0f0;

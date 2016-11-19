@@ -4,6 +4,7 @@
     <title>Project</title>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -11,17 +12,22 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
 
-  <body style="background-color:black; ">
-    <nav class = "navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+  <body class = "frontpage">
+    <nav class = "navbar navbar-inverse " role="navigation" style="margin-bottom: 0">
       <div class="container-fluid">
-        <div class="navbar-header">
-
-        </div>
-
-          <a class="navbar-logo"> <%= link_to "Mixbook", "/" ,{:style=>'font-size:32px; float:left; position: relative;  margin: 0px 15px 0px 10px; line-height:50px;'}%> </a>
+          <div class="navbar-header">
+          <a class="navbar-brand" href ="/" > Mixbook </a>
         </div>
 
         <ul class =" nav navbar-nav" style ="float:right">
+          <% if current_user %>
+            <% if current_user.Isadmin == true %>
+
+              <li >  <%= link_to "Users", users_url %></li>
+
+            <% end %>
+          <% end %>
+
           <% if current_user %>
             <li><%= link_to 'Profile', current_user%></li>
             <li><a href="#">Publish</a></li>
@@ -30,9 +36,10 @@
             <li><%= link_to 'Publish', sign_up_url%></li>
           <% end %>
 
+          <li><%=link_to'About us', about_us_url%></li>
 
           <% if current_user %>
-            <li style="float:right;color:#999; vertical-align:middle;">Logged in as <%= current_user.Username %></li>
+            <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
             <li style="float:right"><%= link_to "Log out", log_out_path %></li>
           <% else %>
             <li style="float:right">  <%= link_to "Sign up", sign_up_path %></li>
@@ -40,13 +47,12 @@
           <% end %>
 
           <li id="searchDrinkfield" class="searchbar">
-              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink") do %>
-                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink">
-                <%= submit_tag 'Search' %>
+              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
+                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black">
+                <%= submit_tag('Search', :class => 'submitButton') %>
               <% end %>
             <!-- @end #searchfield -->
           </li>
-
 
 
         </ul>

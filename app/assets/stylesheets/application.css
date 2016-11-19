@@ -14,3 +14,11 @@
  *= require_tree .
  *= require_self
  */
+
+.field input{
+  color:black;
+}
+
+.frontpage{
+  background-color:black;
+}

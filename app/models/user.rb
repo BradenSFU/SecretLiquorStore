@@ -3,32 +3,23 @@ class User < ApplicationRecord
   before_save :CreateHashedPassword
 
   EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
-  validates :Username, :presence => true, :uniqueness => true, :length => { :in => 3..20 }
+  validates :Username, :presence => true, :uniqueness => true, :length => 3..20
   validates :Email, :presence => true, :uniqueness => true, :format => EMAIL
-  validates :Password, :confirmation => true #password_confirmation attr
-  validates_length_of :Password, :in => 6..20, :on => :create
-
-=begin
-  validates_confirmation_of :Password
-  validates_presence_of :Password, :on => :create
-  validates_presence_of :Username
-  validates_uniqueness_of :Username
-  validates_presence_of :Email
-  validates_uniqueness_of :Email
-=end
+  validates :Password, :presence => true, :confirmation => true, :length => 6..20
 
   def CreateHashedPassword
-    return unless :Password.present?
+    return unless self.Password.present?
     self.saltedpassword = BCrypt::Engine.generate_salt
-    self.hashedpassword = BCrypt::Engine.hash_secret(:Password, saltedpassword)
+    self.hashedpassword = BCrypt::Engine.hash_secret(self.Password, saltedpassword)
   end
-  
-  def self.authenticate(email, password)
-    user = find_by Email: email
-    if user && user.hashedpassword == BCrypt::Engine.hash_secret(:Password, user.saltedpassword)  #password, user.saltedpassword)
+
+  def self.authenticate(email_or_username, password)
+    user = EMAIL.match(email_or_username) ? (find_by Email: email_or_username) : (find_by Username: email_or_username)
+    if user && user.hashedpassword == BCrypt::Engine.hash_secret(password, user.saltedpassword)
       user
     else
       nil
     end
   end
+
 end

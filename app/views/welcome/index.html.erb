@@ -1,2 +1,18 @@
-<h1>Welcome#index</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
+<body style="height:100%;width:100%; "> <!-- overflow:hidden; to remove scrolllbar problems -->
+    <div class="jumbotron vertical-center" style="background-image: url('assets/backgroundpicture1.jpg'); min-height: 100%; min-height: 100vh; display: flex;  align-items: center; overflow:hidden; /">
+      <div class = "container-fluid">
+        <div class="row">
+          <div class ="logo">
+            <p style="font-size:50px; text-align: center;"> <%= image_tag( 'logo2.png', :style => "border: solid; border-color:white;") %></p>
+          </div>
+
+          <div id="searchDrinkfieldMain" class="searchbar form-group col-lg-8 col-sm-offset-2">
+              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain", :class => "drinkInputForm", :autocomplete => :off) do %>
+                <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg " name="searchBarDrink" id="autocompleteDrinkMain" autofocus style="text-align: center; ">
+              <% end %>
+            <!-- @end #searchfield -->
+          </div>
+        </div>
+      </div>
+  </div>
+</body>

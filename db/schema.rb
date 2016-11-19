@@ -22,9 +22,6 @@ ActiveRecord::Schema.define(version: 20161108015840) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "structures", force: :cascade do |t|
-  end
-
   create_table "things", force: :cascade do |t|
     t.string   "tname"
     t.text     "description"

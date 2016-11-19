@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-
+  before_filter :check_admin, only: :index
   # GET /users
   # GET /users.json
   def index
@@ -25,8 +25,16 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
+    if @user.Isadmin == ''
+      @user.Isadmin = false
+    end
     if @user.save
-      redirect_to root_url, :notice => "Signed up!"
+      if @user.Isadmin == false
+        redirect_to just_logged_in_url, :notice => "Signed up!"
+        session[:user_id] = @user.id
+      else
+        redirect_to users_url
+      end
     else
       render "new"
     end
@@ -75,6 +83,10 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:Username, :Password, :Email, :Biography, :Isadmin)
+      params.require(:user).permit(:Username, :Password, :Password_confirmation, :Email, :Biography, :Isadmin)
+    end
+
+    def check_admin
+      redirect_to(root_url) unless current_user.Isadmin?
     end
 end
