@@ -1,47 +1,5 @@
 <h1>New Publish</h1>
 
-<%= form_for(@publish) do |f| %>
-  <% if @publish.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@publish.errors.count, "error") %> prohibited this publish from being saved:</h2>
-
-      <ul>
-      <% @publish.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :user_id %>
-    <%= ": " + current_user.Username %>
-  </div>
-
-  <div class="field">
-    <%= f.label :Name %>
-    <%= f.text_field :Rname %>
-  </div>
-
-  <div class="field">
-    <%= f.label :Upload_image_here %>
-    <%= f.text_field :image %>
-  </div>
-
-  <div class="field">
-    <%= f.label :Ingredients %>
-    <%= f.text_area :ingredients %>
-  </div>
-
-  <div class="field">
-    <%= f.label :instructions %>
-    <%= f.text_area :instructions %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
-
+<%= render 'form', publish: @publish %>
 
 <%= link_to 'Back', publishes_path %>

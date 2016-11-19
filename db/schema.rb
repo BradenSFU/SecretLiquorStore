@@ -34,16 +34,6 @@ ActiveRecord::Schema.define(version: 20161119015556) do
     t.text     "instructions"
   end
 
-  create_table "submissions", force: :cascade do |t|
-    t.string   "user"
-    t.integer  "score",        default: 0
-    t.integer  "user_id"
-    t.integer  "challenge_id"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.string   "url"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string   "Username"
     t.string   "Email"

@@ -23,7 +23,13 @@
     <% @user.publishes.each do |d| %>
       <tr>
         <td><%= link_to d.Rname, d %></td>
-        <td><%= d.image %></td>
+        <td>
+          <% if d.image.blank? %>
+            <p>Image not found</p>
+          <% else %>
+            <%= image_tag d.image.thumb.url %>
+          <% end %>
+        </td>
         <td><%= d.ingredients %></td>
         <td><%= d.instructions %></td>
         <% if current_user %>
