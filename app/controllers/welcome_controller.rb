@@ -3,7 +3,6 @@ class WelcomeController < ApplicationController
   def index
   end
   def drink
-    flash[:notice] = "sdfsdf"
     if params[:searchBarDrink] == ''
       redirect_to error_404_url
     end
