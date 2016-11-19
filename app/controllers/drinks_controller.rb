@@ -1,5 +1,9 @@
 class DrinksController < ApplicationController
 def show
+  # @drink = params[:drink]
+end
+
+def drinksearch
   if params[:searchBarDrink] == ''
     redirect_to error_404_url
   end
@@ -12,12 +16,24 @@ def show
   if parsed['drinks'] == nil
     redirect_to error_404_url
   else
-    @drink = parsed['drinks'][0]
-    if @drink['strDrink'] != params[:searchBarDrink]
-      # @results = parsed['drinks']
-      # redirect_to searchDrink_results_url
+    if parsed['drinks'][0]['strDrink'] != params[:searchBarDrink]
+      @results = parsed['drinks']
+      render "drinkresults"
+    else
+      @drink = parsed['drinks'][0]
+      render "show"
     end
   end
+end
+
+def drinkresults
+  # @results = params[:results]
+  if params[:page] == nil
+    @page = 1
+  else
+    @page = params[:page]
+  end
+  @pagerange = @results[(@page.to_i-1)*10..[@page.to_i*10-1, @results.size-1].min]
 end
 
 end
