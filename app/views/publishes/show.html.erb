@@ -1,9 +1,8 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Rname:</strong>
+<h2>
   <%= @publish.Rname %>
-</p>
+</h3><br>
 
 <strong>User:</strong>
   <% if @publish.user == nil %>
@@ -12,6 +11,24 @@
     <%= link_to @publish.user.Username, @publish.user %>
 <% end %>
 
-<% if @publish.user && current_user && @publish.user.id == current_user.id %>
-  | <%= link_to 'Edit', edit_publish_path(@publish) %>
-<% end %>
+<br></br>
+
+<p>
+  <strong>
+    <%=@publish.image %>
+  </strong>
+</p>
+
+<p>
+  ingredients:<br>
+  <strong>
+    <%= @publish.ingredients %>
+  </strong>
+</p>
+
+<p>
+<strong>
+  Instructions:<br>
+  <%= @publish.instructions %>
+</strong>
+</p>

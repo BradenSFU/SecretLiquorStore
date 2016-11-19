@@ -50,7 +50,7 @@ class PublishesController < ApplicationController
   def update
     respond_to do |format|
       if @publish.update(publish_params)
-        format.html { redirect_to @publish, notice: 'Publish was successfully updated.' }
+        format.html { redirect_to @publish, notice: 'Drink published' }
         format.json { render :show, status: :ok, location: @publish }
       else
         format.html { render :edit }
@@ -64,7 +64,7 @@ class PublishesController < ApplicationController
   def destroy
     @publish.destroy
     respond_to do |format|
-      format.html { redirect_to publishes_url, notice: 'Publish was successfully destroyed.' }
+      format.html { redirect_to current_user, notice: 'Drink was successfully deleted' }
       format.json { head :no_content }
     end
   end
@@ -77,6 +77,6 @@ class PublishesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def publish_params
-      params.require(:publish).permit(:Rname, :user_id, :drink_id)
+      params.require(:publish).permit(:Rname, :image, :ingredients, :instructions, :user_id, :drink_id)
     end
 end

@@ -1,6 +1,4 @@
 class Publish < ApplicationRecord
   belongs_to :user
-  has_and_belongs_to_many :drinks
-
-  validates :Rname, :presence => true
+  validates :Rname, :ingredients, :instructions, :presence => true
 end

@@ -17,8 +17,23 @@
   </div>
 
   <div class="field">
-    <%= f.label :Rname %>
+    <%= f.label :Name %>
     <%= f.text_field :Rname %>
+  </div>
+
+  <div class="field">
+    <%= f.label :Upload_image_here %>
+    <%= f.file_field :image %>
+  </div>
+
+  <div class="field">
+    <%= f.label :Ingredients %>
+    <%= f.text_area :ingredients %>
+  </div>
+
+  <div class="field">
+    <%= f.label :instructions %>
+    <%= f.text_area :instructions %>
   </div>
 
   <div class="actions">
