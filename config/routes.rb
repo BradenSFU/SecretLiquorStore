@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get "sign_up" => "users#new", :as => "sign_up"
 
   get "change_password" => "change_password#change", :as => "change_password"
+  post "change_password" => "change_password#change", :as => "change_password/success"
   get 'change_password/change'
   post 'change_password/change'
 

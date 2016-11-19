@@ -5,8 +5,7 @@ def change
   @password = params[:password]
   @password_confirmation = params[:password_confirmation]
   @user = current_user
-  flash.alert = @user.Username,2,@old_password
-    if User.authenticate(@user.Username, @old_password)
+    if User.authenticate(@user.Email, @old_password)
       if @password == @password_confirmation
         if @password.length <= 5
           flash.alert = "Password should not be empty"
