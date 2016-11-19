@@ -11,7 +11,7 @@ def change
           flash.alert = "Password should not be empty"
         else
           @user.update_attributes(Password: @password)
-          flash.alert = "Password has been updated"
+          redirect_to root_url, :notice => "Password has been updated!"
         end
       else
         flash.alert = "Invalid Password Confirmation"
