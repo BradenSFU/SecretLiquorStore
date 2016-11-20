@@ -15,11 +15,7 @@
 
 <p>
   <strong>
-    <% if @publish.image.blank? %>
-      <p>Image not found</p>
-    <% else %>
-      <%= image_tag @publish.image.thumb.url %>
-    <% end %>
+    <%= image_tag (@publish.image.blank? ? "no-image.jpg" : @publish.image.thumb.url), size: "200x200", alt: "Image not found." %>
   </strong>
 </p>
 

@@ -85,6 +85,6 @@ class UsersController < ApplicationController
     end
 
     def check_admin
-      #redirect_to(root_url) unless current_user && current_user.Isadmin?
+      redirect_to(root_url) unless current_user && current_user.Isadmin?
     end
 end

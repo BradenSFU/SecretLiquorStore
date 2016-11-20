@@ -23,13 +23,7 @@
     <% @user.publishes.each do |d| %>
       <tr>
         <td><%= link_to d.Rname, d %></td>
-        <td>
-          <% if d.image.blank? %>
-            <p>Image not found</p>
-          <% else %>
-            <%= image_tag d.image.thumb.url %>
-          <% end %>
-        </td>
+        <td><%= image_tag (d.image.blank? ? "no-image.jpg" : d.image.thumb.url), size: "200x200", alt: "Image not found."%></td>
         <td><%= d.ingredients %></td>
         <td><%= d.instructions %></td>
         <% if current_user %>
@@ -65,9 +59,8 @@
 
 <br></br>
 <% if current_user && @user.id == current_user.id %>
-  <%= link_to 'Edit Profile / Change Settings', edit_user_path(@user) %>
+  <%= link_to 'Edit Profile', edit_user_path(@user) %>
+  <br></br>
+  <%= link_to 'Change Password', change_password_url %> |
 <% elsif current_user %>
 <% end %>
-<!--<%= link_to 'Back', users_path %>-->
-
-<%= link_to 'Change Password', change_password_url %> |
