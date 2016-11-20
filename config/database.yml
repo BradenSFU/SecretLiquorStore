@@ -21,8 +21,11 @@ default: &default
   # http://guides.rubyonrails.org/configuring.html#database-pooling
 
 development:
-  <<: *default
-  database: Project_development
+    <<: *default
+    database: leyongzhe
+    username: leyongzhe
+    password: 0823
+    host: localhost
 
   #database: Project_development
 
@@ -57,8 +60,11 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: Project_development_test
+    <<: *default
+    database: leyongzhe
+    username: leyongzhe
+    password: 0823
+    host: localhost
 
   #database: Project_development_test
 

@@ -13,3 +13,10 @@ two:
   Email: MyString
   Biography: MyText
   Isadmin: false
+  
+UserA:
+  Username: UserA
+  Password: 123456
+  Email: UserA@email.com
+  Biography: MyText
+  Isadmin: false
