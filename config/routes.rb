@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   resources :likes
   resources :publishes
-  get "log_in" => "sessions#new", :as => "log_in"
+  match "log_in" => "sessions#new", :as => "log_in", via: [:get, :post]
+  
   get "/drinks/searched" => 'drinks#drinksearch', as: 'drink_search'
   get "/drinks/show", to: 'drinks#show', as: "drink_show"
   match "/drinks/search", to: 'drinks#drinkresults', as: 'drink_results', via: [:get, :post]
