@@ -32,3 +32,17 @@
   <%= @publish.instructions %>
 </strong>
 </p>
+
+<br></br>
+<%= render :template => 'welcome/like_or_dislike' %>
+
+<% totalLikes = 0 %>
+<% totalDislikes = 0 %>
+
+
+
+<br></br>
+<strong>
+  Likes: <%= totalLikes %><br>
+  Dislikes: <%= totalDislikes %>
+</strong>

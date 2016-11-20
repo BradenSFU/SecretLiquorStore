@@ -45,6 +45,7 @@
   <table id="Likes">
     <% @user.likes.each do |l| %>
       <tr>
+        <% next if l.islike %>
         <!-- Add drink attributes here -->
         <% if current_user %>
           <td><%= link_to 'Remove', d, method: :delete, data: { confirm: 'Are you sure?' } %></td>
