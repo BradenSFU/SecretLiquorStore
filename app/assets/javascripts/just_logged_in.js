@@ -2916,10 +2916,10 @@ $.getJSON(url, function(data) {
   }
 
   if(json.drinks[0].idDrink){
-    document.getElementById("drinkName").innerHTML = 'Drink Name: ' + json.drinks[0].idDrink;
+    document.getElementById("drinkName").innerHTML = 'Drink Name: ' + json.drinks[0].strDrink;
   }
   if(json.drinks[0].strDrink){
-    document.getElementById("drinkID").innerHTML = 'Drink ID: '+ json.drinks[0].strDrink;
+    document.getElementById("drinkID").innerHTML = 'Drink ID: '+ json.drinks[0].idDrink;
   }
   if (json.drinks[0].strDrinkThumb){
     console.log("image exists!");

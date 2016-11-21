@@ -12,32 +12,31 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :user_id %>
-    <%= ": " + current_user.Username %>
+    <p class="smalltag"><%= f.label :user_id %>
+    <%= ": " + current_user.Username %></p>
   </div>
 
   <div class="field">
-    <%= f.label :Name %>
+    <p class="smalltag"><%= f.label :Drink_Name %></p>
     <%= f.text_field :Rname %>
   </div>
 
   <div class="field">
-    <%= f.label :Upload_image_here %>
-    <%= f.file_field :image %>
+    <p class="smalltag"><%= f.label :Upload_image_here %><%= f.file_field :image %></p>
     <% if f.object.image? %>
       <%= image_tag f.object.image.thumb.url %>
-      <%= f.label :remove_image %>
-      <%= f.check_box :remove_image %>
+    <p><%= f.label :remove_image %></p>
+    <p> <%= f.check_box :remove_image %></p>
     <% end %>
   </div>
 
   <div class="field">
-    <%= f.label :Ingredients %>
+    <p class="smalltag"><%= f.label :Ingredients %></p>
     <%= f.text_area :ingredients %>
   </div>
 
   <div class="field">
-    <%= f.label :instructions %>
+    <p class="smalltag"><%= f.label :instructions %></p>
     <%= f.text_area :instructions %>
   </div>
 

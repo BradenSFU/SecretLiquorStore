@@ -1,16 +1,20 @@
 <%= flash_message %>
+<div class="jumbotron vertical-centers" style="background-image: url('/assets/showdrinkbg.jpg'); min-height: 100%; min-height: 100vh;">
+<div class="container-fluid" style="margin-left:20px;">
 <div class="drinkImage">
   <%= image_tag(@drink['strDrinkThumb'] ? "#{@drink['strDrinkThumb']}" : "no-image.jpg", size: "200x200", alt: "Image not found.") %>
 </div>
-<div class="drinkDetails">
+<div class="drinkDetails" style="margin-left:10px;">
   <h1 class="drinkName"><%= @drink['strDrink']%></h1>
   <ul class="ingredients">
     <%= for i in 1..15 do %>
       <% if @drink["strIngredient#{i}"] == "" then %>
         <% break %>
       <% end %>
-      <li><%= @drink["strMeasure#{i}"] %><%= @drink["strIngredient#{i}"]%></li>
+      <li style="font-size:18px;"><%= @drink["strMeasure#{i}"] %><%= @drink["strIngredient#{i}"]%></li>
     <% end %>
   </ul>
   <p class="instructions"><%= @drink['strInstructions'] %></p>
+</div>
+</div>
 </div>

@@ -1,46 +1,57 @@
-<h1>Create a New Account</h1>
+<head>
+  <title>Sign Up</title>
+</head>
+<body>
+<div class="jumbotron vertical-centers" style="background-image: url('assets/signupbg.jpg'); min-height: 100%; min-height: 100vh; display: flex;  align-items: center;">
+    <div class="loginfield">
+      <%= form_for(@user) do |f| %>
+      <% if @user.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
-<%= form_for(@user) do |f| %>
-  <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-      <ul>
-      <% @user.errors.full_messages.each do |message| %>
-        <li style="color:black"><%= message %></li>
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+          <li style="color:black"><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
       <% end %>
-      </ul>
-    </div>
-  <% end %>
 
   <div class="field">
-    <%= f.label :Username, :autofocus=>true%>
+    <p class = "smalltag">Username:</p>
     <%= f.text_field :Username %>
   </div>
 
   <div class="field">
-    <%= f.label :Email %>
+      <p class = "smalltag">Email:</p>
     <%= f.text_field :Email %>
   </div>
 
   <div class="field">
-    <%= f.label :Password %>
+    <p class = "smalltag">Password:</p>
     <%= f.password_field :Password %>
   </div>
 
   <div class="field">
-    <%= f.label :Password_confirmation %>
+      <p class = "smalltag">Confirm Password:</p>
     <%= f.password_field :Password_confirmation %>
   </div>
 
-  <% if current_user && current_user.Isadmin? %>
+  <% if current_user %>
+    <% if current_user.Isadmin == true %>
     <div class="field">
       <%= f.label :Isadmin %>
       <%= f.check_box :Isadmin %>
     </div>
+
+    <% end %>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
+    <div class="actions">
+      <%= f.submit %>|
+      <%= link_to "Have an Account? Sign In!", log_in_path %>
+    </div>
+  <% end %>
   </div>
-<% end %>
+</div>
+</body>
