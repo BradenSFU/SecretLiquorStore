@@ -34,11 +34,24 @@
 </p>
 
 <br></br>
-<%= render :template => 'welcome/like_or_dislike' %>
+<% if current_user %>
+  <% if !current_user.publishes.include?(@publish) %>
+    <% if current_user.likes.include?(@publish) %>
+      <%= link_to 'Unlike', :method => remove_from_likes(@drink)%>
+    <% elsif current_user.likes.include?(@drink) %> <%#Mark as Islike=false%>
+      <%= link_to 'Un-dislike', :method => remove_from_dislikes(@drink)%>
+    <% else %>
+      <%= link_to 'Like', method: like %>
+      <%= link_to 'Dislike', method: dislike %>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= link_to 'Like', sign_up_url%>
+  <%= link_to 'Dislike', sign_up_url%>
+<% end %>
 
 <% totalLikes = 0 %>
 <% totalDislikes = 0 %>
-
 
 
 <br></br>

@@ -21,6 +21,22 @@ class PublishesController < ApplicationController
   def edit
   end
 
+  helper_method :like
+  def like
+    #current_item = @publish.detect{|r| r.id == params[:id].to_i}
+    #@upVote = current_item.votes.find_by_user_id(current_user.id)
+    #unless @upVote
+      @upVote = Like.create(:islike => true, :drink_id => 0, :user_id => current_user.id)
+      @upVote.user_id = current_user.id
+    #end
+    flash[:success] = @publish.Rname + " has been added to your likes"
+    #@upVote.save
+  end
+
+  helper_method :dislike
+  def dislike
+  end
+
   # POST /publishes
   # POST /publishes.json
   def create

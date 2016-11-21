@@ -1,11 +1,13 @@
 <% if current_user %>
-  <% if current_user.likes.include?(@drink) %>
-    <%= link_to 'Unlike', :method => remove_from_likes(@drink)%>
-  <% elsif current_user.likes.include?(@drink) %> <%#Mark as Islike=false%>
-    <%= link_to 'Un-dislike', :method => remove_from_dislikes(@drink)%>
-  <% else %>
-    <%= link_to 'Like', :method => add_to_likes(@drink)%>
-    <%= link_to 'Dislike', :method => add_to_dislikes(@drink)%>
+  <% if !current_user.publishes.include?(@drink) %>
+    <% if current_user.likes.include?(@drink) %>
+      <%= link_to 'Unlike', :method => remove_from_likes(@drink)%>
+    <% elsif current_user.likes.include?(@drink) %> <%#Mark as Islike=false%>
+      <%= link_to 'Un-dislike', :method => remove_from_dislikes(@drink)%>
+    <% else %>
+      <%= link_to 'Like', :method => add_to_likes(@drink)%>
+      <%= link_to 'Dislike', :method => add_to_dislikes(@drink)%>
+    <% end %>
   <% end %>
 <% else %>
   <%= link_to 'Like', sign_up_url%>
