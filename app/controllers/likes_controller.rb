@@ -24,8 +24,21 @@ class LikesController < ApplicationController
   # POST /likes
   # POST /likes.json
   def create
-    @like = Like.new(like_params)
+    #@like = Like.new(like_params)
+    @like = Like.create_like(current_user)
+    respond_to do |format|
+      if @like.save
+        format.html { redirect_to @like, notice: 'Like was successfully created.' }
+        format.json { render :show, status: :created, location: @like }
+      else
+        format.html { render :new }
+        format.json { render json: @like.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
+  def dislike
+    Like.create_dislike(current_user)
     respond_to do |format|
       if @like.save
         format.html { redirect_to @like, notice: 'Like was successfully created.' }

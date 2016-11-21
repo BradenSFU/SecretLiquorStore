@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   get "change_password" => "change_password#change", :as => "change_password"
   post "change_password" => "change_password#change", :as => "change_password/success"
 
+  post '/likes' => 'likes#create', as: :like_create
+  post '/dislikes' => 'likes#dislike', as: :dislike_create
+
   root 'welcome#index'
 
   resources :users

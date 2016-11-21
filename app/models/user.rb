@@ -25,4 +25,16 @@ class User < ApplicationRecord
     end
   end
 
+  def is_liked()
+    if Like.where(:publish, :user_id => self.id).present?
+      Like.where(:publish, :user_id => self.id).last.islike==true
+    end
+  end
+
+  def is_disliked()
+    if Like.where(:publish, :user_id => self.id).present?
+      Like.where(:publish, :user_id => self.id).last.islike==false
+    end
+  end
+
 end
