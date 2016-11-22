@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20161108015840) do
-=======
 ActiveRecord::Schema.define(version: 20161119015556) do
->>>>>>> 73222ac567fdc9a8479130f28557ff6ac4ff0448
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,39 +23,6 @@ ActiveRecord::Schema.define(version: 20161119015556) do
     t.datetime "updated_at", null: false
   end
 
-<<<<<<< HEAD
-  create_table "structures", force: :cascade do |t|
-  end
-
-  create_table "things", force: :cascade do |t|
-    t.string   "tname"
-    t.text     "description"
-    t.integer  "person_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  create_table "tokimons", force: :cascade do |t|
-    t.string   "tname"
-    t.integer  "weight"
-    t.integer  "height"
-    t.integer  "fly"
-    t.integer  "fight"
-    t.integer  "fire"
-    t.integer  "water"
-    t.integer  "electric"
-    t.integer  "ice"
-    t.integer  "total"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "trainers", force: :cascade do |t|
-    t.string   "pname"
-    t.integer  "level"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-=======
   create_table "publishes", force: :cascade do |t|
     t.string   "Rname"
     t.integer  "user_id"
@@ -69,7 +32,7 @@ ActiveRecord::Schema.define(version: 20161119015556) do
     t.string   "image"
     t.text     "ingredients"
     t.text     "instructions"
->>>>>>> 73222ac567fdc9a8479130f28557ff6ac4ff0448
+
   end
 
   create_table "users", force: :cascade do |t|
