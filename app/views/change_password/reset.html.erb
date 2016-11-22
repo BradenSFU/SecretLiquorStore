@@ -1,0 +1,12 @@
+<h1>Reset Password</h1>
+<%= form_for @user = :user_params do %>
+<div class="row">
+  <div class="col-md-3 col-md-offset-3">
+    <label for="Email">Email address</label> <%= text_field_tag :email, params[:email] %>
+    <label for="Password">New Password</label> <%= password_field_tag :password, params[:password] %>
+    <label for="Password Confirmation">Confirm New Password</label> <%= password_field_tag :password_confirmation, params[:password_confirmation] %>
+    <div class = "button"> <%= submit_tag "Submit" %> </div>
+  </div>
+</div>
+<%end%>
+<p>Find me in app/views/change_password/success.html.erb</p>

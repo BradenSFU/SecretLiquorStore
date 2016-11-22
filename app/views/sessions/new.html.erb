@@ -14,7 +14,8 @@
       <div><%= password_field_tag :Password %></div>
     </div>
     <div>
-      <botton id ="sign_in_botton"><%= submit_tag "Log In" %></botton> | <%= link_to "Need an account? Sign up!", sign_up_path %>
+      <botton id ="sign_in_botton"><%= submit_tag "Log In" %></botton> | <%= link_to "Need an account? Sign up!", sign_up_path %> |
+      <%= link_to "Forgot password", reset_password_path %>
     </div>
     <% end %>
   </div>
