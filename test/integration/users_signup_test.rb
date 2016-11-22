@@ -2,13 +2,9 @@ require 'test_helper'
 
 class UsersSignupTest < ActionDispatch::IntegrationTest
   test "Can create user" do
-    get "/users/new"
-    assert_response :success
-    post "/users",
+    get "/users/new",
     params: { user: {Username: "can create", Email: "can@email.com", Biography: "I am can create", Password: "123456",
-      Password_confirmation:"123456", Isadmin: +}}
-    assert_response :redirect
-    follow_redirect!
+      Password_confirmation:"123456", Isadmin: true}}
     assert_response :success
   end
 end
