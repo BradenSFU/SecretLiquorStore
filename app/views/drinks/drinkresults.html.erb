@@ -1,0 +1,17 @@
+<!-- <div>
+  <%= button_to("Prev", drink_results_path(:page => @page.to_i-1, :results => @results), :class => 'pageLinks') %>
+  <span class="pageLinks">Page <%= @page.to_i %></span>
+  <%= button_to("Next", drink_results_path(:page => @page.to_i+1, :results => @results), :class => 'pageLinks') %>
+</div>
+This isn't needed for this search it seems, but will be useful later -->
+
+<div class='searchResults'>
+  <% @results.each do |drink| %>
+    <div style="clear:both">
+      <div class="drinkImage">
+        <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
+      </div>
+      <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
+    </div>
+  <% end %>
+</div>

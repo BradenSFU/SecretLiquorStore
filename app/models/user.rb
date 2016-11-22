@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  has_many :likes
+  has_many :publishes
+
   attr_accessor :Password
   before_save :CreateHashedPassword
 

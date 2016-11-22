@@ -1,38 +1,63 @@
-<p id="notice"><%= notice %></p>
+<body>
+<div class="jumbotron" style="background-image: url('/assets/profilebg.jpg'); min-height: 100%; min-height: 100vh; ">
 
-<p>
-  <strong>Username:</strong>
-  <%= @user.Username %>
-</p>
+<div class="container-fluid" style="margin-left:20px;">
+  <p><img alt="Image" src="/assets/profiletitle.png" > </p>
+  <div id="userinfodisplay">
+      <p class="smalltag">Username:</p>
+      <p style="font-size:15px;"><%= @user.Username %></p>
+    <br>
+      <p class="smalltag">Email:</p >
+      <p style="font-size:15px;"><%= @user.Email %></p>
+    <br>
+      <p class="smalltag">Biography:</p>
+    <div id="biodisplay"><p style="color:white; font-size: 15px;">  <%= @user.Biography %></p></div>
+  <div>
+    <% if current_user && @user.id == current_user.id %>
+      <p style="color:whte;font-size:15px"><%= link_to 'Edit Profile', edit_user_path(@user),{:style=>'color:#FFFFFF;'} %> |
+      <%= link_to 'Change Password', change_password_url, {:style=>'color:#FFFFFF;'} %></p>
+    <% elsif current_user %>
+    <% end %>
+  </div>
+</div>
+<div id="publishtable">
+  <br>
+  <p><%= "Recipes made by " + @user.Username%></p>
+    <% if @user.publishes.size > 0 %>
+    <table id="publishes">
+      <% @user.publishes.each do |d| %>
+        <tr>
+          <td id="drinkrow"><%= link_to d.Rname, d,{:style=>'color:#FFFFFF;'} %></td>
+          <% if current_user %>
+            <td><%= link_to 'Edit', edit_publish_path(d),{:style=>'color:#FFFFFF;'} %></td>
+            <td><%= link_to 'Delete', d, method: :delete, data: { confirm: 'Are you sure?'} %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+    <% else %>
+      <p>This user did not publish any recipes</p>
+    <% end %>
+</div>
+    <br>
+    <h3>Likes</h3>
+<div>
+    <% if @user.likes.size > 0 %>
+    <table id="Likes">
+      <% @user.likes.each do |l| %>
+        <tr>
+        <!-- Add drink attributes here -->
+          <% if current_user %>
+            <td><%= link_to 'Remove', d, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            <% end %>
+          </tr>
+          <% end %>
+        </table>
+        <% else %>
+          <p>This user has no likes</p>
+        <% end %>
+</div>
 
-<p>
-  <strong>Password:</strong>
-  <%= @user.Password %>
-</p>
-
-<p>
-  <strong>Email:</strong>
-  <%= @user.Email %>
-</p>
-
-<p>
-  <strong>Biography:</strong>
-  <%= @user.Biography %>
-</p>
-
-<p>
-  <strong>Isadmin:</strong>
-  <%= @user.Isadmin %>
-</p>
-
-<p>
-  <strong>User.id:</strong>
-  <%= @user.id %>
-</p>
-
-<%= @user.saltedpassword %>
-<br>
-<%= @user.hashedpassword %>
-
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+</div>
+</div>
+</body>

@@ -2,10 +2,20 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-p, h1, li {
+p, h1, li, span {
   color:white;
 }
 
 .form-control{
   width: 10%;
+}
+
+.submitButton {
+  color:black;
+}
+#randomblock{
+  width: 600px;
+}
+.display{
+  color:white;
 }

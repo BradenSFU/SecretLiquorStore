@@ -1,0 +1,24 @@
+<div class="jumbotron vertical-centers" style="background-image: url('/assets/showdrinkbg.jpg'); min-height: 100%; min-height: 100vh;">
+<div class="container-fluid" style="margin-left:20px;">
+
+<div class="drinkImage">
+  <%= image_tag (@publish.image.blank? ? "no-image.jpg" : @publish.image.thumb.url), size: "200x200", alt: "Image not found." %>
+</div>
+<div class="drinkDetails">
+    <h1 class="drinkName"><%= @publish.Rname %></h1>
+    <p>Created by:
+        <% if @publish.user == nil %>
+          <%= "The user who made this recipe was banned"  %>
+        <% else %>
+          <%= link_to @publish.user.Username, @publish.user %>
+        <% end %>
+    <p>
+<ul class="ingredients">
+  <li style="font-size:18px;">
+    <%= @publish.ingredients %>
+  </li>
+</ul>
+<p class="instructions"><%= @publish.instructions %></p>
+</div>
+</div>
+</div>

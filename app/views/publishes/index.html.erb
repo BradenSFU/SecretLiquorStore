@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Publishes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Rname</th>
+      <th>User</th>
+      <th>Drink</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @publishes.each do |publish| %>
+      <tr>
+        <td><%= publish.Rname %></td>
+        <td><%= publish.user_id %></td>
+        <td><%= publish.drink_id %></td>
+        <td><%= link_to 'Show', publish %></td>
+        <!--<td><%= link_to 'Edit', edit_publish_path(publish) %></td>
+        <td><%= link_to 'Destroy', publish, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<% if current_user %>
+  <%= link_to 'New Publish', new_publish_path %>
+<% end %>

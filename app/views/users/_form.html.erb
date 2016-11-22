@@ -5,7 +5,7 @@
 
       <ul>
       <% @user.errors.full_messages.each do |message| %>
-        <li style="color:black"><%= message %></li>
+        <li style="color:white"><%= message %></li>
       <% end %>
       </ul>
     </div>
@@ -36,11 +36,11 @@
     <%= f.password_field :Password_confirmation %>
   </div>
 
-  <% if current_user.Isadmin == true %>
-  <div class="field">
-    <%= f.label :Isadmin %>
-    <%= f.check_box :Isadmin %>
-  </div>
+  <% if current_user && current_user.Isadmin? %>
+    <div class="field">
+      <%= f.label :Isadmin %>
+      <%= f.check_box :Isadmin %>
+    </div>
   <% end %>
 
   <div class="actions">

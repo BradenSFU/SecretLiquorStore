@@ -30,7 +30,7 @@
 
           <% if current_user %>
             <li><%= link_to 'Profile', current_user%></li>
-            <li><a href="#">Publish</a></li>
+            <li><%= link_to 'Publish', new_publish_path%></li>
           <% else %>
             <li><%= link_to 'Profile', sign_up_url%></li>
             <li><%= link_to 'Publish', sign_up_url%></li>
@@ -42,17 +42,18 @@
             <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
             <li style="float:right"><%= link_to "Log out", log_out_path %></li>
           <% else %>
-            <li style="float:right">  <%= link_to "Sign up", sign_up_path %></li>
+            <li style="float:right"><%= link_to "Sign up", sign_up_path %></li>
             <li style="float:right"><%= link_to "Log in", log_in_path %></li>
           <% end %>
 
           <li id="searchDrinkfield" class="searchbar">
-              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink") do %>
-                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black">
-                <%= submit_tag 'Search' %>
+              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
+                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
+                <%= submit_tag('Search', :class => 'submitButton') %>
               <% end %>
             <!-- @end #searchfield -->
           </li>
+
 
         </ul>
       </div>

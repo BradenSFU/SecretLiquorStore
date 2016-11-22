@@ -1,0 +1,13 @@
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/json-2.0.2/ext/json
+/home/kca99/.rbenv/versions/2.3.1/bin/ruby -r ./siteconf20161121-4184-13ky261.rb extconf.rb
+creating Makefile
+
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/json-2.0.2/ext/json
+make "DESTDIR=" clean
+
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/json-2.0.2/ext/json
+make "DESTDIR="
+make: Nothing to be done for 'all'.
+
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/json-2.0.2/ext/json
+make "DESTDIR=" install
