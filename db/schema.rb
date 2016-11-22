@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20161121012640) do
     t.string   "image"
     t.text     "ingredients"
     t.text     "instructions"
+
   end
 
   create_table "users", force: :cascade do |t|
