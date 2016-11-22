@@ -1,3 +1,44 @@
 // Place all the styles related to the Publishes controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.drinkImage {
+  float: left;
+  vertical-align: top;
+  padding-right: 20px;
+}
+.drinkDetails {
+  padding-right: 10px;
+}
+.ingredients {
+  font-size: 14px;
+}
+.instructions {
+  font-size: 16px;
+  clear: left;
+  padding: 10px;
+}
+.pageLinks {
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.searchResults {
+  clear: both;
+}
+.result {
+
+}
+.drinkImage {
+  min-width: 200px;
+  min-height: 200px;
+}
+.drinkImageSmall {
+  min-width: 150px;
+  min-height: 150px;
+}
+.drinkName {
+  color: white;
+}
+.searchResultsName {
+  font-size: 16px;
+}
