@@ -2,7 +2,8 @@
 <div class="jumbotron vertical-centers" style="background-image: url('/assets/showdrinkbg.jpg'); min-height: 100%; min-height: 100vh;">
 <div class="container-fluid" style="margin-left:20px;">
 <div class="drinkImage">
-  <%= image_tag(@drink['strDrinkThumb'] ? "#{@drink['strDrinkThumb']}" : "no-image.jpg", size: "200x200", alt: "Image not found.") %>
+  <%= image_tag( @drink['strDrinkThumb'] && @drink['strDrinkThumb'] != "" ? "#{@drink['strDrinkThumb']}" : 'no-image.jpg', size: "200x200", alt: "") %>
+
 </div>
 <div class="drinkDetails" style="margin-left:10px;">
   <h1 class="drinkName"><%= @drink['strDrink']%></h1>
