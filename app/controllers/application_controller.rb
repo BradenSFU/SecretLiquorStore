@@ -8,20 +8,17 @@ class ApplicationController < ActionController::Base
   end
 
   helper_method :add_to_likes
-  def add_to_likes
-    @like = Like.create
+  def add_to_likes(publish)
+    Like.create_like(publish,current_user)
   end
 
   helper_method :add_to_dislikes
-  def add_to_dislikes
-    @like = Like.dislike
+  def add_to_dislikes(publish)
+    Like.create_dislike(publish,current_user)
   end
 
-  helper_method :remove_from_likes
-  def add_to_dislikes
-  end
-
-  helper_method :remove_from_dislikes
-  def remove_from_dislikes
+  helper_method :remove_from_likes_list
+  def remove_from_likes_list(publish)
+    Like.remove_from_likes_list_on_model(publish,current_user)
   end
 end

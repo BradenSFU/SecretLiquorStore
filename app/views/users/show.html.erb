@@ -44,23 +44,28 @@
 </div>
     <br>
 
+
 <h3>Likes</h3>
+<% likedOne = false %>
 
 <div>
-    <% if @user.likes.size > 0 %>
-      <table id="Likes">
-      <% @user.likes.each do |l| %>
-        <tr>
-          <% if current_user %>
-            <td><%= link_to 'Remove', d, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-          <% end %>
-        </tr>
-      <% end %>
-      </table>
-    <% else %>
-        <p>This user has no likes</p>
+  <table id="Likes">
+  <% @user.likes.each do |l| %>
+    <% next unless l.islike %>
+    <% likedOne = true %>
+    <tr>
+    <% if current_user %>
+      <td><%= link_to 'Drink' %></td>
+      <td><%= link_to 'Remove', l, method: :delete, data: { confirm: 'Are you sure?' } %></td>
     <% end %>
+    </tr>
+  <% end %>
+  </table>
 </div>
+
+<% unless likedOne %>
+  <p>This user has no likes</p>
+<% end %>
 
 </div>
 </div>

@@ -20,25 +20,6 @@
   </strong>
 </p>
 
-<p>
-  Instructions:<br>
-  <strong>
-    <%= @publish.instructions %>
-  </strong>
-</p>
-
-<% if current_user %>
-  <% if current_user.likes.include?(@publish) %>
-    <%= link_to 'Unlike', method: remove_from_likes %> |
-  <% elsif @publish.user==nil || @publish.user.id != current_user.id %>
-    <%= link_to 'Like', method: add_to_likes %> |
-    <%= link_to 'Dislike', method: add_to_dislikes %>
-  <% end %>
-<% else %>
-  <%= link_to 'Like', sign_up_url %> |
-  <%= link_to 'Dislike', sign_up_url %>
-<% end %>
-
 <br></br>
 <strong>
   Likes: <%= count_like(@publish) %><br>
@@ -48,6 +29,37 @@
 
 </ul>
 <p class="instructions"><%= @publish.instructions %></p>
+
+
+<% liked = false %>
+<% disliked = false %>
+<% current_user.likes.each do |l| %>
+  <% if l.publish_id == @publish.id %>
+    <% if l.islike %>
+      <% liked = true %>
+      <% break %>
+    <% else %>
+      <% disliked = true %>
+      <% break %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if current_user %>
+  <% %>
+  <% if liked %>
+    <%= link_to 'Un-like', method: remove_from_likes_list(@publish) %> |
+  <% elsif disliked %>
+    <%= link_to 'Un-dislike', method: remove_from_likes_list(@publish) %> |
+  <% elsif @publish.user==nil || @publish.user.id != current_user.id %>
+    <%= link_to 'Like', method: add_to_likes(@publish) %> |
+    <%= link_to 'Dislike', method: add_to_dislikes(@publish) %>
+  <% end %>
+<% else %>
+  <%= link_to 'Like', sign_up_url %> |
+  <%= link_to 'Dislike', sign_up_url %>
+<% end %>
+
 </div>
 </div>
 </div>

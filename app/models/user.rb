@@ -1,6 +1,6 @@
 class User < ApplicationRecord
-  has_many :likes
   has_many :publishes
+  has_many :likes, dependent: :destroy
 
   attr_accessor :Password
   before_save :CreateHashedPassword
