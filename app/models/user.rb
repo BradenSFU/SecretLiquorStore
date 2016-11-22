@@ -9,13 +9,13 @@ class User < ApplicationRecord
 
   def CreateHashedPassword
     return unless self.Password.present?
-    self.saltedpassword = BCrypt::Engine.generate_salt
-    self.hashedpassword = BCrypt::Engine.hash_secret(self.Password, saltedpassword)
+    self.passwordsalt = BCrypt::Engine.generate_salt
+    self.hashedpassword = BCrypt::Engine.hash_secret(self.Password, passwordsalt)
   end
 
   def self.authenticate(email_or_username, password)
     user = EMAIL.match(email_or_username) ? (find_by Email: email_or_username) : (find_by Username: email_or_username)
-    if user && user.hashedpassword == BCrypt::Engine.hash_secret(password, user.saltedpassword)
+    if user && user.hashedpassword == BCrypt::Engine.hash_secret(password, user.passwordsalt)
       user
     else
       nil

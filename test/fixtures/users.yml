@@ -2,21 +2,21 @@
 
 one:
   Username: MyString
-  Password: MyString
+  hashedpassword: MyString
   Email: MyString
   Biography: MyText
   Isadmin: false
 
 two:
   Username: MyString
-  Password: MyString
+  hashedpassword: MyString
   Email: MyString
   Biography: MyText
   Isadmin: false
-  
+
 UserA:
   Username: UserA
-  Password: 123456
+  hashedpassword: 123456.CreateHashedPassword
   Email: UserA@email.com
   Biography: MyText
   Isadmin: false
