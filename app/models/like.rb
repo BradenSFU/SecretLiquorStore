@@ -3,7 +3,7 @@ class Like < ApplicationRecord
   belongs_to :publish, dependent: :destroy
 
   def self.create_like(current_user)
-    like = Like.find_or_initialize_by(:publish,:user_id=>current_user.id)
+    like = Like.find_or_initialize_by(:user_id=>current_user.id)
     if like.islike
       like.destroy
     else
@@ -13,7 +13,7 @@ class Like < ApplicationRecord
   end
 
   def self.create_dislike(current_user)
-    like = Like.find_or_initialize_by(:publish,:user_id=>current_user.id)
+    like = Like.find_or_initialize_by(:user_id=>current_user.id)
      if like.islike == false
        like.destroy
      else

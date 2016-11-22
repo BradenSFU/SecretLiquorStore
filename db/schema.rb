@@ -15,26 +15,10 @@ ActiveRecord::Schema.define(version: 20161121012640) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "drinks", force: :cascade do |t|
-    t.string   "Dname"
-    t.integer  "user_id"
-    t.integer  "drink_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "likes", force: :cascade do |t|
     t.boolean  "islike"
     t.integer  "publish_id"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "people", force: :cascade do |t|
-    t.string   "pname"
-    t.string   "string"
-    t.integer  "age"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -48,25 +32,6 @@ ActiveRecord::Schema.define(version: 20161121012640) do
     t.string   "image"
     t.text     "ingredients"
     t.text     "instructions"
-  end
-
-  create_table "student_informations", force: :cascade do |t|
-    t.string   "Name"
-    t.string   "Weight"
-    t.string   "Height"
-    t.string   "Color"
-    t.string   "GPA"
-    t.string   "Region"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "things", force: :cascade do |t|
-    t.string   "tname"
-    t.text     "description"
-    t.integer  "person_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
   end
 
   create_table "users", force: :cascade do |t|
