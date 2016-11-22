@@ -1,15 +1,22 @@
-<%# Sessions#new %>
-
-<h1>Log in</h1>
-
-<%= form_tag sessions_path do %>
-  <p class = 'field'>
-    <%= label_tag :username_or_email %><br />
-    <%= text_field_tag :email, params[:email], :autofocus=>true %>
-  </p>
-  <p class = 'field'>
-    <%= label_tag :password %><br />
-    <%= password_field_tag :Password %>
-  </p>
-  <p class="button" style="color:black;"><%= submit_tag "Log In" %></p>
-<% end %>
+<head>
+  <title>Log In</title>
+</head>
+<body>
+<div class="jumbotron vertical-center" style="background-image: url('assets/signinbg.jpg'); min-height: 100%; min-height: 100vh; display: flex;  align-items: center;">
+  <div class="loginfield">
+    <%= form_tag sessions_path do %>
+    <div class = 'field'>
+      <p class = "smalltag" color= >Email or Username:</p>
+      <div><%= text_field_tag :email, params[:email], :autofocus=>true %></div>
+    </div>
+    <div class = 'field'>
+      <p class = "smalltag">Password:</p>
+      <div><%= password_field_tag :Password %></div>
+    </div>
+    <div>
+      <botton id ="sign_in_botton"><%= submit_tag "Log In" %></botton> | <%= link_to "Need an account? Sign up!", sign_up_path %>
+    </div>
+    <% end %>
+  </div>
+</div>
+</body>

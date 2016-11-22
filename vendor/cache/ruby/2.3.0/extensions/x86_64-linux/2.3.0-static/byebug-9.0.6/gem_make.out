@@ -1,0 +1,19 @@
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/byebug-9.0.6/ext/byebug
+/home/kca99/.rbenv/versions/2.3.1/bin/ruby -r ./siteconf20161121-4184-1ymn3ng.rb extconf.rb
+creating Makefile
+
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/byebug-9.0.6/ext/byebug
+make "DESTDIR=" clean
+
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/byebug-9.0.6/ext/byebug
+make "DESTDIR="
+compiling threads.c
+compiling breakpoint.c
+compiling context.c
+compiling byebug.c
+compiling locker.c
+linking shared-object byebug/byebug.so
+
+current directory: /home/kca99/CMPT276/Project/vendor/cache/ruby/2.3.0/gems/byebug-9.0.6/ext/byebug
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 byebug.so ./.gem.20161121-4184-1qst0/byebug

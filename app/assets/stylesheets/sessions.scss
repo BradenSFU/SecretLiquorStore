@@ -1,7 +1,26 @@
 // Place all the styles related to the sessions controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-
 .field input{
-  color:black;
+  color: black;
+  width: 300px;
+  height: 30px;
+}
+
+
+.loginfield{
+  width:500px;
+  height:500px;
+  position:absolute;
+  left:50%;
+  top:50%;
+  margin:-100px 0 0 -150px;
+}
+.smalltag
+{
+    width: 300px;
+    padding-right: 6px;
+    padding-bottom: 1px;
+    font-size:22px;
+    color: white;
 }

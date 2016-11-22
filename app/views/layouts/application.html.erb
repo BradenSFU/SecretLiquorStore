@@ -48,7 +48,7 @@
 
           <li id="searchDrinkfield" class="searchbar">
               <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
-                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black">
+                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
                 <%= submit_tag('Search', :class => 'submitButton') %>
               <% end %>
             <!-- @end #searchfield -->
