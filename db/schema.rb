@@ -23,6 +23,13 @@ ActiveRecord::Schema.define(version: 20161119015556) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "people", force: :cascade do |t|
+    t.string   "pname"
+    t.integer  "age"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "publishes", force: :cascade do |t|
     t.string   "Rname"
     t.integer  "user_id"
@@ -34,15 +41,55 @@ ActiveRecord::Schema.define(version: 20161119015556) do
     t.text     "instructions"
   end
 
+  create_table "things", force: :cascade do |t|
+    t.string   "tname"
+    t.text     "description"
+    t.integer  "person_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "tokimons", force: :cascade do |t|
+    t.string   "tname"
+    t.integer  "weight"
+    t.integer  "height"
+    t.integer  "fly"
+    t.integer  "fight"
+    t.integer  "fire"
+    t.integer  "water"
+    t.integer  "electric"
+    t.integer  "ice"
+    t.integer  "total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "trainers", force: :cascade do |t|
+    t.string   "pname"
+    t.integer  "level"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "Username"
     t.string   "Email"
     t.text     "Biography"
     t.boolean  "Isadmin"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "salt"
+    t.string   "encrypted_password"
     t.string   "hashedpassword"
     t.string   "passwordsalt"
+  end
+
+  create_table "widgets", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "stock"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
