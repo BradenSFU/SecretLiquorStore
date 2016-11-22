@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   get "reset_password" => "change_password#reset", :as => "reset_password"
   post "reset_password" => "change_password#reset", :as => "reset_password/success"
 
+  post '/likes' => 'likes#create', as: :like_create
+  post '/dislikes' => 'likes#dislike', as: :dislike_create
+
   root 'welcome#index'
 
   resources :users

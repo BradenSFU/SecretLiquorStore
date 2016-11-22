@@ -1,6 +1,6 @@
 class User < ApplicationRecord
-  has_many :likes
   has_many :publishes
+  has_many :likes, dependent: :destroy
 
   attr_accessor :Password
   before_save :CreateHashedPassword
@@ -22,6 +22,18 @@ class User < ApplicationRecord
       user
     else
       nil
+    end
+  end
+
+  def is_liked()
+    if Like.where(:publish, :user_id => self.id).present?
+      Like.where(:publish, :user_id => self.id).last.islike==true
+    end
+  end
+
+  def is_disliked()
+    if Like.where(:publish, :user_id => self.id).present?
+      Like.where(:publish, :user_id => self.id).last.islike==false
     end
   end
 

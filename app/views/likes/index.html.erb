@@ -16,7 +16,7 @@
     <% @likes.each do |like| %>
       <tr>
         <td><%= like.islike %></td>
-        <td><%= like.drink_id %></td>
+        <td><%= like.publish_id %></td>
         <td><%= like.user_id %></td>
         <td><%= link_to 'Show', like %></td>
         <td><%= link_to 'Edit', edit_like_path(like) %></td>

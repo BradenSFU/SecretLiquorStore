@@ -25,7 +25,6 @@ class LikesController < ApplicationController
   # POST /likes.json
   def create
     @like = Like.new(like_params)
-
     respond_to do |format|
       if @like.save
         format.html { redirect_to @like, notice: 'Like was successfully created.' }
