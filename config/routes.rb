@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :ingredients
   resources :likes
   resources :publishes
   get "log_in" => "sessions#new", :as => "log_in"

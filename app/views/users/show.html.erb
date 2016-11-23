@@ -31,10 +31,6 @@
       <% @user.publishes.each do |d| %>
         <tr>
           <td id="drinkrow"><%= link_to d.Rname, d,{:style=>'color:#FFFFFF;'} %></td>
-          <% if current_user %>
-            <td><%= link_to 'Edit', edit_publish_path(d),{:style=>'color:#FFFFFF;'} %></td>
-            <td><%= link_to 'Delete', d, method: :delete, data: { confirm: 'Are you sure?'} %></td>
-          <% end %>
         </tr>
       <% end %>
     </table>

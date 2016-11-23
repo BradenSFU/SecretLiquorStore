@@ -1,8 +1,9 @@
 class Publish < ApplicationRecord
   belongs_to :user
+  has_many :ingredients, dependent: :destroy
   has_many :likes, dependent: :destroy
 
-  validates :Rname, :ingredients, :instructions, :presence => true
+  validates :Rname, :ingredientSet, :instructions, :presence => true
   mount_uploader :image, ImageUploader
 
   validates_processing_of :image

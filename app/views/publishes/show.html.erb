@@ -12,21 +12,19 @@
         <% else %>
           <%= link_to @publish.user.Username, @publish.user %>
         <% end %>
-    <p>
+    </p>
 
-<ul class="ingredients">
-  <li style="font-size:18px;">
-    <%= @publish.ingredients %>
+<ul class="ingredients", style="font-size:18px;">
+  <% @publish.ingredients.each do |i| %>
+    <li style="font-size:18px;"> <%= i %></li>
   </strong>
 </p>
-
-<br></br>
-<strong>
-  Likes: <%= count_like(@publish) %><br>
-  Dislikes: <%= count_dislike(@publish) %>
-</strong>
+    <br></br>
+    <strong>
+      Likes: <%= count_like(@publish) %><br>
+      Dislikes: <%= count_dislike(@publish) %>
+    </strong>
   </li>
-
 </ul>
 <p class="instructions"><%= @publish.instructions %></p>
 
@@ -59,6 +57,12 @@
   <%= link_to 'Like', sign_up_url %> |
   <%= link_to 'Dislike', sign_up_url %>
 <% end %>
+
+<% if @publish.user && current_user && @publish.user.id == current_user.id %>
+  <td><%= link_to 'Edit', edit_publish_path(@publish),{:style=>'color:#FFFFFF;'} %></td><br>
+  <td><%= link_to 'Delete', @publish, method: :delete, data: { confirm: 'Are you sure?'} %></td>
+<% end %>
+
 
 </div>
 </div>

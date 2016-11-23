@@ -26,6 +26,13 @@ class PublishesController < ApplicationController
   def create
     @publish = Publish.new(publish_params)
     @publish.user_id = current_user.id
+    @publish.ingredientSet.each do |i|
+      next if i == ''
+      ingredient = Ingredient.new
+      ingredient.publish_id = @publish.id
+      ingredient.name = i
+      ingredient.save
+    end
     if @publish.save
       redirect_to @publish
       flash[:success] = "Drink successfully created."
@@ -77,6 +84,6 @@ class PublishesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def publish_params
-      params.require(:publish).permit(:Rname, :image, :ingredients, :instructions, :user_id, :drink_id, :remove_image)
+      params.require(:publish).permit(:Rname, :image, {:ingredientSet => []}, :instructions, :user_id, :drink_id, :remove_image)
     end
 end

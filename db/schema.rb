@@ -10,10 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161121012640) do
+ActiveRecord::Schema.define(version: 20161123042206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "courses", force: :cascade do |t|
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "year"
+    t.string   "semester"
+    t.string   "faculty"
+    t.string   "number"
+    t.string   "section"
+    t.string   "instructor"
+    t.string   "schedule"
+    t.string   "description"
+  end
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "publish_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "likes", force: :cascade do |t|
     t.boolean  "islike"
@@ -30,8 +50,32 @@ ActiveRecord::Schema.define(version: 20161121012640) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.string   "image"
-    t.text     "ingredients"
     t.text     "instructions"
+  end
+
+  create_table "tokimons", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "weight"
+    t.integer  "height"
+    t.integer  "fly"
+    t.integer  "fight"
+    t.integer  "fire"
+    t.integer  "water"
+    t.integer  "electric"
+    t.integer  "ice"
+    t.integer  "total"
+    t.integer  "trainer_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "trainers", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "level"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -43,6 +87,14 @@ ActiveRecord::Schema.define(version: 20161121012640) do
     t.datetime "updated_at",     null: false
     t.string   "hashedpassword"
     t.string   "passwordsalt"
+  end
+
+  create_table "widgets", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "stock"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end
