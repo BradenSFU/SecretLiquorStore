@@ -33,7 +33,9 @@
   <br></br>
   <div class="field">
     <p class="smalltag"><%= f.label :Ingredients %></p>
-    <%= f.text_field :ingredientSet, multiple: true %><br>
+    <% 15.times do %>
+      <%= f.text_field :ingredientsList, multiple: true %><br>
+    <% end %>
   </div>
   <br></br>
 
