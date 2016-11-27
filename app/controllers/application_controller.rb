@@ -9,12 +9,12 @@ class ApplicationController < ActionController::Base
 
   helper_method :add_to_likes
   def add_to_likes(publish)
-    Like.create_like(publish,current_user)
+    Like.create_vote(publish,current_user,true)
   end
 
   helper_method :add_to_dislikes
   def add_to_dislikes(publish)
-    Like.create_dislike(publish,current_user)
+    Like.create_vote(publish,current_user,false)
   end
 
   helper_method :remove_from_likes_list

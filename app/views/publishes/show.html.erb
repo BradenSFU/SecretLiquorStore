@@ -6,11 +6,11 @@
 </div>
 <div class="drinkDetails">
     <h1 class="drinkName"><%= @publish.Rname %></h1>
-    <p>Created by:
+    <p>
         <% if @publish.user == nil %>
           <%= "The user who made this recipe was banned"  %>
         <% else %>
-          <%= link_to @publish.user.Username, @publish.user %>
+          Created by: <%= link_to @publish.user.Username, @publish.user %>
         <% end %>
     <p>
 
@@ -31,22 +31,21 @@
 <p class="instructions"><%= @publish.instructions %></p>
 
 
-<% liked = false %>
-<% disliked = false %>
-<% current_user.likes.each do |l| %>
-  <% if l.publish_id == @publish.id %>
-    <% if l.islike %>
-      <% liked = true %>
-      <% break %>
-    <% else %>
-      <% disliked = true %>
+<% if current_user %>
+
+  <% liked = false %>
+  <% disliked = false %>
+  <% current_user.likes.each do |l| %>
+    <% if l.publish_id == @publish.id %>
+      <% if l.islike %>
+        <% liked = true %>
+      <% else %>
+        <% disliked = true %>
+      <% end %>
       <% break %>
     <% end %>
   <% end %>
-<% end %>
 
-<% if current_user %>
-  <% %>
   <% if liked %>
     <%= link_to 'Un-like', method: remove_from_likes_list(@publish) %> |
   <% elsif disliked %>
@@ -58,7 +57,9 @@
 <% else %>
   <%= link_to 'Like', sign_up_url %> |
   <%= link_to 'Dislike', sign_up_url %>
+
 <% end %>
+
 
 </div>
 </div>
