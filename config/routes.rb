@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   resources :likes
   resources :publishes
+  resources :users
+  resources :sessions
+
+  get 'ingred_search' => 'ingred_search#show'
+
   get "log_in" => "sessions#new", :as => "log_in"
   get "/drinks/searched" => 'drinks#drinksearch', as: 'drink_search'
   get "/drinks/show", to: 'drinks#show', as: "drink_show"
@@ -19,7 +24,6 @@ Rails.application.routes.draw do
 
   root 'welcome#index'
 
-  resources :users
-  resources :sessions
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
