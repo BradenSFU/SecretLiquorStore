@@ -1,0 +1,2 @@
+class IngredSearchController < ApplicationController
+end
