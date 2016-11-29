@@ -15,29 +15,31 @@ class PublishesController < ApplicationController
   # GET /publishes/new
   def new
     @publish = Publish.new
+    15.times { @publish.ingredients.build }
   end
 
   # GET /publishes/1/edit
   def edit
+    @publish = Publish.find(params[:id])
+    if @publish.user_id != current_user.id
+      redirect_to current_user
+    end
+    remaining_blank_inputs = 15 - @publish.ingredients.size
+    remaining_blank_inputs.times { @publish.ingredients.build }
   end
 
-=begin
-  def updateIngredientsList
-    @publish.ingredientsList.each do |i|
-      next if i == ''
-      @ingredient = Ingredient.new
-      @ingredient.publish_id = @publish.id
-      @ingredient.name = i
-      @ingredient.save
+  def destroy_invalid_inputs
+    @publish.ingredients.each do |i|
+      i.destroy if !(i.name=~/[A-Za-z]/)
     end
   end
-=end
 
   # POST /publishes
   # POST /publishes.json
   def create
     @publish = Publish.new(publish_params)
     @publish.user_id = current_user.id
+    destroy_invalid_inputs
     if @publish.save
       redirect_to @publish
       flash[:success] = "Drink successfully created."
@@ -62,7 +64,8 @@ class PublishesController < ApplicationController
   def update
     respond_to do |format|
       if @publish.update(publish_params)
-        format.html { redirect_to @publish, notice: 'Drink published' }
+        destroy_invalid_inputs
+        format.html { redirect_to @publish, notice: 'Drink updated' }
         format.json { render :show, status: :ok, location: @publish }
       else
         format.html { render :edit }
@@ -89,6 +92,6 @@ class PublishesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def publish_params
-      params.require(:publish).permit(:Rname, :image, {:ingredientsList => []}, :instructions, :user_id, :drink_id, :remove_image)
+      params.require(:publish).permit(:Rname, :image, :instructions, :user_id, :drink_id, :remove_image, ingredients_attributes: [:id, :name])
     end
 end

@@ -15,9 +15,8 @@
     </p>
 
 <ul class="ingredients", style="font-size:18px;">
-  <% @publish.ingredientsList.each do |i| %>
-    <% next if !(i=~/[A-Za-z]/) %>
-    <li style="font-size:18px;"><%= i %></li>
+  <% @publish.ingredients.each do |i| %>
+    <li style="font-size:18px;"><%= i.name %></li>
   <% end %>
   </strong>
 </p>
