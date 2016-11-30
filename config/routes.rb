@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   resources :users
   resources :sessions
 
+  get 'ingred_search' => 'ingred_search#show'
+
   #Sessions
   get "log_in" => "sessions#new", :as => "log_in"
   get "log_out" => "sessions#destroy", :as => "log_out"
@@ -34,9 +36,12 @@ Rails.application.routes.draw do
   get "reset_password" => "change_password#reset", :as => "reset_password"
   post "reset_password" => "change_password#reset", :as => "reset_password/success"
 
+
   #Manage likes and dislikes
   post '/likes' => 'likes#create', as: :like_create
   post '/dislikes' => 'likes#dislike', as: :dislike_create
   #Users
+  
+  root 'welcome#index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

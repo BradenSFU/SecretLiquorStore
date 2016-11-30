@@ -10,7 +10,7 @@ def drinksearch
     redirect_to error_404_url
   end
   params[:searchBarDrink].gsub!("'", '\%27')
-  puts params[:searchBarDrink]
+  # puts params[:searchBarDrink]
   url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{params[:searchBarDrink]}"
   uri = URI(url)
   response = Net::HTTP.get(uri)
