@@ -5,6 +5,7 @@ class IngredSearchController < ApplicationController
     #params[:ingredient]
     string = "gin"
     puts string
+    counter = 1
     #url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{params[:ingredient]}"
     url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{string}"
     uri = URI(url)
@@ -21,13 +22,11 @@ class IngredSearchController < ApplicationController
         #puts @firstentry
         @results.each do |item|
           #puts item['strDrink']
-          resultsArry.push(item['strDrink'])
-
+          resultsArry.push([item['strDrink'],counter])
         end
+        puts resultsArry[0] #I HAVE DONE IT NOW I REITERATE HERE USING SECOND STRING
         puts resultsArry[1]
-      else
-        #@drink = parsed['drinks'][0]
-        render "show"
+        puts resultsArry[2]   #[0] for (name,counter) [0][0] for name [0][1] for counter
       end
     end
   end
