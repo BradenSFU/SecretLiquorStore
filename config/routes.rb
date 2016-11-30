@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+
+  get "edit_bio" => "edit_profile#edit_bio", :as => "edit_bio"
+  get 'edit_profile/edit_bio'
+
+  get 'edit_profile/edit_email_profile'
+
   resources :likes
   resources :publishes
   resources :users
@@ -31,6 +37,6 @@ Rails.application.routes.draw do
   #Manage likes and dislikes
   post '/likes' => 'likes#create', as: :like_create
   post '/dislikes' => 'likes#dislike', as: :dislike_create
-
+  #Users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
