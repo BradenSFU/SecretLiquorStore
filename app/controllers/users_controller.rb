@@ -19,8 +19,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-  end
-
+end
   # POST /users
   # POST /users.json
   def create
@@ -36,6 +35,7 @@ class UsersController < ApplicationController
     else
       render "new"
     end
+  end
 =begin
     respond_to do |format|
       if @user.save
@@ -47,7 +47,6 @@ class UsersController < ApplicationController
       end
     end
 =end
-  end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
@@ -83,6 +82,8 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:Username, :Password, :Password_confirmation, :Email, :Biography, :Isadmin)
     end
+
+
 
     def check_admin
       redirect_to(root_url) unless current_user && current_user.Isadmin?
