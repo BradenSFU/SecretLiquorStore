@@ -11,7 +11,6 @@ class User < ApplicationRecord
   validates :Username, :presence => true, :uniqueness => true, :length => 3..20
   validates :Email, :presence => true, :uniqueness => true, :format => EMAIL
   validates :Password, :presence => true, :confirmation => true, :length => 6..20, on: :create
-  validates :password_confirmation, presence: true, on: :create
 
   def CreateHashedPassword
     return unless self.Password.present?
