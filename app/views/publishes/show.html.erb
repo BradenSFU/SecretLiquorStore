@@ -46,14 +46,13 @@
 <% end %>
 
 <% if current_user %>
-  <% %>
   <% if liked %>
-    <%= link_to 'Un-like', method: remove_from_likes_list(@publish) %> |
+    <%= link_to 'Un-like', delete_vote_publish_path(@publish), method: :post %> |
   <% elsif disliked %>
-    <%= link_to 'Un-dislike', method: remove_from_likes_list(@publish) %> |
+    <%= link_to 'Un-dislike', delete_vote_publish_path(@publish), method: :post %> |
   <% elsif @publish.user==nil || @publish.user.id != current_user.id %>
-    <%= link_to 'Like', method: add_to_likes(@publish) %> |
-    <%= link_to 'Dislike', method: add_to_dislikes(@publish) %>
+    <%= link_to 'Like', add_like_publish_path(@publish), method: :post %> |
+    <%= link_to 'Dislike', add_dislike_publish_path(@publish), method: :post  %>
   <% end %>
 <% else %>
   <%= link_to 'Like', sign_up_url %> |
