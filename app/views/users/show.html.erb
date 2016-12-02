@@ -30,7 +30,7 @@
     <table id="publishes">
       <% @user.publishes.each do |d| %>
         <tr>
-          <td id="drinkrow"><%= link_to d.Rname, d,{:style=>'color:#FFFFFF;'} %></td>
+          <td id="drinkrow"><%= link_to d.name, d,{:style=>'color:#FFFFFF;'} %></td>
         </tr>
       <% end %>
     </table>

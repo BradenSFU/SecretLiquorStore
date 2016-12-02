@@ -4,7 +4,7 @@ class Publish < ApplicationRecord
   has_many :ingredients, dependent: :destroy
   accepts_nested_attributes_for :ingredients
 
-  validates :Rname, :instructions, :presence => true
+  validates :name, :instructions, :presence => true
   mount_uploader :image, ImageUploader
 
   validates_processing_of :image

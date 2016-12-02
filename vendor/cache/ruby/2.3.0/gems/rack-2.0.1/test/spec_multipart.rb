@@ -639,7 +639,7 @@ true\r
     data = <<-EOF
 --AaB03x\r
 Content-Type: text/plain\r
-Content-Disposition: attachment; name="quoted\\\\chars\\"in\rname"\r
+Content-Disposition: attachment; name="quoted\\\\chars\\"in\name"\r
 \r
 true\r
 --AaB03x--\r
@@ -652,7 +652,7 @@ true\r
     }
     env = Rack::MockRequest.env_for("/", options)
     params = Rack::Multipart.parse_multipart(env)
-    params["quoted\\chars\"in\rname"].must_equal 'true'
+    params["quoted\\chars\"in\name"].must_equal 'true'
   end
 
   it "support mixed case metadata" do

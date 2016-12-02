@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  Rname: MyString
+  name: MyString
   user_id: 1
   drink_id: 1
 
 two:
-  Rname: MyString
+  name: MyString
   user_id: 1
   drink_id: 1

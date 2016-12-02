@@ -5,7 +5,7 @@
   <%= image_tag (@publish.image.blank? ? "no-image.jpg" : @publish.image.thumb.url), size: "200x200", alt: "Image not found." %>
 </div>
 <div class="drinkDetails">
-    <h1 class="drinkName"><%= @publish.Rname %></h1>
+    <h1 class="drinkName"><%= @publish.name %></h1>
     <p>
         <% if @publish.user == nil %>
           <%= "The user who made this recipe was banned"  %>

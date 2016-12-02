@@ -119,6 +119,6 @@ class PublishesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def publish_params
-      params.require(:publish).permit(:Rname, :image, :instructions, :user_id, :drink_id, :remove_image, ingredients_attributes: [:id, :name])
+      params.require(:publish).permit(:name, :image, :instructions, :user_id, :drink_id, :remove_image, ingredients_attributes: [:id, :name])
     end
 end
