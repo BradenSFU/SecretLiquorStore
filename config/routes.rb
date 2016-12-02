@@ -18,10 +18,16 @@ Rails.application.routes.draw do
   get "log_in" => "sessions#new", :as => "log_in"
   get "log_out" => "sessions#destroy", :as => "log_out"
 
-  # Other pages
-  get "just_logged_in", to: 'welcome#just_logged_in', as: "just_logged_in"
-  get "about_us", to: 'welcome#about_us', as: "about_us"
-  root 'welcome#index'
+  # Edit profile
+  get "edit_bio" => "edit_profile#edit_bio", :as => "edit_bio"
+  get 'edit_profile/edit_bio'
+  get 'edit_profile/edit_email_profile'
+
+  # Password configuration
+  get "change_password" => "change_password#change", :as => "change_password"
+  post "change_password" => "change_password#change", :as => "change_password/success"
+  get "reset_password" => "change_password#reset", :as => "reset_password"
+  post "reset_password" => "change_password#reset", :as => "reset_password/success"
 
   # Drinks
   get "/drinks/searched" => 'drinks#drinksearch', as: 'drink_search'
@@ -31,11 +37,10 @@ Rails.application.routes.draw do
   # Errors
   get "/404", to: 'errors#not_found', as: "error_404"
 
-  # Password configuration
-  get "change_password" => "change_password#change", :as => "change_password"
-  post "change_password" => "change_password#change", :as => "change_password/success"
-  get "reset_password" => "change_password#reset", :as => "reset_password"
-  post "reset_password" => "change_password#reset", :as => "reset_password/success"
+  # Other pages
+  root 'welcome#index'
+  get "just_logged_in", to: 'welcome#just_logged_in', as: "just_logged_in"
+  get "about_us", to: 'welcome#about_us', as: "about_us"
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

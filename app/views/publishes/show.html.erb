@@ -6,11 +6,11 @@
 </div>
 <div class="drinkDetails">
     <h1 class="drinkName"><%= @publish.Rname %></h1>
-    <p>Created by:
+    <p>
         <% if @publish.user == nil %>
           <%= "The user who made this recipe was banned"  %>
         <% else %>
-          <%= link_to @publish.user.Username, @publish.user %>
+          Created by: <%= link_to @publish.user.Username, @publish.user %>
         <% end %>
     </p>
 
@@ -31,21 +31,21 @@
 <p class="instructions"><%= @publish.instructions %></p>
 
 
-<% liked = false %>
-<% disliked = false %>
-<% current_user.likes.each do |l| %>
-  <% if l.publish_id == @publish.id %>
-    <% if l.islike %>
-      <% liked = true %>
-      <% break %>
-    <% else %>
-      <% disliked = true %>
+<% if current_user %>
+
+  <% liked = false %>
+  <% disliked = false %>
+  <% current_user.likes.each do |l| %>
+    <% if l.publish_id == @publish.id %>
+      <% if l.islike %>
+        <% liked = true %>
+      <% else %>
+        <% disliked = true %>
+      <% end %>
       <% break %>
     <% end %>
   <% end %>
-<% end %>
 
-<% if current_user %>
   <% if liked %>
     <%= link_to 'Un-like', delete_vote_publish_path(@publish), method: :post %> |
   <% elsif disliked %>
@@ -54,16 +54,17 @@
     <%= link_to 'Like', add_like_publish_path(@publish), method: :post %> |
     <%= link_to 'Dislike', add_dislike_publish_path(@publish), method: :post  %>
   <% end %>
+
 <% else %>
   <%= link_to 'Like', sign_up_url %> |
   <%= link_to 'Dislike', sign_up_url %>
+
 <% end %>
 
 <% if @publish.user && current_user && @publish.user.id == current_user.id %>
   <td><%= link_to 'Edit', edit_publish_path(@publish),{:style=>'color:#FFFFFF;'} %></td><br>
   <td><%= link_to 'Delete', @publish, method: :delete, data: { confirm: 'Are you sure?'} %></td>
 <% end %>
-
 
 </div>
 </div>
