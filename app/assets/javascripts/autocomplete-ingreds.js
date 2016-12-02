@@ -1,6 +1,6 @@
 $(function(){
   // Array ends on line 390
-  var ingrednames = ["Light rum",
+  var ingredNames = ["Light rum",
   "Applejack",
   "Gin",
   "Dark rum",
@@ -389,4 +389,32 @@ $(function(){
   "Cream soda",
   "squeezed orange"]
 
-}
+  $('#autocompleteIngredMain').autocomplete({
+    source: function(request, response) {
+      var results = $.ui.autocomplete.filter(ingredNames, request.term);
+      response(results.slice(0, 10))
+    },
+    select: function(event, ui) {
+      var addedIngred = document.createElement('input');
+        addedIngred.type = 'checkbox';
+        addedIngred.name = ui.item.value;
+        addedIngred.value = ui.item.value;
+        addedIngred.id = ui.item.value;
+        addedIngred.style = 'color:white';
+        addedIngred.checked = 'checked';
+
+      var label = document.createElement('label');
+        label.htmlFor = ui.item.value;
+        var labelText = document.createElement('span');
+          lebelText.appendChild(document.createTextNode(ui.item.value))
+        label.appendChild(labelText);
+
+      $(this).val("");
+      searchIngreds = document.getElementById('searchIngreds');
+      searchIngreds.appendChild(addedIngred);
+      searchIngreds.appendChild(label);
+
+    }
+  });
+
+});

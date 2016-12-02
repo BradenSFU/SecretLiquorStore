@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   get "/drinks/show", to: 'drinks#show', as: "drink_show"
   match "/drinks/search", to: 'drinks#drinkresults', as: 'drink_results', via: [:get, :post]
 
+  get "/drinks/ingredients/search" => 'drinks#ingredstartsearch', as: 'ingred_startsearch'
+
   #Errors
   get "/404", to: 'errors#not_found', as: "error_404"
 
@@ -41,7 +43,7 @@ Rails.application.routes.draw do
   post '/likes' => 'likes#create', as: :like_create
   post '/dislikes' => 'likes#dislike', as: :dislike_create
   #Users
-  
+
   root 'welcome#index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
