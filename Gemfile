@@ -1,8 +1,5 @@
 source 'https://rubygems.org'
 
-# Add likes and dislikes system
-#gem 'acts_as_votable'
-
 # Use carrierwave for image uploads
 gem 'carrierwave', '~> 0.10.0'
 gem 'mini_magick', '~> 4.3'

@@ -45,8 +45,6 @@ class PublishesController < ApplicationController
   def delete_vote
     @publish = Publish.find(params[:id])
     @publish.likes.where(:publish_id => @publish.id, :user_id => current_user.id).destroy_all
-    #@like = Like.find_by_id(params[:id])
-    #@like.delete
     respond_to do |format|
       format.html { redirect_to publish_path(@publish) }
       format.xml  { head :ok }
