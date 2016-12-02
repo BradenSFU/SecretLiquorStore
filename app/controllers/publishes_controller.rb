@@ -30,8 +30,35 @@ class PublishesController < ApplicationController
 
   def destroy_invalid_inputs
     @publish.ingredients.each do |i|
-      i.destroy if !(i.name=~/[A-Za-z]/)
+      i.destroy unless i.name=~/[A-Za-z]/
     end
+  end
+
+  def add_like
+    create_vote(true)
+  end
+
+  def add_dislike
+    create_vote(false)
+  end
+
+  def delete_vote
+    @publish = Publish.find(params[:id])
+    @publish.likes.where(:publish_id => @publish.id, :user_id => current_user.id).destroy_all
+    respond_to do |format|
+      format.html { redirect_to publish_path(@publish) }
+      format.xml  { head :ok }
+    end
+  end
+
+  def create_vote(vote)
+    @publish = Publish.find(params[:id])
+    new_vote = Like.new
+    new_vote.islike = vote
+    current_user.likes << new_vote
+    @publish.likes << new_vote
+    new_vote.save
+    redirect_to(@publish)
   end
 
   # POST /publishes
