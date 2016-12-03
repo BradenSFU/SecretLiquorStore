@@ -31,6 +31,7 @@
       <% @user.publishes.each do |d| %>
         <tr>
           <td id="drinkrow"><%= link_to d.name, d,{:style=>'color:#FFFFFF;'} %></td>
+          <td id="drinkrow"><%= image_tag (d.image.blank? ? "no-image.jpg" : d.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
         </tr>
       <% end %>
     </table>
@@ -38,28 +39,27 @@
       <p>This user did not publish any recipes</p>
     <% end %>
 </div>
-    <br>
+    <br></br><br></br><br></br>
 
 
 <h3>Likes</h3>
-<% likedOne = false %>
 
 <div>
   <table id="Likes">
-  <% @user.likes.each do |l| %>
-    <% next unless l.islike %>
-    <% likedOne = true %>
+  <% @user.likes.where(islike:true).each do |l| %>
     <tr>
-    <% if current_user %>
-      <td><%= link_to 'Drink' %></td>
-      <td><%= link_to 'Remove', l, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <% @tempPublishObj = Publish.find_by(:id => l.publish_id) %>
+    <td id="drinkrow"><%= link_to @tempPublishObj.name, @tempPublishObj %></td>
+    <td id="drinkrow"><%= image_tag (@tempPublishObj.image.blank? ? "no-image.jpg" : @tempPublishObj.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
+    <% if @user == current_user %>
+      <td id="drinkrow"><%= link_to 'Remove', l, method: :delete, data: { confirm: 'Are you sure?' } %></td>
     <% end %>
     </tr>
   <% end %>
   </table>
 </div>
 
-<% unless likedOne %>
+<% if @user.likes.where(islike:true).count == 0 %>
   <p>This user has no likes</p>
 <% end %>
 

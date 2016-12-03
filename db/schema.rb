@@ -34,11 +34,10 @@ ActiveRecord::Schema.define(version: 20161202051704) do
     t.string   "name"
     t.integer  "user_id"
     t.integer  "drink_id"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.string   "image"
     t.text     "instructions"
-    t.string   "ingredientsList", default: [],              array: true
   end
 
   create_table "users", force: :cascade do |t|

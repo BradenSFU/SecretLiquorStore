@@ -14,6 +14,10 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
+    if current_user
+      redirect_to root_url
+      return
+    end
     @user = User.new
   end
 
