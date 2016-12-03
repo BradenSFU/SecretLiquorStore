@@ -9,13 +9,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :sort_by_popular_drinks
   def sort_by_popular_drinks
-    #Publish.all(:order => "likes_total DESC")
-    Publish
-    .joins(:likes)
-    .where(["likes.islike"])
-    .group("publishes.id")
-    .order("publishes.id DESC")
-    #Publish.first.likes.select("likes.islike, count(1) as like_count").group('likes.islike').order('like_count desc')
+    Publish.joins(:likes).group("publishes.id").merge(Like.where(:islike => true).order(count: :desc))
   end
 
   helper_method :drink_in_database
