@@ -56,7 +56,7 @@ class IngredSearchController < ApplicationController
             if @found == 0 #if we didnt find the drink we push the drink into our global array
               @GlobalArray.push(item)
             end
-            # @GlobalArray.sort! { |a, b| }
+            @GlobalArray.sort! { |a, b| -a[1] <=> -b[1] }
 
             @found = 0 #we set the found variable back to 0 every item in the local array
 
