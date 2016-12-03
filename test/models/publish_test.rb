@@ -8,4 +8,9 @@ class PublishTest < ActiveSupport::TestCase
  publish = @publish
  assert publish.valid?
  end
+ test "missing name" do
+   publish = @publish
+   Rname = nil
+   assert publish.valid?
+ end
 end

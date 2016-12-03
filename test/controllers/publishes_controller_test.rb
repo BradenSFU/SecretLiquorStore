@@ -42,7 +42,6 @@ class PublishesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Publish.count', -1) do
       delete publish_url(@publish)
     end
-
     assert_redirected_to publishes_url
   end
 end
