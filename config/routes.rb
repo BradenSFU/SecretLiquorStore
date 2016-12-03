@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resources :sessions
 
   get 'ingred_search' => 'ingred_search#show'
-  get "/ingredients/search" => 'drinks#ingredstartsearch', as: 'ingred_startsearch'
+  get "/ingredients/search", to: 'ingred_search#ingredstartsearch', as: 'ingred_startsearch'
 
   #Sessions
   get "log_in" => "sessions#new", :as => "log_in"

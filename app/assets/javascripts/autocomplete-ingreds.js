@@ -389,18 +389,20 @@ $(function(){
   "Cream soda",
   "squeezed orange"]
 
+  // Autocomplete function for ingredient search pagew
   $('#autocompleteIngredMain').autocomplete({
     source: function(request, response) {
       var results = $.ui.autocomplete.filter(ingredNames, request.term);
       response(results.slice(0, 10))
     },
+
     select: function(event, ui) {
       event.preventDefault();
       $(this).val("");
       var addedIngred = document.createElement('input');
         addedIngred.type = 'checkbox';
         addedIngred.class = 'checklist';
-        addedIngred.name = 'ingreds';
+        addedIngred.name = ui.item.value;
         addedIngred.value = ui.item.value;
         addedIngred.id = ui.item.value;
         addedIngred.style = 'color:white';

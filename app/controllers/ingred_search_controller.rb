@@ -13,20 +13,19 @@ class IngredSearchController < ApplicationController
     @loopcounter=0 #only used for first loop to populate globalarray
     @found = 0 #boolean for whether we found the item in the globalarray
     @GlobalArray = Array.new
-    @LoopArray = Array.new
 
     params.each do |item|
       if !(['utf8', 'button', 'controller', 'action'].include? item)
 
       #puts @loopcounter
       puts item
+      @LoopArray = Array.new
       url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{item}"
       uri = URI(url)
       response = Net::HTTP.get(uri)
       parsed = JSON.parse(response)
       if parsed['drinks'] == nil
-        puts error
-        redirect_to error_404_url
+        puts 'nil return'
       elsif @loopcounter == 0 # first loop only, populates @GlobalArray
         puts "entered first loop"
         @loopcounter = @loopcounter+1
@@ -57,6 +56,7 @@ class IngredSearchController < ApplicationController
             if @found == 0 #if we didnt find the drink we push the drink into our global array
               @GlobalArray.push(item)
             end
+            # @GlobalArray.sort! { |a, b| }
 
             @found = 0 #we set the found variable back to 0 every item in the local array
 
