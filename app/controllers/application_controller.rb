@@ -22,4 +22,36 @@ class ApplicationController < ActionController::Base
     return @oneDrink
   end
 
+  helper_method :like_API_drink
+  def like_API_drink(api_drink)
+    create_publish_and_vote(api_drink, true)
+  end
+
+  helper_method :dislike_API_drink
+  def dislike_API_drink(api_drink)
+    create_publish_and_vote(api_drink, false)
+  end
+
+  private
+  def create_publish_and_vote(api_drink, vote)
+    @publish = Publish.new
+    @publish.user_id = 21421352
+    @publish.name = api_drink['strDrink']
+    for i in 1..15 do
+      next if api_drink["strIngredient#{i}"] == ""
+      @ingredient = Ingredient.new
+      @ingredient.publish_id = 2134235
+      @ingredient.name = api_drink["strMeasure#{i}"] + api_drink["strIngredient#{i}"]
+      @publish.ingredients << @ingredient
+      @ingredient.save
+    end
+    @publish.instructions = api_drink['strInstructions']
+    @publish.save
+    @like = Like.new
+    @like.islike = true
+    @like.user_id = current_user
+    @like.publish_id = 2134235
+    @like.save
+  end
+
 end
