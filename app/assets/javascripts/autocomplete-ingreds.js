@@ -389,7 +389,7 @@ $(function(){
   "Cream soda",
   "squeezed orange"]
 
-  // Autocomplete function for ingredient search pagew
+  // Autocomplete function for ingredient search page
   $('#autocompleteIngredMain').autocomplete({
     source: function(request, response) {
       var results = $.ui.autocomplete.filter(ingredNames, request.term);
@@ -398,28 +398,43 @@ $(function(){
 
     select: function(event, ui) {
       event.preventDefault();
+      var spacesRemoved = ui.item.value.replace(/ /g, '_');
+      if (!document.querySelector('#'+spacesRemoved)) {
+        var addedIngred = document.createElement('input');
+          addedIngred.type = 'checkbox';
+          addedIngred.class = 'checklist';
+          addedIngred.name = spacesRemoved;
+          addedIngred.value = ui.item.value;
+          addedIngred.id = spacesRemoved;
+          addedIngred.style = 'color:white';
+          addedIngred.checked = 'checked';
+
+        var label = document.createElement('label');
+          label.htmlFor = spacesRemoved;
+          // var labelText = document.createElement('span');
+          //   lebelText.appendChild(document.createTextNode(ui.item.value));
+          label.appendChild(document.createTextNode(ui.item.value));
+
+        searchIngreds = document.getElementById('searchIngreds');
+        searchIngreds.appendChild(addedIngred);
+        searchIngreds.appendChild(label);
+        var brChild = document.createElement('br');
+          brChild.id = spacesRemoved+'Br';
+        searchIngreds.appendChild(brChild);
+
+        // Adding event listener for the new checkbox
+        // To delete it when it is unchecked
+        document.querySelector('#'+addedIngred.id).addEventListener('change', removeCheckbox);
+      }
       $(this).val("");
-      var addedIngred = document.createElement('input');
-        addedIngred.type = 'checkbox';
-        addedIngred.class = 'checklist';
-        addedIngred.name = ui.item.value;
-        addedIngred.value = ui.item.value;
-        addedIngred.id = ui.item.value;
-        addedIngred.style = 'color:white';
-        addedIngred.checked = 'checked';
-
-      var label = document.createElement('label');
-        label.htmlFor = ui.item.value;
-        // var labelText = document.createElement('span');
-        //   lebelText.appendChild(document.createTextNode(ui.item.value));
-        label.appendChild(document.createTextNode(ui.item.value));
-
-      searchIngreds = document.getElementById('searchIngreds');
-      searchIngreds.appendChild(addedIngred);
-      searchIngreds.appendChild(label);
-      searchIngreds.appendChild(document.createElement('br'))
-
     }
   });
 
 });
+
+// removes checkbox on uncheck
+function removeCheckbox() {
+  $('label[For='+this.id+']').remove();
+  $('br[id='+this.id+'Br]').remove();
+  $(this).remove();
+}
