@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :sessions
 
   get 'ingred_search' => 'ingred_search#show'
+  match  '/ingredients/results', to: 'ingred_search#pagehandler', as: 'ingred_page', via: [:get, :post]
   get "/ingredients/search", to: 'ingred_search#ingredstartsearch', as: 'ingred_startsearch'
 
   #Sessions

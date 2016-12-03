@@ -1,6 +1,6 @@
 class IngredSearchController < ApplicationController
 
-  def ingredSearch
+  def ingredstartsearch
 
   end
 
@@ -17,53 +17,67 @@ class IngredSearchController < ApplicationController
     params.each do |item|
       if !(['utf8', 'button', 'controller', 'action'].include? item)
 
-      #puts @loopcounter
-      puts item
-      @LoopArray = Array.new
-      url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{item}"
-      uri = URI(url)
-      response = Net::HTTP.get(uri)
-      parsed = JSON.parse(response)
-      if parsed['drinks'] == nil
-        puts 'nil return'
-      elsif @loopcounter == 0 # first loop only, populates @GlobalArray
-        puts "entered first loop"
-        @loopcounter = @loopcounter+1
-        @results = parsed['drinks']
-        @results.each do |item|
-          @GlobalArray.push([item['strDrink'],counter])
-        end
-        #puts @GlobalArray[0][1]
-      else #loopcounter isnt 0; we start making localArrays
-        puts "entered second+ loop"
-        if parsed['drinks'][0]['strDrink'] != item
+        #puts @loopcounter
+        puts item
+        @LoopArray = Array.new
+        url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{item}"
+        uri = URI(url)
+        response = Net::HTTP.get(uri)
+        parsed = JSON.parse(response)
+        if parsed['drinks'] == nil
+          puts 'nil return'
+        elsif @loopcounter == 0 # first loop only, populates @GlobalArray
+          puts "entered first loop"
+          @loopcounter = @loopcounter+1
           @results = parsed['drinks']
-          @results.each do |item| #populate local array
-            @LoopArray.push([item['strDrink'],counter])
+          @results.each do |item|
+            item['strDrink'].gsub!("'", '\%27')
+            @GlobalArray.push([item['strDrink'],counter])
           end
-          @LoopArray.each do |item| #take the item in the search..
+          #puts @GlobalArray[0][1]
+        else #loopcounter isnt 0; we start making localArrays
+          puts "entered second+ loop"
+          if parsed['drinks'][0]['strDrink'] != item
+            @results = parsed['drinks']
+            @results.each do |item| #populate local array
+              item['strDrink'].gsub!("'", '\%27')
+              @LoopArray.push([item['strDrink'],counter])
+            end
+            @LoopArray.each do |item| #take the item in the search..
 
-            @GlobalArray.each do |gitem| #..and compare with @GlobalArray
-              #puts item[0]
-              #puts gitem[0]
-              if item[0] == gitem[0] #compares name
-                puts "#{item[0]} == #{gitem[0]}"
-                gitem[1] = gitem[1] +1 #if true, we increment the counter attribute & change the found variable to 1
-                @found = 1
+              @GlobalArray.each do |gitem| #..and compare with @GlobalArray
+                #puts item[0]
+                #puts gitem[0]
+                if item[0] == gitem[0] #compares name
+                  puts "#{item[0]} == #{gitem[0]}"
+                  gitem[1] = gitem[1] +1 #if true, we increment the counter attribute & change the found variable to 1
+                  @found = 1
+                end
               end
+
+              if @found == 0 #if we didnt find the drink we push the drink into our global array
+                @GlobalArray.push(item)
+              end
+
+              @found = 0 #we set the found variable back to 0 every item in the local array
             end
-
-            if @found == 0 #if we didnt find the drink we push the drink into our global array
-              @GlobalArray.push(item)
-            end
-            @GlobalArray.sort! { |a, b| -a[1] <=> -b[1] }
-
-            @found = 0 #we set the found variable back to 0 every item in the local array
-
           end
-        end
         end
       end
     end
+    @GlobalArray.sort! { |a, b| -a[1] <=> -b[1] }
+    @page = 1
+    @pagerange = @GlobalArray[(@page.to_i-1)*10..[@page.to_i*10-1, @GlobalArray.size-1].min]
+  end
+
+  def pagehandler
+    if params[:page] == nil
+      @page = 1
+    else
+      @page = params[:page]
+    end
+    @GlobalArray = params[:results]
+    @pagerange = @GlobalArray[(@page.to_i-1)*10..[@page.to_i*10-1, @GlobalArray.size-1].min]
+    render 'show'
   end
 end
