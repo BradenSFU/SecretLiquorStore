@@ -5,20 +5,67 @@
   <%= image_tag (@publish.image.blank? ? "no-image.jpg" : @publish.image.thumb.url), size: "200x200", alt: "Image not found." %>
 </div>
 <div class="drinkDetails">
-    <h1 class="drinkName"><%= @publish.Rname %></h1>
-    <p>Created by:
+    <h1 class="drinkName"><%= @publish.name %></h1>
+    <p>
         <% if @publish.user == nil %>
           <%= "The user who made this recipe was banned"  %>
         <% else %>
-          <%= link_to @publish.user.Username, @publish.user %>
+          Created by: <%= link_to @publish.user.Username, @publish.user %>
         <% end %>
-    <p>
-<ul class="ingredients">
-  <li style="font-size:18px;">
-    <%= @publish.ingredients %>
+    </p>
+
+<ul class="ingredients", style="font-size:18px;">
+  <% @publish.ingredients.each do |i| %>
+    <li style="font-size:18px;"><%= i.name %></li>
+  <% end %>
+  </strong>
+</p>
+
+    <br></br>
+    <strong>
+      Likes: <%= count_like(@publish) %><br>
+      Dislikes: <%= count_dislike(@publish) %>
+    </strong>
   </li>
 </ul>
 <p class="instructions"><%= @publish.instructions %></p>
+
+
+<% if current_user %>
+
+  <% liked = false %>
+  <% disliked = false %>
+  <% current_user.likes.each do |l| %>
+    <% if l.publish_id == @publish.id %>
+      <% if l.islike %>
+        <% liked = true %>
+      <% else %>
+        <% disliked = true %>
+      <% end %>
+      <% break %>
+    <% end %>
+  <% end %>
+
+  <% if liked %>
+    <%= link_to 'Un-like', delete_vote_publish_path(@publish), method: :post %> |
+  <% elsif disliked %>
+    <%= link_to 'Un-dislike', delete_vote_publish_path(@publish), method: :post %> |
+  <% elsif @publish.user==nil || @publish.user.id != current_user.id %>
+    <%= link_to 'Like', add_like_publish_path(@publish), method: :post %> |
+    <%= link_to 'Dislike', add_dislike_publish_path(@publish), method: :post  %>
+  <% end %>
+
+<% else %>
+  <%= link_to 'Like', sign_up_url %> |
+  <%= link_to 'Dislike', sign_up_url %>
+
+<% end %>
+
+<% if @publish.user && current_user && @publish.user.id == current_user.id %>
+  <td><%= link_to 'Edit', edit_publish_path(@publish),{:style=>'color:#FFFFFF;'} %></td><br>
+  <td><%= link_to 'Delete', @publish, method: :delete, data: { confirm: 'Are you sure?'} %></td>
+<% end %>
+
 </div>
 </div>
 </div>

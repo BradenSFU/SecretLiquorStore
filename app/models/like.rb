@@ -1,3 +1,4 @@
 class Like < ApplicationRecord
-  belongs_to :user, dependent: :destroy
+  belongs_to :user
+  belongs_to :publish
 end

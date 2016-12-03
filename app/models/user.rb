@@ -1,14 +1,16 @@
 class User < ApplicationRecord
-  has_many :likes
   has_many :publishes
+  has_many :likes, dependent: :destroy
 
   attr_accessor :Password
+
   before_save :CreateHashedPassword
+  before_update :check_password
 
   EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :Username, :presence => true, :uniqueness => true, :length => 3..20
   validates :Email, :presence => true, :uniqueness => true, :format => EMAIL
-  validates :Password, :presence => true, :confirmation => true, :length => 6..20
+  validates :Password, :presence => true, :confirmation => true, :length => 6..20, on: :create
 
   def CreateHashedPassword
     return unless self.Password.present?
@@ -25,4 +27,23 @@ class User < ApplicationRecord
     end
   end
 
+  def is_liked()
+    if Like.where(:publish, :user_id => self.id).present?
+      Like.where(:publish, :user_id => self.id).last.islike==true
+    end
+  end
+
+  def is_disliked()
+    if Like.where(:publish, :user_id => self.id).present?
+      Like.where(:publish, :user_id => self.id).last.islike==false
+    end
+  end
+  
+private
+  def check_password
+    is_ok = self.Password.nil? || self.Password.empty? || self.Password.length >= 6
+
+      self.errors[:Password] << "Password is too short (minimum is 6 characters)" unless is_ok
+      is_ok
+    end
 end

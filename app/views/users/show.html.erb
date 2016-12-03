@@ -18,8 +18,11 @@
       <%= link_to 'Change Password', change_password_url, {:style=>'color:#FFFFFF;'} %></p>
     <% elsif current_user %>
     <% end %>
+<br>
+
   </div>
 </div>
+
 <div id="publishtable">
   <br>
   <p><%= "Recipes made by " + @user.Username%></p>
@@ -27,11 +30,8 @@
     <table id="publishes">
       <% @user.publishes.each do |d| %>
         <tr>
-          <td id="drinkrow"><%= link_to d.Rname, d,{:style=>'color:#FFFFFF;'} %></td>
-          <% if current_user %>
-            <td><%= link_to 'Edit', edit_publish_path(d),{:style=>'color:#FFFFFF;'} %></td>
-            <td><%= link_to 'Delete', d, method: :delete, data: { confirm: 'Are you sure?'} %></td>
-          <% end %>
+          <td id="drinkrow"><%= link_to d.name, d,{:style=>'color:#FFFFFF;'} %></td>
+          <td id="drinkrow"><%= image_tag (d.image.blank? ? "no-image.jpg" : d.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
         </tr>
       <% end %>
     </table>
@@ -39,24 +39,29 @@
       <p>This user did not publish any recipes</p>
     <% end %>
 </div>
-    <br>
-    <h3>Likes</h3>
+    <br></br><br></br><br></br>
+
+
+<h3>Likes</h3>
+
 <div>
-    <% if @user.likes.size > 0 %>
-    <table id="Likes">
-      <% @user.likes.each do |l| %>
-        <tr>
-        <!-- Add drink attributes here -->
-          <% if current_user %>
-            <td><%= link_to 'Remove', d, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-            <% end %>
-          </tr>
-          <% end %>
-        </table>
-        <% else %>
-          <p>This user has no likes</p>
-        <% end %>
+  <table id="Likes">
+  <% @user.likes.where(islike:true).each do |l| %>
+    <tr>
+    <% @tempPublishObj = Publish.find_by(:id => l.publish_id) %>
+    <td id="drinkrow"><%= link_to @tempPublishObj.name, @tempPublishObj %></td>
+    <td id="drinkrow"><%= image_tag (@tempPublishObj.image.blank? ? "no-image.jpg" : @tempPublishObj.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
+    <% if @user == current_user %>
+      <td id="drinkrow"><%= link_to 'Remove', l, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <% end %>
+    </tr>
+  <% end %>
+  </table>
 </div>
+
+<% if @user.likes.where(islike:true).count == 0 %>
+  <p>This user has no likes</p>
+<% end %>
 
 </div>
 </div>

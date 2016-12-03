@@ -14,11 +14,16 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
+    if current_user
+      redirect_to root_url
+      return
+    end
     @user = User.new
   end
 
   # GET /users/1/edit
   def edit
+    #redirect_to edit_user_path(current_user) if @user.id != current_user.id
   end
 
   # POST /users
@@ -27,15 +32,16 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     @user.Isadmin = false if @user.Isadmin == ''
     if @user.save
-      if @user.Isadmin == false
-        redirect_to just_logged_in_url, :notice => "Signed up!"
+      if @user.Isadmin
+        redirect_to users_url
       else
-        redirect_to root_url
+        redirect_to just_logged_in_url, :notice => "Signed up!"
       end
       session[:user_id] = @user.id
     else
       render "new"
     end
+  end
 =begin
     respond_to do |format|
       if @user.save
@@ -47,7 +53,6 @@ class UsersController < ApplicationController
       end
     end
 =end
-  end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
@@ -83,6 +88,8 @@ class UsersController < ApplicationController
     def user_params
       params.require(:user).permit(:Username, :Password, :Password_confirmation, :Email, :Biography, :Isadmin)
     end
+
+
 
     def check_admin
       redirect_to(root_url) unless current_user && current_user.Isadmin?

@@ -17,5 +17,22 @@
   </ul>
   <p class="instructions"><%= @drink['strInstructions'] %></p>
 </div>
+
+
+<% if drink_in_database(@drink['strDrink']) %>
+
+<% else %>
+
+  <% if current_user %>
+    <%= link_to 'Like' %> |
+    <%= link_to 'Dislike' %>
+  <% else %>
+    <%= link_to 'Like', sign_up_url %> |
+    <%= link_to 'Dislike', sign_up_url %>
+  <% end %>
+
+<% end %>
+
+
 </div>
 </div>

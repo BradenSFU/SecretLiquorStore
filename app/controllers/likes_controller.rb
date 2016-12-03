@@ -25,7 +25,6 @@ class LikesController < ApplicationController
   # POST /likes.json
   def create
     @like = Like.new(like_params)
-
     respond_to do |format|
       if @like.save
         format.html { redirect_to @like, notice: 'Like was successfully created.' }
@@ -56,7 +55,7 @@ class LikesController < ApplicationController
   def destroy
     @like.destroy
     respond_to do |format|
-      format.html { redirect_to likes_url, notice: 'Like was successfully destroyed.' }
+      format.html { redirect_to :back, notice: 'Un-like was successful.' }
       format.json { head :no_content }
     end
   end

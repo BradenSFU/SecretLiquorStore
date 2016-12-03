@@ -5,19 +5,21 @@
 <table>
   <thead>
     <tr>
-      <th>Rname</th>
-      <th>User</th>
-      <th>Drink</th>
-      <th colspan="3"></th>
+      <th>Name</th>
+      <th>Image</th>
+      <th>Ingredients</th>
+      <th>Instructions</th>
+      <th colspan="1"></th>
     </tr>
   </thead>
 
   <tbody>
     <% @publishes.each do |publish| %>
       <tr>
-        <td><%= publish.Rname %></td>
-        <td><%= publish.user_id %></td>
-        <td><%= publish.drink_id %></td>
+        <td><%= link_to publish.name, publish %></td>
+        <td><%= image_tag (publish.image.blank? ? "no-image.jpg" : publish.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
+        <td><%= publish.ingredients %></td>
+        <td><%= publish.instructions %></td>
         <td><%= link_to 'Show', publish %></td>
         <!--<td><%= link_to 'Edit', edit_publish_path(publish) %></td>
         <td><%= link_to 'Destroy', publish, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
