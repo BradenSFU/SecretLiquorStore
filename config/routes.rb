@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :ingredients
   resources :likes
 
+
   resources :publishes do
     member do
       post 'add_like'
@@ -44,10 +45,6 @@ Rails.application.routes.draw do
   root 'welcome#index'
   get "just_logged_in", to: 'welcome#just_logged_in', as: "just_logged_in"
   get "about_us", to: 'welcome#about_us', as: "about_us"
-
-  #Manage likes and dislikes
-  post '/likes' => 'likes#create', as: :like_create
-  post '/dislikes' => 'likes#dislike', as: :dislike_create
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
