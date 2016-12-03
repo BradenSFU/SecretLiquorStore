@@ -55,8 +55,9 @@
           </li>
 
           <li id="searchIngredfield">
-            <%= form_tag(ingred_startsearch_path, :method => 'get') do %>
-              <%= button_tag 'Search By Ingredients', :class => 'submitButton' %>
+
+            <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
+              <%= link_to "Ingredient Search", ingred_startsearch_path, :onclick => "$('#form_id').submit()" %>
             <% end %>
           </li>
 

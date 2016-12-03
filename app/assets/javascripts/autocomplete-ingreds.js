@@ -389,6 +389,11 @@ $(function(){
   "Cream soda",
   "squeezed orange"]
 
+  $(".submitButton").click(function(event) {
+  event.preventDefault();
+  $("ingred_startsearch_path").submit();
+});
+
   // Autocomplete function for ingredient search page
   $('#autocompleteIngredMain').autocomplete({
     source: function(request, response) {

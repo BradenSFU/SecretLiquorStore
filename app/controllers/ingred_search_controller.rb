@@ -13,13 +13,12 @@ class IngredSearchController < ApplicationController
     @loopcounter=0 #only used for first loop to populate globalarray
     @found = 0 #boolean for whether we found the item in the globalarray
     @GlobalArray = Array.new
+    @LoopArray = Array.new
 
     params.each do |item|
+      @LoopArray.clear
       if !(['utf8', 'button', 'controller', 'action'].include? item)
 
-      #puts @loopcounter
-      puts item
-      @LoopArray = Array.new
       url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{item}"
       uri = URI(url)
       response = Net::HTTP.get(uri)
