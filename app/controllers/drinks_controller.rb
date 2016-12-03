@@ -38,6 +38,7 @@ def drinkresults
   @pagerange = @results[(@page.to_i-1)*10..[@page.to_i*10-1, @results.size-1].min]
 end
 
+# Should be removed
 def ingredstartsearch
   #params[:ingredient]
   string = "gin"
