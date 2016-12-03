@@ -38,6 +38,7 @@ class User < ApplicationRecord
       Like.where(:publish, :user_id => self.id).last.islike==false
     end
   end
+  
 private
   def check_password
     is_ok = self.Password.nil? || self.Password.empty? || self.Password.length >= 6

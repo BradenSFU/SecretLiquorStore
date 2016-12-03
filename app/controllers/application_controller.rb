@@ -6,22 +6,20 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
-  def password_changed?
-    !@new_password.blank? or encrypted_password.blank?
+
+  helper_method :sort_by_popular_drinks
+  def sort_by_popular_drinks
+    Publish.joins(:likes).group("publishes.id").merge(Like.where(:islike => true).order(count: :desc))
   end
 
-  helper_method :add_to_likes
-  def add_to_likes(publish)
-    Like.create_vote(publish,current_user,true)
+  helper_method :drink_in_database
+  def drink_in_database(name)
+    begin
+      @oneDrink = Publish.find(:name => name)
+    rescue ActiveRecord::RecordNotFound
+      return nil
+    end
+    return @oneDrink
   end
 
-  helper_method :add_to_dislikes
-  def add_to_dislikes(publish)
-    Like.create_vote(publish,current_user,false)
-  end
-
-  helper_method :remove_from_likes_list
-  def remove_from_likes_list(publish)
-    Like.remove_from_likes_list_on_model(publish,current_user)
-  end
 end

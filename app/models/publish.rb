@@ -1,8 +1,10 @@
 class Publish < ApplicationRecord
   belongs_to :user
   has_many :likes, dependent: :destroy
+  has_many :ingredients, dependent: :destroy
+  accepts_nested_attributes_for :ingredients
 
-  validates :Rname, :ingredients, :instructions, :presence => true
+  validates :name, :instructions, :presence => true
   mount_uploader :image, ImageUploader
 
   validates_processing_of :image
