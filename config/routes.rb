@@ -13,6 +13,9 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'ingred_search' => 'ingred_search#show'
+  get "/ingredients_search", to: 'ingred_search#ingredstartsearch', as: 'ingred_startsearch'
+
   # Sessions
   get "sign_up" => "users#new", :as => "sign_up"
   get "log_in" => "sessions#new", :as => "log_in"

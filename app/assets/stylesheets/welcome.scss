@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-p, h1, li, span {
+p, h1, li, span, label {
   color:white;
 }
 
@@ -12,6 +12,8 @@ p, h1, li, span {
 
 .submitButton {
   color:black;
+  margin: 12px;
+  margin-top: 13px;
 }
 #randomblock{
   width: 600px;
