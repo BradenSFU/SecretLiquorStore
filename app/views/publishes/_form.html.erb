@@ -18,7 +18,7 @@
 
   <div class="field">
     <p class="smalltag"><%= f.label :Drink_Name %></p>
-    <%= f.text_field :Rname %>
+    <%= f.text_field :name %>
   </div>
 
   <div class="field">
@@ -30,10 +30,14 @@
     <% end %>
   </div>
 
+  <br></br>
   <div class="field">
     <p class="smalltag"><%= f.label :Ingredients %></p>
-    <%= f.text_area :ingredients %>
+    <%= f.fields_for :ingredients do |builder| %>
+      <%= builder.text_field :name %><br/>
+    <% end %>
   </div>
+  <br></br>
 
   <div class="field">
     <p class="smalltag"><%= f.label :instructions %></p>

@@ -14,12 +14,18 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
+    if current_user
+      redirect_to root_url
+      return
+    end
     @user = User.new
   end
 
   # GET /users/1/edit
   def edit
-end
+    #redirect_to edit_user_path(current_user) if @user.id != current_user.id
+  end
+
   # POST /users
   # POST /users.json
   def create

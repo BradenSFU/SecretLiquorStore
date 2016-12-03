@@ -7,7 +7,7 @@ end
 
 def drinksearch
   if params[:searchBarDrink] == ''
-    redirect_to error_404_url
+    redirect_to root_url
   end
   params[:searchBarDrink].gsub!("'", '\%27')
   # puts params[:searchBarDrink]
@@ -16,7 +16,8 @@ def drinksearch
   response = Net::HTTP.get(uri)
   parsed = JSON.parse(response)
   if parsed['drinks'] == nil
-    redirect_to error_404_url
+    redirect_to root_url
+    flash.alert = "No matched drinks found"
   else
     if parsed['drinks'][0]['strDrink'] != params[:searchBarDrink]
       @results = parsed['drinks']
