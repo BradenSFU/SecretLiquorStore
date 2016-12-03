@@ -395,9 +395,12 @@ $(function(){
       response(results.slice(0, 10))
     },
     select: function(event, ui) {
+      event.preventDefault();
+      $(this).val("");
       var addedIngred = document.createElement('input');
         addedIngred.type = 'checkbox';
-        addedIngred.name = ui.item.value;
+        addedIngred.class = 'checklist';
+        addedIngred.name = 'ingreds';
         addedIngred.value = ui.item.value;
         addedIngred.id = ui.item.value;
         addedIngred.style = 'color:white';
@@ -405,14 +408,14 @@ $(function(){
 
       var label = document.createElement('label');
         label.htmlFor = ui.item.value;
-        var labelText = document.createElement('span');
-          lebelText.appendChild(document.createTextNode(ui.item.value))
-        label.appendChild(labelText);
+        // var labelText = document.createElement('span');
+        //   lebelText.appendChild(document.createTextNode(ui.item.value));
+        label.appendChild(document.createTextNode(ui.item.value));
 
-      $(this).val("");
       searchIngreds = document.getElementById('searchIngreds');
       searchIngreds.appendChild(addedIngred);
       searchIngreds.appendChild(label);
+      searchIngreds.appendChild(document.createElement('br'))
 
     }
   });

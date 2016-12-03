@@ -15,7 +15,9 @@ class IngredSearchController < ApplicationController
     @GlobalArray = Array.new
     @LoopArray = Array.new
 
-    @stringarr.each do |item|
+    params.each do |item|
+      if !(['utf8', 'button', 'controller', 'action'].include? item)
+
       #puts @loopcounter
       puts item
       url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{item}"
@@ -59,6 +61,7 @@ class IngredSearchController < ApplicationController
             @found = 0 #we set the found variable back to 0 every item in the local array
 
           end
+        end
         end
       end
     end

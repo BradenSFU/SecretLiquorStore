@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :sessions
 
   get 'ingred_search' => 'ingred_search#show'
+  get "/ingredients/search" => 'drinks#ingredstartsearch', as: 'ingred_startsearch'
 
   #Sessions
   get "log_in" => "sessions#new", :as => "log_in"
@@ -21,8 +22,6 @@ Rails.application.routes.draw do
   get "/drinks/searched" => 'drinks#drinksearch', as: 'drink_search'
   get "/drinks/show", to: 'drinks#show', as: "drink_show"
   match "/drinks/search", to: 'drinks#drinkresults', as: 'drink_results', via: [:get, :post]
-
-  get "/drinks/ingredients/search" => 'drinks#ingredstartsearch', as: 'ingred_startsearch'
 
   #Errors
   get "/404", to: 'errors#not_found', as: "error_404"
