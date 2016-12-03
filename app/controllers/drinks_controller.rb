@@ -39,4 +39,33 @@ def drinkresults
   @pagerange = @results[(@page.to_i-1)*10..[@page.to_i*10-1, @results.size-1].min]
 end
 
+def add_like(api_drink)
+  create_publish_and_vote(api_drink, true)
+end
+
+def add_dislike(api_drink)
+  create_publish_and_vote(api_drink, false)
+end
+
+def create_publish_and_vote(api_drink, vote)
+  @publish = Publish.new
+  @publish.user_id = 21421352
+  @publish.name = api_drink['strDrink']
+  for i in 1..15 do
+    next if api_drink["strIngredient#{i}"] == ""
+    @ingredient = Ingredient.new
+    @ingredient.publish_id = 2134235
+    @ingredient.name = api_drink["strMeasure#{i}"] + api_drink["strIngredient#{i}"]
+    @publish.ingredients << @ingredient
+    @ingredient.save
+  end
+  @publish.instructions = api_drink['strInstructions']
+  @publish.save
+  @like = Like.new
+  @like.islike = true
+  @like.user_id = current_user
+  @like.publish_id = 2134235
+  @like.save
+end
+
 end

@@ -36,8 +36,8 @@
 <% if @ApiDrink == nil %>
 
   <% if current_user %>
-    <%= link_to 'Like', like_API_drink(@drink) %> |
-    <%= link_to 'Dislike', dislike_API_drink(@drink) %>
+    <%= link_to 'Like', add_like_drink_path(@drink) %> |
+    <%= link_to 'Dislike', add_dislike_drink_path(@drink) %>
   <% else %>
     <%= link_to 'Like', sign_up_url %> |
     <%= link_to 'Dislike', sign_up_url %>
@@ -64,7 +64,7 @@
       <%= link_to 'Un-like', delete_vote_publish_path(@ApiDrink), method: :post %> |
     <% elsif disliked %>
       <%= link_to 'Un-dislike', delete_vote_publish_path(@ApiDrink), method: :post %> |
-    <% elsif @ApiDrink.user==nil || @ApiDrink.user.id != current_user.id %>
+    <% else %>
       <%= link_to 'Like', add_like_publish_path(@ApiDrink), method: :post %> |
       <%= link_to 'Dislike', add_dislike_publish_path(@ApiDrink), method: :post  %>
     <% end %>
