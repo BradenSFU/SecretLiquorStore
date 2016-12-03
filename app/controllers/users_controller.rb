@@ -23,7 +23,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    redirect_to edit_user_path(current_user) if @user.id != current_user.id
+    #redirect_to edit_user_path(current_user) if @user.id != current_user.id
   end
 
   # POST /users
