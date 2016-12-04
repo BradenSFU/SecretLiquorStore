@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :ingredients
   resources :likes
 
+
   resources :publishes do
     member do
       post 'add_like'
@@ -12,6 +13,11 @@ Rails.application.routes.draw do
       post 'delete_vote'
     end
   end
+
+  # Ingredient Search
+  get 'ingred_search' => 'ingred_search#show'
+  match  '/ingreds/results', to: 'ingred_search#pagehandler', as: 'ingred_page', via: [:get, :post]
+  get "/ingreds/search", to: 'ingred_search#ingredstartsearch', as: 'ingred_startsearch'
 
   # Sessions
   get "sign_up" => "users#new", :as => "sign_up"

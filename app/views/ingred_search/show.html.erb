@@ -1,0 +1,33 @@
+<div class='pagediv'>
+  <%= button_to("Prev", ingred_page_path(:page => @page.to_i-1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <span class="pageLinks">Page <%= @page.to_i %></span>
+  <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
+</div>
+
+<div class='searchResults'>
+  <% @pagerange.each_slice(2) do |result, count| %>
+    <% puts 'result:'
+    puts result
+    url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{result}"
+    uri = URI(url)
+    response = Net::HTTP.get(uri)
+    parsed = JSON.parse(response)
+    drink = parsed['drinks'][0]
+    puts 'strDrink:'
+    puts drink['strDrink']%>
+    <div style="clear:both">
+      <div class="drinkImage">
+        <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
+      </div>
+      <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
+      <br/>
+      <span>matched <b class='ingredcounttext'><%= count %></b> of your selected ingredients</span>
+    </div>
+  <% end %>
+</div>
+
+<div class='pagediv'>
+  <%= button_to("Prev", ingred_page_path(:page => @page.to_i-1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <span class="pageLinks">Page <%= @page.to_i %></span>
+  <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
+</div>

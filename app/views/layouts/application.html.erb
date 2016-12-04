@@ -15,7 +15,9 @@
     <nav class = "navbar navbar-inverse " role="navigation" style="margin-bottom: 0;width:1920px;">
       <div class="container-fluid">
           <div class="navbar-header">
-          <a class="navbar-brand" href ="/" > Mixbook </a>
+            <%= form_tag(root_path, :method => 'get', :id =>'root_id') do %>
+              <%= link_to "Mixbook", root_path, :onclick => "$('#root_id').submit()", :class =>"navbar-brand"%>
+            <% end %>
         </div>
 
         <ul class =" nav navbar-nav" style ="float:right">
@@ -26,30 +28,38 @@
           <% end %>
 
           <% if current_user %>
-            <li><%= link_to 'Profile', current_user%></li>
-            <li><%= link_to 'Publish', new_publish_path%></li>
+            <li><%= link_to 'Profile', current_user, method: :get%></li>
+            <li><%= link_to 'Publish', new_publish_path, method: :get%></li>
           <% else %>
-            <li><%= link_to 'Profile', sign_up_url%></li>
-            <li><%= link_to 'Publish', sign_up_url%></li>
+            <li><%= link_to 'Profile', sign_up_url, method: :get%></li>
+            <li><%= link_to 'Publish', sign_up_url, method: :get%></li>
           <% end %>
 
-          <li><%=link_to'About us', about_us_url%></li>
+          <li><%=link_to'About us', about_us_url, method: :get%></li>
 
           <% if current_user %>
             <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
-            <li style="float:right"><%= link_to "Log out", log_out_path %></li>
+            <li style="float:right"><%= link_to "Log out", log_out_path, method: :get %></li>
           <% else %>
-            <li style="float:right"><%= link_to "Sign up", sign_up_path %></li>
-            <li style="float:right"><%= link_to "Log in", log_in_path %></li>
+            <li style="float:right"><%= link_to "Sign up", sign_up_path, method: :get %></li>
+            <li style="float:right"><%= link_to "Log in", log_in_path, method: :get %></li>
           <% end %>
+
+          <li id="searchIngredfield" style=" vertical-align:middle; line-height:50px; padding-right:10px;">
+
+            <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
+              <%= link_to "Ingredient Search ", ingred_startsearch_path, :onclick => "$('#form_id').submit()", :style => "color:#999"%>
+            <% end %>
+          </li>
 
           <li id="searchDrinkfield" class="searchbar">
               <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
                 <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
-                <%= submit_tag('Search', :class => 'submitButton') %>
               <% end %>
             <!-- @end #searchfield -->
           </li>
+
+
 
 
         </ul>
