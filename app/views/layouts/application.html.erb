@@ -16,7 +16,9 @@
     <nav class = "navbar navbar-inverse " role="navigation" style="margin-bottom: 0;width:1920px;">
       <div class="container-fluid">
           <div class="navbar-header">
-          <a class="navbar-brand" href ="/" > Mixbook </a>
+            <%= form_tag(root_path, :method => 'get', :id =>'root_id') do %>
+              <%= link_to "Mixbook", root_path, :onclick => "$('#root_id').submit()", :class =>"navbar-brand"%>
+            <% end %>
         </div>
 
         <ul class =" nav navbar-nav" style ="float:right">
@@ -47,6 +49,13 @@
             <li style="float:right"><%= link_to "Log in", log_in_path %></li>
           <% end %>
 
+          <li id="searchIngredfield" style=" vertical-align:middle; line-height:50px; padding-right:10px;">
+
+            <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
+              <%= link_to "Ingredient Search ", ingred_startsearch_path, :onclick => "$('#form_id').submit()", :style => "color:#999"%>
+            <% end %>
+          </li>
+
           <li id="searchDrinkfield" class="searchbar">
               <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
                 <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
@@ -54,11 +63,7 @@
             <!-- @end #searchfield -->
           </li>
 
-          <li id="searchIngredfield">
-            <%= form_tag(ingred_startsearch_path, :method => 'get') do %>
-              <%= button_tag 'Search By Ingredients', :class => 'submitButton' %>
-            <% end %>
-          </li>
+
 
 
         </ul>

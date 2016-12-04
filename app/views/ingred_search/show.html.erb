@@ -5,18 +5,23 @@
 </div>
 
 <div class='searchResults'>
-  <% @pagerange.each do |result| %>
-    <%
-    url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{result[0]}"
+  <% @pagerange.each_slice(2) do |result, count| %>
+    <% puts 'result:'
+    puts result
+    url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{result}"
     uri = URI(url)
     response = Net::HTTP.get(uri)
     parsed = JSON.parse(response)
-    drink = parsed['drinks'][0] %>
+    drink = parsed['drinks'][0]
+    puts 'strDrink:'
+    puts drink['strDrink']%>
     <div style="clear:both">
       <div class="drinkImage">
         <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
       </div>
       <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
+      <br/>
+      <span>matched <b class='ingredcounttext'><%= count %></b> of your selected ingredients</span>
     </div>
   <% end %>
 </div>
