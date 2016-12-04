@@ -2,10 +2,8 @@
 
 one:
   name: MyString
-  user_id: 1
-  drink_id: 1
+  publish_id: 1
 
 two:
   name: MyString
-  user_id: 1
-  drink_id: 1
+  publish_id: 1

@@ -1,7 +1,6 @@
-
 <html>
   <head>
-    <title>Project</title>
+    <title>Mixbook</title>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 
@@ -24,10 +23,7 @@
         <ul class =" nav navbar-nav" style ="float:right">
           <% if current_user %>
             <% if current_user.Isadmin == true %>
-
-              <!--<li> <%= link_to "Likes_Test", likes_url %></li>-->
               <li> <%= link_to "Users", users_url %></li>
-
             <% end %>
           <% end %>
 

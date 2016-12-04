@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161121012640) do
+ActiveRecord::Schema.define(version: 20161202051704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "publish_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "likes", force: :cascade do |t|
     t.boolean  "islike"
@@ -31,13 +38,12 @@ ActiveRecord::Schema.define(version: 20161121012640) do
   end
 
   create_table "publishes", force: :cascade do |t|
-    t.string   "Rname"
+    t.string   "name"
     t.integer  "user_id"
     t.integer  "drink_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.string   "image"
-    t.text     "ingredients"
     t.text     "instructions"
   end
 
