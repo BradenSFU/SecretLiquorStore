@@ -22,7 +22,6 @@ default: &default
   pool: 5
 
 development:
-  <<: *default
   database: leyongzhe
   username: leyongzhe
   password: 0823
@@ -60,19 +59,12 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-<<<<<<< HEAD
+
   database: leyongzhe
   username: leyongzhe
   password: 0823
   host: localhost
-=======
-  #database: cmpt276_test
-  #username: cmpt276
-  #password: thecmpt276Passw0rd
-  #host: localhost
 
-  database: Project_development_test
->>>>>>> e864b07d7b7077c2421bda40f027dcb4f9cebd21
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
