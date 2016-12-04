@@ -11,14 +11,14 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div>
     <p class="smalltag"><%= f.label :user_id %>
     <%= ": " + current_user.Username %></p>
   </div>
 
   <div class="field">
     <p class="smalltag"><%= f.label :Drink_Name %></p>
-    <%= f.text_field :name %>
+    <%= f.text_field :name, :id => "inputfield" %>
   </div>
 
   <div class="field">
@@ -31,17 +31,17 @@
   </div>
 
   <br></br>
-  <div class="field">
+  <div>
     <p class="smalltag"><%= f.label :Ingredients %></p>
     <%= f.fields_for :ingredients do |builder| %>
-      <%= builder.text_field :name %><br/>
+      <%= builder.text_field :name, :id=>"inputfield" %><br/>
     <% end %>
   </div>
   <br></br>
-
-  <div class="field">
-    <p class="smalltag"><%= f.label :instructions %></p>
-    <%= f.text_area :instructions %>
+<p class="smalltag"><%= f.label :instructions %></p>
+  <div>
+    <p style="color:white; font-size: 15px;">
+    <%= f.text_area :instructions,size:  "20x10"%></p>
   </div>
 
   <div class="actions">
