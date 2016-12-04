@@ -8,13 +8,14 @@ class IngredSearchController < ApplicationController
     #params[:ingredient]
 
     #puts @string
-    counter =1 #counter for occurences found
-    @found = 0 #boolean for whether we found the item in the globalarray
+    counter = 1 #counter for occurences found
+    # @found = 0 #boolean for whether we found the item in the globalarray
+    # @LoopArray = Array.new
     @GlobalArray = Array.new
-    @LoopArray = Array.new
+    # @ingredDB = Ingredient.
 
     params.each do |id, ingred|
-      @LoopArray.clear
+      # @LoopArray.clear
       if !(['utf8', 'button', 'controller', 'action'].include? id)
 
         #puts @loopcounter

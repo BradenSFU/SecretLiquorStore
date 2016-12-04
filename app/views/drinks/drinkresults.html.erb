@@ -11,13 +11,27 @@ This isn't<body style="height:90%;width:100%; ">-->
 <div class='searchResults'>
   <p><img alt="Image" src="/assets/drinkresult.png" > </p>
   <br></br>
-  <% @results.each do |drink| %>
-    <div style="clear:both">
-      <div class="drinkImage">
-        <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
+  <% if @publishresults.count != 0 %>
+    <p style='clear:both'>User-created Drinks</p>
+    <% @publishresults.each do |drink| %>
+      <div style="clear:both">
+        <div class="drinkImage">
+          <%= image_tag( drink['image'] ? "#{drink['image']}" : "no-image.jpg", size: "150x150", alt: "") %>
+        </div>
+        <%= link_to("#{drink["name"]}", drink, :class => 'drinkName searchResultsName') %>
       </div>
-      <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
-    </div>
+    <% end %>
+  <% end %>
+  <% if @APIresults != nil %>
+    <p style='clear:both'>Pre-existing Drinks</p>
+    <% @APIresults.each do |drink| %>
+      <div style="clear:both">
+        <div class="drinkImage">
+          <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
+        </div>
+        <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
+      </div>
+    <% end %>
   <% end %>
 </div>
 </div>
