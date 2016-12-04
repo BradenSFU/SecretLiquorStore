@@ -28,21 +28,21 @@
           <% end %>
 
           <% if current_user %>
-            <li><%= link_to 'Profile', current_user%></li>
-            <li><%= link_to 'Publish', new_publish_path%></li>
+            <li><%= link_to 'Profile', current_user, method: :get%></li>
+            <li><%= link_to 'Publish', new_publish_path, method: :get%></li>
           <% else %>
-            <li><%= link_to 'Profile', sign_up_url%></li>
-            <li><%= link_to 'Publish', sign_up_url%></li>
+            <li><%= link_to 'Profile', sign_up_url, method: :get%></li>
+            <li><%= link_to 'Publish', sign_up_url, method: :get%></li>
           <% end %>
 
-          <li><%=link_to'About us', about_us_url%></li>
+          <li><%=link_to'About us', about_us_url, method: :get%></li>
 
           <% if current_user %>
             <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
-            <li style="float:right"><%= link_to "Log out", log_out_path %></li>
+            <li style="float:right"><%= link_to "Log out", log_out_path, method: :get %></li>
           <% else %>
-            <li style="float:right"><%= link_to "Sign up", sign_up_path %></li>
-            <li style="float:right"><%= link_to "Log in", log_in_path %></li>
+            <li style="float:right"><%= link_to "Sign up", sign_up_path, method: :get %></li>
+            <li style="float:right"><%= link_to "Log in", log_in_path, method: :get %></li>
           <% end %>
 
           <li id="searchIngredfield" style=" vertical-align:middle; line-height:50px; padding-right:10px;">
