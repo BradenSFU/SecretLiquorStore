@@ -1,5 +1,6 @@
+<body style="height:100%;width:100%;background-color:black; ">
 <%= flash_message %>
-<div class="jumbotron vertical-centers" style="background-image: url('/assets/showdrinkbg.jpg'); min-height: 100%; min-height: 100vh;">
+<div class="jumbotron vertical-centers" style="background-image: url('/assets/publishbg.jpg'); min-height: 100%; min-height: 100vh;">
 <div class="container-fluid" style="margin-left:20px;">
 <div class="drinkImage">
   <%= image_tag( @drink['strDrinkThumb'] && @drink['strDrinkThumb'] != "" ? "#{@drink['strDrinkThumb']}" : 'no-image.jpg', size: "200x200", alt: "") %>
@@ -36,3 +37,4 @@
 
 </div>
 </div>
+</body

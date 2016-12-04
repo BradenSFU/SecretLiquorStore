@@ -6,6 +6,18 @@
   vertical-align: top;
   padding-right: 20px;
 }
+textarea{
+    width: 400px;
+    color: #FFF;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    outline: none;
+}
+#inputfield{
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 250px;
+}
 .drinkDetails {
   padding-right: 10px;
 }
@@ -41,4 +53,16 @@
 }
 .searchResultsName {
   font-size: 16px;
+}
+.biodisplay{
+  width:400px;
+  height:80px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid white;
+}
+.ingredisplay{
+  width:400px;
+  height:px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid white;
 }

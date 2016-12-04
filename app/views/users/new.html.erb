@@ -1,9 +1,9 @@
 <head>
   <title>Sign Up</title>
 </head>
-<body>
+<body style="height:100%;width:100%; background-color:black">
 <div class="jumbotron vertical-centers" style="background-image: url('assets/signupbg.jpg'); min-height: 100%; min-height: 100vh; display: flex;  align-items: center;">
-    <div class="loginfield">
+    <div class="container-fluid">
       <%= form_for(@user) do |f| %>
       <% if @user.errors.any? %>
       <div id="error_explanation">
@@ -16,7 +16,8 @@
         </ul>
       </div>
       <% end %>
-
+<div class="container-fluid">
+  <p><img alt="Image" src="/assets/loginlogo.png" > </p>
   <div class="field">
     <p class = "smalltag">Username:</p>
     <%= f.text_field :Username %>
@@ -52,6 +53,7 @@
       <%= link_to "Have an Account? Sign In!", log_in_path %>
     </div>
   <% end %>
+</div>
   </div>
 </div>
 </body>
