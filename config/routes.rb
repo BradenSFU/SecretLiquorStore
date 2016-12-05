@@ -9,6 +9,8 @@ Rails.application.routes.draw do
       post 'add_like'
       post 'add_dislike'
       post 'delete_vote'
+      post 'api_add_like'
+      post 'api_add_dislike'
       post 'api_create_publish'
     end
   end
