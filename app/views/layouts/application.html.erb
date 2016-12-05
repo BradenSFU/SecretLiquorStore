@@ -84,13 +84,6 @@
       </div>  <!-- /.container-fluid -->
   </div>
 </nav>
-    <p>
-       <%= flash[:success] unless flash[:success].blank? %>
-       <%= flash[:error] unless flash[:error].blank? %>
-     </p>
-     <% flash.each do |name, msg| %>
-       <%= content_tag :div, msg, :id => "flash_#{name}" %>
-     <% end %>
 </body>
   <%= yield %>
 </html>
