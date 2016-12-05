@@ -43,26 +43,26 @@
                 </li>
                 <% if current_user %>
                   <% if current_user.Isadmin == true %>
-                    <li><a class="active"> <%= link_to "Users", users_url %></a></li>
+                    <li><a class="active"> <%= link_to "Users", users_url , :method => 'get'%></a></li>
                   <% end %>
                 <% end %>
                 <% if current_user %>
-                  <li><a class="active"><%= link_to 'Profile', current_user%></a></li>
-                  <li><a class="active"> <%= link_to 'Publish', new_publish_path%></a></li>
+                  <li><a class="active"><%= link_to 'Profile', current_user, :method => 'get'%></a></li>
+                  <li><a class="active"> <%= link_to 'Publish', new_publish_path, :method => 'get'%></a></li>
                 <% else %>
-                  <li><a class="active"> <%= link_to 'Profile', sign_up_url%></a></li>
-                  <li><a class="active"> <%= link_to 'Publish', sign_up_url%></a></li>
+                  <li><a class="active"> <%= link_to 'Profile', sign_up_url, :method => 'get'%></a></li>
+                  <li><a class="active"> <%= link_to 'Publish', sign_up_url, :method => 'get'%></a></li>
                 <% end %>
 
                 <li>
-                    <a class="active"><%=link_to'About us', about_us_url%></a>
+                    <a class="active"><%=link_to'About us', about_us_url, :method => 'get'%></a>
                 </li>
                 <% if current_user %>
                   <li><a class="active" style="padding-top:45px;"> Logged in as <%= current_user.Username %></a></li>
-                  <li><a class="active"> <%= link_to "Log out", log_out_path %></a></li>
+                  <li><a class="active"> <%= link_to "Log out", log_out_path, :method => 'get' %></a></li>
                 <% else %>
-                  <li><a class="active"> <%= link_to "Sign up", sign_up_path %></a></li>
-                  <li><a class="active"> <%= link_to "Log in", log_in_path %></a></li>
+                  <li><a class="active"> <%= link_to "Sign up", sign_up_path, :method => 'get' %></a></li>
+                  <li><a class="active"> <%= link_to "Log in", log_in_path, :method => 'get' %></a></li>
                 <% end %>
                 <li id="searchIngredfield" style=" vertical-align:middle; line-height:110px; padding-right:10px;">
 
@@ -78,7 +78,7 @@
                   <% end %>
               </li>
               <li>
-                <a class="active"><%= link_to "Get Liquor", liquorsearch_path %></a>
+                <a class="active"><%= link_to "Get Liquor", liquorsearch_path, :method => 'get'%></a>
               </li>
             </ul><!-- /.navbar-collapse -->
       </div>  <!-- /.container-fluid -->
