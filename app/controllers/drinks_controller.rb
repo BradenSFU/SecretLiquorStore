@@ -15,7 +15,7 @@ def drinksearch
   # Search through published drinks for matches
   @published.each do |drink|
     if drink.id > 0
-      if drink.name.include? params[:searchBarDrink]
+      if drink.name.downcase.include? params[:searchBarDrink].downcase
         @publishresults.push(drink)
       end
     end
