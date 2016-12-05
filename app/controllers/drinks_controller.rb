@@ -39,36 +39,7 @@ def drinkresults
   @pagerange = @results[(@page.to_i-1)*10..[@page.to_i*10-1, @results.size-1].min]
 end
 
-helper_method :api_drink_add_like
-def api_drink_add_like(api_drink)
-  @publish = Publish.new
-  @publish = create_publish(api_drink)
-  @publish.save
-  return add_like_publish_path(@publish)
-end
-
-helper_method :api_drink_add_dislike
-def api_drink_add_dislike(api_drink)
-  @publish = Publish.new
-  @publish = create_publish(api_drink)
-  @publish.save
-  return add_dislike_publish_path(@publish)
-end
-
-helper_method :create_publish
-def create_publish(api_drink)
-  @publish.id = Publish.all.size
-  @publish.image = api_drink['strDrinkThumb']
-  @publish.name = api_drink['strDrink']
-  for i in 1..15 do
-    next if api_drink["strIngredient#{i}"] == ""
-    @ingredient = Ingredient.new
-    @ingredient.name = api_drink["strMeasure#{i}"] + api_drink["strIngredient#{i}"]
-    @publish.ingredients << @ingredient
-    @ingredient.save
-  end
-  @publish.instructions = api_drink['strInstructions']
-  return @publish
+def drink_params
 end
 
 end

@@ -9,12 +9,13 @@ Rails.application.routes.draw do
       post 'add_like'
       post 'add_dislike'
       post 'delete_vote'
+      post 'api_create_publish'
     end
   end
 
   # Drink API likes and dislikes
-  get "publishes/:id/add_like" => "publishes#add_like"
-  get "publishes/:id/add_dislike" => "publishes#add_dislike"
+  get "publishes/:id/api_drink_add_like" => "publishes#api_drink_add_like"
+  get "publishes/:id/api_drink_add_dislike" => "publishes#api_drink_add_dislike"
 
   # ingredient Search
   get 'ingred_search' => 'ingred_search#show'
