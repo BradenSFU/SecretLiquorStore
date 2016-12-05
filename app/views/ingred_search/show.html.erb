@@ -1,3 +1,6 @@
+<body style="background-color:black;">
+<div class="jumbotron" style="background-image: url('/assets/signupbg.jpg'); min-height: 100%; min-height: 100vh;">
+<div class="container-fluid" style="margin-left:20px;">
 
 <div class='pagediv'>
   <%= button_to("Prev", ingred_page_path(:page => @page.to_i-1, :results => @GlobalArray), :class => 'pageLinks') %>
@@ -41,3 +44,6 @@
   <span class="pageLinks">Page <%= @page.to_i %></span>
   <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
 </div>
+  </div>
+  </div>
+  </body>
