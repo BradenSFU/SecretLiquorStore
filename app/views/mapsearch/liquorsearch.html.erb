@@ -8,18 +8,26 @@
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
+      #container{
+         background-color: black;
+      }
       #map {
         height: 100%;
         width: 80%;
         margin: auto;
+        background-color: black;
+        font: black;
       }
-      /* Optional: Makes the sample page fill the window. */
+      /* Optional: Makes the page fill the window. */
       html, body {
+        background-color: black;
+        font: black;
         height: 100%;
         margin: 0;
         padding: 0;
       }
       .controls {
+        font: black;
         margin-top: 10px;
         border: 1px solid transparent;
         border-radius: 2px 0 0 2px;
@@ -29,15 +37,15 @@
         outline: none;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
-
       #pac-input {
+        font: black;
         background-color: #fff;
         font-family: Roboto;
         font-size: 15px;
         font-weight: 300;
         margin-left: 12px;
         padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
+                text-overflow: ellipsis;
         width: 300px;
       }
 
@@ -66,8 +74,12 @@
     </style>
   </head>
   <body>
-    <input id="pac-input" class="controls" type="text" placeholder="Enter Current Location">
-    <div id="map"></div>
+    <input id="pac-input" class="controls" type="text" placeholder="Enter Current Location" value = "liquor store near ">
+    <div id="container">
+      <div id="map">
+      </div>
+    </div>
+
     <script>
       // This example adds a search box to a map, using the Google Place Autocomplete
       // feature. People can enter geographical searches. The search box will return a
@@ -86,7 +98,9 @@
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
+
         var searchBox = new google.maps.places.SearchBox(input);
+
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
         // Bias the SearchBox results towards current map's viewport.
@@ -99,7 +113,6 @@
         // more details for that place.
         searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
-
           if (places.length == 0) {
             return;
           }
@@ -147,5 +160,5 @@
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCphU_DQl4aMgg_qf8-FOXcbeO8JRGT28A&libraries=places&callback=initAutocomplete"
          async defer></script>
-  </body>
+</body>
 </html>
