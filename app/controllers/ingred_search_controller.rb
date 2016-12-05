@@ -12,13 +12,41 @@ class IngredSearchController < ApplicationController
     # @found = 0 #boolean for whether we found the item in the globalarray
     # @LoopArray = Array.new
     @GlobalArray = Array.new
-    # @ingredDB = Ingredient.
+    @ingredDB = Ingredient.all
+    @drinkDB = Publish.all
+    @results = Array.new
 
     params.each do |id, ingred|
       # @LoopArray.clear
       if !(['utf8', 'button', 'controller', 'action'].include? id)
+        # Search through publishes DB
+        @ingredDB.each do |item|
+          if item.name.downcase.include? ingred.downcase
+            matchingdrink = @drinkDB.find(item.publish_id).name
+            @results.push(matchingdrink)
+          end
+        end
 
-        #puts @loopcounter
+        @results.each do |item|
+          item.gsub!("'", '\%27')
+          if @GlobalArray.count == 0
+            @GlobalArray.push([item,counter])
+          else
+            found = 0
+            @GlobalArray.each do |gitem|
+              if gitem[0] == item
+                gitem[1] += 1
+                found = 1
+                break
+              end
+            end
+            if found == 0
+              @GlobalArray.push([item,counter])
+            end
+          end
+        end
+
+        # Search through API
         url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{ingred}"
         uri = URI(url)
         response = Net::HTTP.get(uri)
@@ -28,6 +56,7 @@ class IngredSearchController < ApplicationController
         else
           # puts "entered first loop"
           @results = parsed['drinks']
+
           @results.each do |item|
             item['strDrink'].gsub!("'", '\%27')
             if @GlobalArray.count == 0
@@ -46,6 +75,7 @@ class IngredSearchController < ApplicationController
               end
             end
           end
+
           #puts @GlobalArray[0][1]
         # else #loopcounter isnt 0; we start making localArrays
         #   # puts "entered second+ loop"

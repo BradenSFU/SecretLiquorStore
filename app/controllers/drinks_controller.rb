@@ -14,8 +14,10 @@ def drinksearch
   @publishresults = Array.new
   # Search through published drinks for matches
   @published.each do |drink|
-    if drink.name.include? params[:searchBarDrink]
-      @publishresults.push(drink)
+    if drink.id > 0
+      if drink.name.include? params[:searchBarDrink]
+        @publishresults.push(drink)
+      end
     end
   end
   # puts params[:searchBarDrink]
