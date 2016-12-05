@@ -42,7 +42,11 @@ class PublishesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Publish.count', -1) do
       delete publish_url(@publish)
     end
-
+    test "should created_vote" do
+      publish = create(:one)
+      publish.create_vote(true)
+      assert publish.likes.vaild?
+    end
     assert_redirected_to publishes_url
   end
 end

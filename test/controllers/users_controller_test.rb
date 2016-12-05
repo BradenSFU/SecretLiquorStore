@@ -3,27 +3,22 @@ require 'test_helper'
 class UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.new(Username: "can create", Email: "can@email.com", Biography: "I am can create",
-    Password: "123456",Password_confirmation: "123456", Isadmin: true, id: "1")
-  end
+    Password: "123456",Password_confirmation: "123456", Isadmin: false, id: "1")
 
-  test "should get index" do
+  end
+  test "should not get index" do
     get users_url
-    assert_response :success
+    assert_redirected_to root_url
+    assert :success
   end
 
-  test "should show user" do
-    get user_url(@user)
-    assert_response :success
+  test "should creat new user" do
+    get sign_up_url(@user)
+    assert :success
   end
 
-  test "should get edit" do
-    get edit_user_url(@user)
-    assert_response :success
-  end
-
-  test "should destroy user" do
-    assert_difference('User.count', -1) do
-      delete user_url(@user)
-    end
+  test "should show user profile" do
+    get users_url (@user)
+    assert :success
   end
 end
