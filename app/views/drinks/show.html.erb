@@ -28,8 +28,8 @@
     <%= link_to 'Like' %> |
     <%= link_to 'Dislike' %>
   <% else %>
-    <%= link_to 'Like', sign_up_url %> |
-    <%= link_to 'Dislike', sign_up_url %>
+    <%= link_to 'Like', sign_up_url, method: :get %> |
+    <%= link_to 'Dislike', sign_up_url, method: :get %>
   <% end %>
 
 <% end %>

@@ -17,6 +17,7 @@ class IngredSearchController < ApplicationController
     @results = Array.new
 
     params.each do |id, ingred|
+      @results.clear
       # @LoopArray.clear
       if !(['utf8', 'button', 'controller', 'action'].include? id)
         # Search through publishes DB
@@ -28,6 +29,7 @@ class IngredSearchController < ApplicationController
         end
 
         @results.each do |item|
+          puts item
           item.gsub!("'", '\%27')
           if @GlobalArray.count == 0
             @GlobalArray.push([item,counter])

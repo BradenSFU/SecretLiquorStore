@@ -16,7 +16,7 @@ This isn't<body style="height:90%;width:100%; ">-->
     <% @publishresults.each do |drink| %>
       <div style="clear:both">
         <div class="drinkImage">
-          <%= image_tag( drink['image'] ? "#{drink['image']}" : "no-image.jpg", size: "150x150", alt: "") %>
+          <%= image_tag( drink['image'] ? "#{drink.image.thumb.url}" : "no-image.jpg", size: "150x150", alt: "") %>
         </div>
         <%= link_to("#{drink["name"]}", drink, :class => 'drinkName searchResultsName') %>
       </div>
