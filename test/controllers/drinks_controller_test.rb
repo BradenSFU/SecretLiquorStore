@@ -6,8 +6,14 @@ class DrinksControllerTest < ActionDispatch::IntegrationTest
     @notdrink = 'a'
   end
 
-  # test "should get drink info page" do
-  #   get
+  test "should get drink info page" do
+    get drink_show_url(@drink)
+    assert_response :success
+  end
+
+  # test 'should route to drink info page' do
+  #   get drink_search_url
+  #
   # end
 
 
