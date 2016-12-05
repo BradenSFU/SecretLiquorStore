@@ -11,7 +11,7 @@
     <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
   <% end %>
 </div>
-
+</br>
 <div class='searchResults'>
   <% @pagerange.each_slice(2) do |result, count| %>
     <% drink = Publish.where(:name => result)[0] %>

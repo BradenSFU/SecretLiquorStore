@@ -2928,7 +2928,7 @@ $.getJSON(url, function(data) {
   }
   else{
     console.log("image not found");
-    document.getElementById("drinkImage").innerHTML += '<img class="drinkPicture" alt="No image found", height="200px", width="200px">';
+    document.getElementById("drinkImage").innerHTML += '<img class="drinkPicture" src="images/no-image.jpg", height="200px", width="200px">';
   }
   //console.log(json.drinks[0].strMeasure1);
   if(json.drinks[0].strInstructions){

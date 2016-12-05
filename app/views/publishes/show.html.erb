@@ -8,9 +8,7 @@
 <div class="drinkDetails">
     <h1 class="drinkName"><%= @publish.name %></h1>
     <p>
-        <% if @publish.user == nil %>
-          <%= "The user who made this recipe was banned"  %>
-        <% else %>
+        <% if @publish.user != nil %>
           Created by: <%= link_to @publish.user.Username, @publish.user %>
         <% end %>
     </p>
@@ -62,9 +60,12 @@
 
 <% end %>
 
-<% if @publish.user && current_user && @publish.user.id == current_user.id %>
-  <td><%= link_to 'Edit', edit_publish_path(@publish),{:style=>'color:#FFFFFF;'} %></td><br>
-  <td><%= link_to 'Delete', @publish, method: :delete, data: { confirm: 'Are you sure?'} %></td>
+<br></br>
+<% if current_user %>
+  <% if @publish.user_id == current_user.id || current_user.Isadmin %>
+    <td><%= link_to 'Edit', edit_publish_path(@publish),{:style=>'color:#FFFFFF;'} %></td><br>
+    <td><%= link_to 'Delete', @publish, method: :delete, data: { confirm: 'Are you sure?'} %></td>
+  <% end %>
 <% end %>
 
 </div>
