@@ -1,0 +1,2 @@
+class MapsearchController < ApplicationController
+end

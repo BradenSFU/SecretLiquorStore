@@ -66,16 +66,19 @@
                 <% end %>
                 <li id="searchIngredfield" style=" vertical-align:middle; line-height:110px; padding-right:10px;">
 
-  <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
-        <%= link_to "Ingredient Search ", ingred_startsearch_path, :onclick => "$('#form_id').submit()", :style => "color:#999"%>
-    <% end %>
-</li>
+                      <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
+                          <%= link_to "Ingredient Search ", ingred_startsearch_path, :onclick => "$('#form_id').submit()", :style => "color:#999"%>
+                      <% end %>
+                </li>
 
                 <li id="searchDrinkfield" class="searchbar" style="padding-top:35px;">
                   <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
                     <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
                     <%= submit_tag('Search', :class => 'submitButton') %>
                   <% end %>
+              </li>
+              <li>
+                <%= link_to "liquorsearch", liquorsearch_path %>
               </li>
             </ul><!-- /.navbar-collapse -->
       </div>  <!-- /.container-fluid -->
