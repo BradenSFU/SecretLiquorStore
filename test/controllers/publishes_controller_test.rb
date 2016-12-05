@@ -19,7 +19,6 @@ class PublishesControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Publish.count') do
       post publishes_url, params: { publish: { name: @publish.name, drink_id: @publish.drink_id, user_id: @publish.user_id } }
     end
-
     assert_redirected_to publish_url(Publish.last)
   end
 
@@ -44,7 +43,7 @@ class PublishesControllerTest < ActionDispatch::IntegrationTest
     end
     test "should created_vote" do
       publish = create(:one)
-      publish.create_vote(true)
+      publish.add_like
       assert publish.likes.vaild?
     end
     assert_redirected_to publishes_url
