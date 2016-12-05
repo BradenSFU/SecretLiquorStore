@@ -11,10 +11,4 @@ class DrinksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  # test 'should route to drink info page' do
-  #   get drink_search_url
-  #
-  # end
-
-
 end

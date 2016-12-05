@@ -109,6 +109,7 @@ class IngredSearchController < ApplicationController
       end
     end
     @GlobalArray.sort! { |a, b| -a[1] <=> -b[1] }
+    @GlobalArray.slice!(0..50)
     @GlobalArray.flatten!
     @page = 1
     @pagerange = @GlobalArray[(@page.to_i-1)*20..[@page.to_i*20-1, (@GlobalArray.size/2)-1].min]

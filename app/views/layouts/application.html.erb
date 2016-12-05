@@ -23,7 +23,7 @@
     <nav class="navbar navbar-inverse" role="navigation">
     <div class="container-fluid" >
       <div class="logo-container">
-        <a id="logo" style="padding-top:2%;" class="navbar-brand" href="/"><img src="/assets/Logo1.png"></a>
+        <a id="logo" style="padding-top:2%;" class="navbar-brand" href="/" method="get"><img src="/assets/Logo1.png"></a>
       </div>
         <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -74,7 +74,7 @@
                 <li id="searchDrinkfield" class="searchbar" style="padding-top:35px;">
                   <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
                     <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
-                    <%= submit_tag('Search', :class => 'submitButton') %>
+                    <%= submit_tag('Search', :class => 'submitButton', :id => 'drinkSubmitButton') %>
                   <% end %>
               </li>
               <li>
