@@ -1,79 +1,96 @@
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mixbook</title>
+
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     No need to include jquery again. It's already here.-->
+ <!-- CSS reset -->
+
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="assets/stylesheets/style.css">
+      <link rel="stylesheet" href="assets/stylesheets/autocomplete.css">
+
   </head>
 
-  <body class = "frontpage" style="width: 1920px;">
-    <nav class = "navbar navbar-inverse " role="navigation" style="margin-bottom: 0;width:1920px;">
-      <div class="container-fluid">
-          <div class="navbar-header">
-            <%= form_tag(root_path, :method => 'get', :id =>'root_id') do %>
-              <%= link_to "Mixbook", root_path, :onclick => "$('#root_id').submit()", :class =>"navbar-brand"%>
-            <% end %>
-        </div>
-
-        <ul class =" nav navbar-nav" style ="float:right">
-          <% if current_user %>
-            <% if current_user.Isadmin == true %>
-              <li> <%= link_to "Users", users_url %></li>
-            <% end %>
-          <% end %>
-
-          <% if current_user %>
-            <li><%= link_to 'Profile', current_user%></li>
-            <li><%= link_to 'Publish', new_publish_path%></li>
-          <% else %>
-            <li><%= link_to 'Profile', sign_up_url%></li>
-            <li><%= link_to 'Publish', sign_up_url%></li>
-          <% end %>
-
-          <li><%=link_to'About us', about_us_url%></li>
-
-          <% if current_user %>
-            <li style="float:right;color:#999; vertical-align:middle; line-height:50px;">Logged in as <%= current_user.Username %></li>
-            <li style="float:right"><%= link_to "Log out", log_out_path %></li>
-          <% else %>
-            <li style="float:right"><%= link_to "Sign up", sign_up_path %></li>
-            <li style="float:right"><%= link_to "Log in", log_in_path %></li>
-          <% end %>
-
-          <li id="searchIngredfield" style=" vertical-align:middle; line-height:50px; padding-right:10px;">
-
-            <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
-              <%= link_to "Ingredient Search ", ingred_startsearch_path, :onclick => "$('#form_id').submit()", :style => "color:#999"%>
-            <% end %>
-          </li>
-
-          <li id="searchDrinkfield" class="searchbar">
-              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
-                <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
-              <% end %>
-            <!-- @end #searchfield -->
-          </li>
-
-
-
-
-        </ul>
+  <body class>
+    <nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid" >
+      <div class="logo-container">
+        <a id="logo" style="padding-top:2%;" class="navbar-brand" href="/"><img src="/assets/Logo1.png"></a>
       </div>
-    </nav>
+        <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+      </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="hidden">
+                    <a href="#page-top"></a>
+                </li>
+                <% if current_user %>
+                  <% if current_user.Isadmin == true %>
+                    <li><a class="active"> <%= link_to "Users", users_url , :method => 'get'%></a></li>
+                  <% end %>
+                <% end %>
+                <% if current_user %>
+                  <li><a class="active"><%= link_to 'Profile', current_user, :method => 'get'%></a></li>
+                  <li><a class="active"> <%= link_to 'Publish', new_publish_path, :method => 'get'%></a></li>
+                <% else %>
+                  <li><a class="active"> <%= link_to 'Profile', sign_up_url, :method => 'get'%></a></li>
+                  <li><a class="active"> <%= link_to 'Publish', sign_up_url, :method => 'get'%></a></li>
+                <% end %>
 
+                <li>
+                    <a class="active"><%=link_to'About us', about_us_url, :method => 'get'%></a>
+                </li>
+                <% if current_user %>
+                  <li><a class="active" style="padding-top:45px;"> Logged in as <%= current_user.Username %></a></li>
+                  <li><a class="active"> <%= link_to "Log out", log_out_path, :method => 'get' %></a></li>
+                <% else %>
+                  <li><a class="active"> <%= link_to "Sign up", sign_up_path, :method => 'get' %></a></li>
+                  <li><a class="active"> <%= link_to "Log in", log_in_path, :method => 'get' %></a></li>
+                <% end %>
+                <li id="searchIngredfield" style=" vertical-align:middle; line-height:110px; padding-right:10px;">
+
+                      <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
+                          <%= link_to "Ingredient Search ", ingred_startsearch_path, :onclick => "$('#form_id').submit()", :style => "color:#999"%>
+                      <% end %>
+                </li>
+
+                <li id="searchDrinkfield" class="searchbar" style="padding-top:35px;">
+                  <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrink", :class => "drinkInputForm", :autocomplete => :off) do %>
+                    <input type="text" placeholder="Search by drink name" class="biginput" name="searchBarDrink" id="autocompleteDrink" style="color:black" required/>
+                    <%= submit_tag('Search', :class => 'submitButton') %>
+                  <% end %>
+              </li>
+              <li>
+                <a class="active"><%= link_to "Get Liquor", liquorsearch_path, :method => 'get'%></a>
+              </li>
+            </ul><!-- /.navbar-collapse -->
+      </div>  <!-- /.container-fluid -->
+  </div>
+</nav>
     <p>
-      <%= flash[:success] unless flash[:success].blank? %>
-      <%= flash[:error] unless flash[:error].blank? %>
-    </p>
-    <% flash.each do |name, msg| %>
-      <%= content_tag :div, msg, :id => "flash_#{name}" %>
-    <% end %>
-
-  </body>
+       <%= flash[:success] unless flash[:success].blank? %>
+       <%= flash[:error] unless flash[:error].blank? %>
+     </p>
+     <% flash.each do |name, msg| %>
+       <%= content_tag :div, msg, :id => "flash_#{name}" %>
+     <% end %>
+</body>
   <%= yield %>
 </html>

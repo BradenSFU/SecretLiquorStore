@@ -19,9 +19,10 @@ Rails.application.routes.draw do
   get "publishes/:id/api_drink_add_like" => "publishes#api_drink_add_like"
   get "publishes/:id/api_drink_add_dislike" => "publishes#api_drink_add_dislike"
 
-  # ingredient Search
+  # Ingredient Search
   get 'ingred_search' => 'ingred_search#show'
-  get "/ingredients_search", to: 'ingred_search#ingredstartsearch', as: 'ingred_startsearch'
+  match  '/ingreds/results', to: 'ingred_search#pagehandler', as: 'ingred_page', via: [:get, :post]
+  get "/ingreds/search", to: 'ingred_search#ingredstartsearch', as: 'ingred_startsearch'
 
   # Sessions
   get "sign_up" => "users#new", :as => "sign_up"
@@ -52,5 +53,6 @@ Rails.application.routes.draw do
   get "just_logged_in", to: 'welcome#just_logged_in', as: "just_logged_in"
   get "about_us", to: 'welcome#about_us', as: "about_us"
 
+  get 'liquorsearch' => 'mapsearch#liquorsearch'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

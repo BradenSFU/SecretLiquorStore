@@ -2,14 +2,27 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-
+a:visited {
+  color: #FFFFFF;
+}
+a:hover {
+  color: #CCCCCC;
+}
+a:active {
+  color: #333333;
+}
+a:link {
+  color: #ffffff;
+}
 .rowhead{
   font-size: 20px;
   padding-right: 20px;
+  color:white;
 }
 
 .column{
   padding-right: 20px;
+  color:grey;
 }
 .UserInfoDiv{
   width:500px;
@@ -18,11 +31,22 @@
   margin-left:20px;
 }
 .field input{
-  color: black;
+  color: white;
   width: 300px;
   height: 30px;
 }
-
+textarea{
+    width: 300px;
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    outline: none;
+}
+#inputfield{
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 250px;
+}
 .loginfield{
   width:500px;
   height:500px;
@@ -36,7 +60,7 @@
     width: 300px;
     padding-right: 6px;
     padding-bottom: 1px;
-    font-size:22px;
+    font-size:10px;
     color: white;
 }
 #drinkrow{
@@ -52,11 +76,10 @@
   width:500px;
   height:300px;
 }
-#biodisplay{
-  width:400px;
+.biographydisplay{
+  width:300px;
   height:80px;
   background-color: rgba(255, 255, 255, 0.2);
   border: 1px solid white;
-
   font-size: 15px;
 }

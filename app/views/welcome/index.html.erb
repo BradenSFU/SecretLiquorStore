@@ -1,38 +1,44 @@
-<body style="height:100%;width:100%; "> <!-- overflow:hidden; to remove scrolllbar problems -->
+  <body style="height:100%;width:100%; background-color:black" >
     <div class="jumbotron vertical-center" style="background-image: url('assets/backgroundpicture1.jpg'); min-height: 100%; min-height: 100vh; display: flex;  align-items: center; overflow:hidden; /">
       <div class = "container-fluid">
-        <div class="row">
+        <div class="container-fluid">
           <div class ="logo">
-            <p style="font-size:50px; text-align: center;"> <%= image_tag( 'logo2.png', :style => "border: solid; border-color:white;width:500px;") %></p>
+            <p style="font-size:50px; text-align: center;"> <%= image_tag( 'logo2.png', :style => "border: groove; border-color:white;width:100%;") %></p>
           </div>
 
           <div id="searchDrinkfieldMain" class="searchbar form-group col-lg-8 col-sm-offset-2">
-              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain", :class => "drinkInputForm", :autocomplete => :off) do %>
-                <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg " name="searchBarDrink" id="autocompleteDrinkMain" autofocus style="text-align: center; "required/  >
+              <%= form_tag(drink_search_path, :method => "get", :id => "searchByDrinkMain", :class => "drinkInputForm", :autocomplete => :on) do %>
+                <p><input type="text" placeholder="Search by drink name" class="biginput form-control input-lg " name="searchBarDrink" id="autocompleteDrinkMain" autofocus style="text-align: center; "required></p>
               <% end %>
             <!-- @end #searchfield -->
           </div>
         </div>
 
+      <div class= "container-fluid">
         <br></br>
-        <h2 style =
-          "text-align:center;
-          background-color:black;
-          color:white; border-color:white;
-          border-style:solid;
-          border-width:2px">
-          Popular Recipes
-        </h2>
         <br></br>
-        <% @publishes = sort_by_popular_drinks %>
-        <table>
+      <p><img alt="Image" src="/assets/populartitle.png" ></p>
+      <div>
+      <% @publishes = sort_by_popular_drinks %>
+      <table>
+        <thead>
           <tr>
-            <% @publishes.first(5).each do |publish| %>
-                <td><%= link_to publish.name, publish %></td>
-                <td><%= image_tag (publish.image.blank? ? "no-image.jpg" : publish.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
-            <% end %>
+            <th style="width:200px;height:100px;font-color:white;"></th>
+            <th style="width:100px;height:100px;font-color:white;"></th>
           </tr>
-        </table>
+        </thead>
+        <tbody>
+          <% @publishes.first(5).each do |publish| %>
+            <tr>
+              <td class="populardrinkname" style="font-size:20px;font-color:white;"><%= link_to publish.name, publish %></td>
+              <td class="populardrinkimg"><%= image_tag (publish.image.blank? ? "no-image.jpg" : publish.image.thumb.url), size: "100x100", alt: "Image not found." %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
 
       </div>
   </div>

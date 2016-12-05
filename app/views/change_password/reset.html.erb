@@ -1,11 +1,21 @@
-<h1>Reset Password</h1>
+<body style="height:100%;width:100%; background-color:black" >
+<div class="jumbotron vertical-centers" style="background-image: url('/assets/publishbg.jpg'); min-height: 100%; min-height: 100vh;">
+<div class="container-fluid" style="margin-left:20px;">
+  <p><img alt="Image" src="/assets/reset.png" > </p>
 <%= form_for @user = :user_params do %>
-<div class="row">
-  <div class="col-md-3 col-md-offset-3">
-    <label for="Email">Email address</label> <%= text_field_tag :email, params[:email] %>
-    <label for="Password">New Password</label> <%= password_field_tag :password, params[:password] %>
-    <label for="Password Confirmation">Confirm New Password</label> <%= password_field_tag :password_confirmation, params[:password_confirmation] %>
+  <div>
+    <p for="Email">Email address</p> <%= text_field_tag :email, params[:email],:id => "inputfield" %>
+  </div>
+  <div>
+    <p for="Password">New Password</p> <%= password_field_tag :password, params[:password],:id => "inputfield" %>
+  </div>
+  <div>
+    <p for="Password Confirmation">Confirm New Password</p> <%= password_field_tag :password_confirmation, params[:password_confirmation],:id => "inputfield" %>
+  </div>
     <div class = "button"> <%= submit_tag "Submit" %> </div>
   </div>
 </div>
 <%end%>
+</div>
+</div>
+</body>

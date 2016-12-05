@@ -1,68 +1,128 @@
 class IngredSearchController < ApplicationController
 
-  def ingredSearch
+  def ingredstartsearch
 
   end
 
   def show
     #params[:ingredient]
 
-    @stringarr = ['light rum','ginger beer']
     #puts @string
-    counter =1 #counter for occurences found
-    @loopcounter=0 #only used for first loop to populate globalarray
-    @found = 0 #boolean for whether we found the item in the globalarray
+    counter = 1 #counter for occurences found
+    # @found = 0 #boolean for whether we found the item in the globalarray
+    # @LoopArray = Array.new
     @GlobalArray = Array.new
-    @LoopArray = Array.new
+    @ingredDB = Ingredient.all
+    @drinkDB = Publish.all
+    @results = Array.new
 
-    params.each do |item|
-      @LoopArray.clear
-      if !(['utf8', 'button', 'controller', 'action'].include? item)
-
-      url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{item}"
-      uri = URI(url)
-      response = Net::HTTP.get(uri)
-      parsed = JSON.parse(response)
-      if parsed['drinks'] == nil
-        puts 'nil return'
-      elsif @loopcounter == 0 # first loop only, populates @GlobalArray
-        puts "entered first loop"
-        @loopcounter = @loopcounter+1
-        @results = parsed['drinks']
-        @results.each do |item|
-          @GlobalArray.push([item['strDrink'],counter])
-        end
-        #puts @GlobalArray[0][1]
-      else #loopcounter isnt 0; we start making localArrays
-        puts "entered second+ loop"
-        if parsed['drinks'][0]['strDrink'] != item
-          @results = parsed['drinks']
-          @results.each do |item| #populate local array
-            @LoopArray.push([item['strDrink'],counter])
+    params.each do |id, ingred|
+      # @LoopArray.clear
+      if !(['utf8', 'button', 'controller', 'action'].include? id)
+        # Search through publishes DB
+        @ingredDB.each do |item|
+          if item.name.downcase.include? ingred.downcase
+            matchingdrink = @drinkDB.find(item.publish_id).name
+            @results.push(matchingdrink)
           end
-          @LoopArray.each do |item| #take the item in the search..
+        end
 
-            @GlobalArray.each do |gitem| #..and compare with @GlobalArray
-              #puts item[0]
-              #puts gitem[0]
-              if item[0] == gitem[0] #compares name
-                puts "#{item[0]} == #{gitem[0]}"
-                gitem[1] = gitem[1] +1 #if true, we increment the counter attribute & change the found variable to 1
-                @found = 1
+        @results.each do |item|
+          item.gsub!("'", '\%27')
+          if @GlobalArray.count == 0
+            @GlobalArray.push([item,counter])
+          else
+            found = 0
+            @GlobalArray.each do |gitem|
+              if gitem[0] == item
+                gitem[1] += 1
+                found = 1
+                break
               end
             end
-
-            if @found == 0 #if we didnt find the drink we push the drink into our global array
-              @GlobalArray.push(item)
+            if found == 0
+              @GlobalArray.push([item,counter])
             end
-            @GlobalArray.sort! { |a, b| -a[1] <=> -b[1] }
-
-            @found = 0 #we set the found variable back to 0 every item in the local array
-
           end
         end
+
+        # Search through API
+        url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{ingred}"
+        uri = URI(url)
+        response = Net::HTTP.get(uri)
+        parsed = JSON.parse(response)
+        if parsed['drinks'] == nil
+          puts 'nil return'
+        else
+          # puts "entered first loop"
+          @results = parsed['drinks']
+
+          @results.each do |item|
+            item['strDrink'].gsub!("'", '\%27')
+            if @GlobalArray.count == 0
+              @GlobalArray.push([item['strDrink'],counter])
+            else
+              found = 0
+              @GlobalArray.each do |gitem|
+                if gitem[0] == item['strDrink']
+                  gitem[1] += 1
+                  found = 1
+                  break
+                end
+              end
+              if found == 0
+                @GlobalArray.push([item['strDrink'],counter])
+              end
+            end
+          end
+
+          #puts @GlobalArray[0][1]
+        # else #loopcounter isnt 0; we start making localArrays
+        #   # puts "entered second+ loop"
+        #   @results = parsed['drinks']
+        #   @results.each do |item| #populate local array
+        #     item['strDrink'].gsub!("'", '\%27')
+        #     if
+        #     @LoopArray.push([item['strDrink'],counter])
+        #   end
+        #   @LoopArray.each do |item| #take the item in the search..
+        #
+        #     @GlobalArray.each do |gitem| #..and compare with @GlobalArray
+        #       #puts item[0]
+        #       #puts gitem[0]
+        #       if item[0] == gitem[0] #compares name
+        #         puts "#{item[0]} == #{gitem[0]}"
+        #         gitem[1] = gitem[1] +1 #if true, we increment the counter attribute & change the found variable to 1
+        #         @found = 1
+        #       end
+        #     end
+        #
+        #     if @found == 0 #if we didnt find the drink we push the drink into our global array
+        #       @GlobalArray.push(item)
+        #     end
+        #
+        #     @found = 0 #we set the found variable back to 0 every item in the local array
+        #   end
         end
       end
     end
+    @GlobalArray.sort! { |a, b| -a[1] <=> -b[1] }
+    @GlobalArray.flatten!
+    @page = 1
+    @pagerange = @GlobalArray[(@page.to_i-1)*20..[@page.to_i*20-1, (@GlobalArray.size/2)-1].min]
+    puts @pagerange
+  end
+
+  def pagehandler
+    if params[:page] == nil
+      @page = 1
+    else
+      @page = params[:page]
+    end
+    @GlobalArray = params[:results]
+    # params seems to split the name, count pairs, so we need to fix it
+    # tests = @GlobalArray.map { |name, count| [name, count] }
+    @pagerange = @GlobalArray[(@page.to_i-1)*20..[@page.to_i*20-1, @GlobalArray.size-1].min]
+    render 'show'
   end
 end

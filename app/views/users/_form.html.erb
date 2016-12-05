@@ -12,13 +12,15 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :Username %>
-    <%= f.text_field :Username %>
+    <br></br>
+    <p class="smalltag"><%= f.label :Username %></p>
+    <%= f.text_field :Username,:id => "inputfield" %>
   </div>
 
   <div class="field">
-    <%= f.label :Email %>
-    <%= f.text_field :Email %>
+    <br></br>
+    <p class="smalltag"><%= f.label :Email %></p>
+    <%= f.text_field :Email,:id => "inputfield" %>
   </div>
 
   <div class="field">
@@ -34,15 +36,28 @@
   <div class="field">
     <%= f.label :Password_confirmation %>
     <%= f.password_field :Password_confirmation %>
+
+    <br></br>
+    <p class="smalltag"><%= f.label :Biography%></p>
+    <p style="font-size:15px;"><%= f.text_area :Biography, size: "15x5" %></p>
   </div>
 
   <% if current_user && current_user.Isadmin? %>
     <div class="field">
-      <%= f.label :Isadmin %>
+      <p class="smalltag"><%= f.label :Isadmin %></p>
       <%= f.check_box :Isadmin %>
     </div>
-  <% end %>
+  <div class="field">
+    <p class="smalltag">For admin user only, change password without confirmation</p>
+    <p class="smalltag"><%= f.label :Password %></p>
+    <%= f.password_field :Password,:id => "inputfield"%>
+  </div>
 
+    <!--<div class="field">
+    <p class="smalltag"><%= f.label :Password_confirmation %></p>
+    <%= f.password_field :Password_confirmation,:id => "inputfield" %>
+  </div>-->
+  <% end %>
   <div class="actions">
     <%= f.submit %>
   </div>

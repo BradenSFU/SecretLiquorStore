@@ -1,5 +1,5 @@
 .ui-autocomplete {
-  border: 1px solid #999;
+  border: 1px solid #ffffff;
   background: #fff;
   cursor: default;
   overflow: hidden;
@@ -12,11 +12,11 @@
   color: black;
 }
 .ui-state-focus {
-  background: #f0f0f0;
+  background: #ffffff;
 }
 .ui-autocomplete strong {
   font-weight: normal;
-  color: #3399ff;
+  color: #ffffff;
 }
 .searchbar {
   padding-top: 12px;
