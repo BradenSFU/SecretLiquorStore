@@ -1,6 +1,6 @@
 <div id="searchIngredfieldMain" class="ingredBar searchbar form-group col-lg-8 col-sm-offset-2">
-      <input type="text" placeholder="Search by drink name" class="biginput form-control input-lg " name="searchBarIngred" id="autocompleteIngredMain" autofocus style="text-align: center; "required/  >
-      
+      <input type="text" placeholder="Ingredients" class="biginput form-control input-lg " name="searchBarIngred" id="autocompleteIngredMain" autofocus style="text-align: center; "required/  >
+
     <%= form_tag(ingred_search_path, :method => "get", :id => "searchIngreds", :class => "searchIngreds", :autocomplete => :off) do %>
       <%= button_tag "Search", class: ''%>
       <br/>

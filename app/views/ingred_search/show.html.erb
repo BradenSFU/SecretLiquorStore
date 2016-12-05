@@ -6,23 +6,32 @@
 
 <div class='searchResults'>
   <% @pagerange.each_slice(2) do |result, count| %>
-    <% puts 'result:'
-    puts result
-    url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{result}"
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
-    parsed = JSON.parse(response)
-    drink = parsed['drinks'][0]
-    puts 'strDrink:'
-    puts drink['strDrink']%>
-    <div style="clear:both">
-      <div class="drinkImage">
-        <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
+    <% drink = Publish.where(:name => result)[0] %>
+    <% puts drink %>
+    <% if drink != nil # drink is a published drink %>
+      <div style="clear:both">
+        <div class="drinkImage">
+          <%= image_tag( drink['image'] ? "#{drink.image.thumb.url}" : "no-image.jpg", size: "150x150", alt: "") %>
+        </div>
+        <%= link_to("#{drink["name"]}", drink, :class => 'drinkName searchResultsName') %>
+        <br/
       </div>
-      <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
-      <br/>
-      <span>matched <b class='ingredcounttext'><%= count %></b> of your selected ingredients</span>
-    </div>
+    <% else %>
+      <% url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{result}"
+      uri = URI(url)
+      response = Net::HTTP.get(uri)
+      parsed = JSON.parse(response)
+      drink = parsed['drinks'][0]
+      %>
+      <div style="clear:both">
+        <div class="drinkImage">
+          <%= image_tag( drink['strDrinkThumb'] ? "#{drink['strDrinkThumb']}" : "no-image.jpg", size: "150x150", alt: "") %>
+        </div>
+        <%= link_to("#{drink["strDrink"]}", drink_show_path(:drink => drink), :class => 'drinkName searchResultsName') %>
+        <br/>
+        <span>matched <b class='ingredcounttext'><%= count %></b> of your selected ingredients</span>
+      </div>
+    <% end %>
   <% end %>
 </div>
 
