@@ -39,64 +39,36 @@ def drinkresults
   @pagerange = @results[(@page.to_i-1)*10..[@page.to_i*10-1, @results.size-1].min]
 end
 
-def add_like(api_drink)
-  create_publish_and_vote(api_drink, true)
-end
-
-def add_dislike(api_drink)
-  create_publish_and_vote(api_drink, false)
-end
-
-def create_publish_and_vote(api_drink, vote)
+helper_method :api_drink_add_like
+def api_drink_add_like(api_drink)
   @publish = Publish.new
-  @publish.user_id = 21421352
+  @publish = create_publish(api_drink)
+  @publish.save
+  return add_like_publish_path(@publish)
+end
+
+helper_method :api_drink_add_dislike
+def api_drink_add_dislike(api_drink)
+  @publish = Publish.new
+  @publish = create_publish(api_drink)
+  @publish.save
+  return add_dislike_publish_path(@publish)
+end
+
+helper_method :create_publish
+def create_publish(api_drink)
+  @publish.id = Publish.all.size
+  @publish.image = api_drink['strDrinkThumb']
   @publish.name = api_drink['strDrink']
   for i in 1..15 do
     next if api_drink["strIngredient#{i}"] == ""
     @ingredient = Ingredient.new
-    @ingredient.publish_id = 2134235
     @ingredient.name = api_drink["strMeasure#{i}"] + api_drink["strIngredient#{i}"]
     @publish.ingredients << @ingredient
     @ingredient.save
   end
   @publish.instructions = api_drink['strInstructions']
-  @publish.save
-  @like = Like.new
-  @like.islike = true
-  @like.user_id = current_user
-  @like.publish_id = 2134235
-  @like.save
-end
-
-# Should be removed
-def ingredstartsearch
-  #params[:ingredient]
-  string = "gin"
-  puts string
-  counter = 1
-  #url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{params[:ingredient]}"
-  url = "http://www.thecocktaildb.com/api/json/v1/1/filter.php?i=#{string}"
-  uri = URI(url)
-  response = Net::HTTP.get(uri)
-  parsed = JSON.parse(response)
-  resultsArry= Array.new
-  if parsed['drinks'] == nil
-    redirect_to error_404_url
-  else
-    if parsed['drinks'][0]['strDrink'] != string
-      @results = parsed['drinks']
-      @firstentry = @results[0]
-      #puts @results
-      #puts @firstentry
-      @results.each do |item|
-        #puts item['strDrink']
-        resultsArry.push([item['strDrink'],counter])
-      end
-      puts resultsArry[0] #I HAVE DONE IT NOW I REITERATE HERE USING SECOND STRING
-      puts resultsArry[1]
-      puts resultsArry[2]   #[0] for (name,counter) [0][0] for name [0][1] for counter
-    end
-  end
+  return @publish
 end
 
 end

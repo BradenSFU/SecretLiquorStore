@@ -2,7 +2,6 @@ Rails.application.routes.draw do
 
   resources :users
   resources :sessions
-  resources :ingredients
   resources :likes
 
   resources :publishes do
@@ -13,6 +12,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Drink API likes and dislikes
+  get "publishes/:id/add_like" => "publishes#add_like"
+  get "publishes/:id/add_dislike" => "publishes#add_dislike"
+
+  # ingredient Search
   get 'ingred_search' => 'ingred_search#show'
   get "/ingredients_search", to: 'ingred_search#ingredstartsearch', as: 'ingred_startsearch'
 

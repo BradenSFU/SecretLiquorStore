@@ -22,7 +22,7 @@
   </div>
 
   <div class="field">
-    <p class="smalltag"><%= f.label :Upload_image_here %><%= f.file_field :image %></p>
+    <p class="smalltag"><%= f.label :Upload_Image %><%= f.file_field :image %></p>
     <% if f.object.image? %>
       <%= image_tag f.object.image.thumb.url %>
     <p><%= f.label :remove_image %></p>

@@ -13,28 +13,27 @@
             <!-- @end #searchfield -->
           </div>
         </div>
-      </div>
 
-      <br></br>
-      <h1>Popular Recipes</h1>
-      <br></br>
-      <% @publishes = sort_by_popular_drinks %>
-      <table>
-        <thead>
+        <br></br>
+        <h2 style =
+          "text-align:center;
+          background-color:black;
+          color:white; border-color:white;
+          border-style:solid;
+          border-width:2px">
+          Popular Recipes
+        </h2>
+        <br></br>
+        <% @publishes = sort_by_popular_drinks %>
+        <table>
           <tr>
-            <th>Name</th>
-            <th>Image</th>
+            <% @publishes.first(5).each do |publish| %>
+                <td><%= link_to publish.name, publish %></td>
+                <td><%= image_tag (publish.image.blank? ? "no-image.jpg" : publish.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
+            <% end %>
           </tr>
-        </thead>
-        <tbody>
-          <% @publishes.first(5).each do |publish| %>
-            <tr>
-              <td><%= link_to publish.name, publish %></td>
-              <td><%= image_tag (publish.image.blank? ? "no-image.jpg" : publish.image.thumb.url), size: "200x200", alt: "Image not found." %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+        </table>
 
+      </div>
   </div>
 </body>
