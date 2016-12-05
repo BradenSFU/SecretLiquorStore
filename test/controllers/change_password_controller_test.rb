@@ -6,8 +6,8 @@ class ChangePasswordControllerTest < ActionDispatch::IntegrationTest
    assert_response :success
  end
 
-test "should get success" do
-  get change_password_success_url
+test "should get reset" do
+  get reset_password_url
   assert_response :success
 end
 
