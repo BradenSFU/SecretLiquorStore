@@ -11,7 +11,7 @@
         <% if @publish.user == nil %>
           <%= "The user who made this recipe was banned"  %>
         <% else %>
-          Created by: <%= link_to @publish.user.Username, @publish.user %>
+          Made by: <%= link_to @publish.user.Username, @publish.user %>
         <% end %>
     </p>
 

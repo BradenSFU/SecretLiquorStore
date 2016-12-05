@@ -38,8 +38,8 @@
 <% if @ApiDrink == nil %>
 
   <% if current_user %>
-    <%= link_to 'Like', api_add_like_publish_path(@drink) %> |
-    <%= link_to 'Dislike', api_add_dislike_publish_path(@drink) %>
+    <%= link_to 'Like', root_url %> |
+    <%= link_to 'Dislike', root_url %>
 
   <% else %>
     <%= link_to 'Like', sign_up_url %> |
