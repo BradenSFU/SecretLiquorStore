@@ -3,9 +3,13 @@
 <div class="container-fluid" style="margin-left:20px;">
 
 <div class='pagediv'>
-  <%= button_to("Prev", ingred_page_path(:page => @page.to_i-1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% if @page.to_i > 1 %>
+    <%= button_to("Prev", ingred_page_path(:page => @page.to_i-1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% end %>
   <span class="pageLinks">Page <%= @page.to_i %></span>
-  <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% if @page.to_i < (@GlobalArray.count/20.0).ceil %>
+    <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% end %>
 </div>
 </br>
 <div class='searchResults'>
@@ -40,9 +44,13 @@
 </div>
 
 <div class='pagediv'>
-  <%= button_to("Prev", ingred_page_path(:page => @page.to_i-1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% if @page.to_i > 1 %>
+    <%= button_to("Prev", ingred_page_path(:page => @page.to_i-1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% end %>
   <span class="pageLinks">Page <%= @page.to_i %></span>
-  <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% if @page.to_i < (@GlobalArray.count/20.0).ceil %>
+    <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
+  <% end %>
 </div>
   </div>
   </div>

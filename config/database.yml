@@ -28,7 +28,7 @@ development:
   #password: thecmpt276Passw0rd
   #host: localhost
 
-  database: Project_development
+  database: project_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -67,7 +67,7 @@ test:
   #password: thecmpt276Passw0rd
   #host: localhost
 
-  database: Project_development_test
+  database: project_development_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
