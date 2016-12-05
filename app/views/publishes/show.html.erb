@@ -9,7 +9,7 @@
     <h1 class="drinkName"><%= @publish.name %></h1>
     <p>
         <% if @publish.user != nil %>
-          Created by: <%= link_to @publish.user.Username, @publish.user %>
+          Made by: <%= link_to @publish.user.Username, @publish.user %>
         <% end %>
     </p>
 
@@ -26,6 +26,7 @@
       Dislikes: <%= count_dislike(@publish) %>
     </strong>
   </li>
+
 </ul>
 <p class="instructions"><%= @publish.instructions %></p>
 

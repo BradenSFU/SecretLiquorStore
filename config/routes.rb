@@ -2,17 +2,22 @@ Rails.application.routes.draw do
 
   resources :users
   resources :sessions
-  resources :ingredients
   resources :likes
-
 
   resources :publishes do
     member do
       post 'add_like'
       post 'add_dislike'
       post 'delete_vote'
+      post 'api_add_like'
+      post 'api_add_dislike'
+      post 'api_create_publish'
     end
   end
+
+  # Drink API likes and dislikes
+  get "publishes/:id/api_drink_add_like" => "publishes#api_drink_add_like"
+  get "publishes/:id/api_drink_add_dislike" => "publishes#api_drink_add_dislike"
 
   # Ingredient Search
   get 'ingred_search' => 'ingred_search#show'
