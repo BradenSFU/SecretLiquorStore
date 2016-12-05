@@ -13,10 +13,10 @@ class ActionDispatch::ControllerTest
   module CustomAssertion
     def login(who)
       open_session do |i|
-        i.extend(custom_assertions)
-        who = user(who)
-        i.post "/login", params: { username: who.username,
-        password: who.password }
+        i.extend(CustomAssertion)
+        who = user(:UserA)
+        i.get "/log_in", params: { username: who.Username,
+        password: who.Password }
         assert_response :success
       end
     end
