@@ -3,8 +3,11 @@
   <span class="pageLinks">Page <%= @page.to_i %></span>
   <%= button_to("Next", drink_results_path(:page => @page.to_i+1, :results => @results), :class => 'pageLinks') %>
 </div>
--->
+This isn't<body style="height:90%;width:100%; ">-->
 <%= flash_message %>
+<body style="background-color:black;">
+<div class="jumbotron" style="background-image: url('/assets/signupbg.jpg'); min-height: 100%; min-height: 100vh;">
+<div class="container-fluid" style="margin-left:20px;">
 <div class='searchResults'>
   <p><img alt="Image" src="/assets/drinkresult.png" > </p>
   <br></br>
@@ -31,3 +34,6 @@
     <% end %>
   <% end %>
 </div>
+</div>
+</div>
+</body>
