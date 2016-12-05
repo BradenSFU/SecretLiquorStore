@@ -3,11 +3,8 @@
   <span class="pageLinks">Page <%= @page.to_i %></span>
   <%= button_to("Next", drink_results_path(:page => @page.to_i+1, :results => @results), :class => 'pageLinks') %>
 </div>
-This isn't<body style="height:90%;width:100%; ">-->
+-->
 <%= flash_message %>
-<body style="background-color:black;">
-<div class="jumbotron" style="background-image: url('/assets/signupbg.jpg'); min-height: 100%; min-height: 100vh;">
-<div class="container-fluid" style="margin-left:20px;">
 <div class='searchResults'>
   <p><img alt="Image" src="/assets/drinkresult.png" > </p>
   <br></br>
@@ -16,7 +13,7 @@ This isn't<body style="height:90%;width:100%; ">-->
     <% @publishresults.each do |drink| %>
       <div style="clear:both">
         <div class="drinkImage">
-          <%= image_tag( drink['image'] ? "#{drink['image']}" : "no-image.jpg", size: "150x150", alt: "") %>
+          <%= image_tag( drink['image'] ? "#{drink.image.thumb.url}" : "no-image.jpg", size: "150x150", alt: "") %>
         </div>
         <%= link_to("#{drink["name"]}", drink, :class => 'drinkName searchResultsName') %>
       </div>
@@ -34,6 +31,3 @@ This isn't<body style="height:90%;width:100%; ">-->
     <% end %>
   <% end %>
 </div>
-</div>
-</div>
-</body>

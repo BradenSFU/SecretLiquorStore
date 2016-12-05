@@ -9,3 +9,8 @@ two:
   name: MyString
   user_id: 1
   drink_id: 1
+
+three:
+  name: testdrink
+  user_id: 1
+  drink_id: 1
