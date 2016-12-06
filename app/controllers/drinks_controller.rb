@@ -15,7 +15,7 @@ def drinksearch
   # Search through published drinks for matches
   @published.each do |drink|
     if drink.id > 0
-      if drink.name.include? params[:searchBarDrink]
+      if drink.name.downcase.include? params[:searchBarDrink].downcase
         @publishresults.push(drink)
       end
     end
@@ -46,6 +46,5 @@ def drinkresults
   end
   @pagerange = @results[(@page.to_i-1)*10..[@page.to_i*10-1, @results.size-1].min]
 end
-
 
 end

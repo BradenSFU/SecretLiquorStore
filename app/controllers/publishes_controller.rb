@@ -42,6 +42,16 @@ class PublishesController < ApplicationController
     create_vote(false)
   end
 
+  def create_vote(vote)
+    @publish = Publish.find(params[:id])
+    new_vote = Like.new
+    new_vote.islike = vote
+    current_user.likes << new_vote
+    @publish.likes << new_vote
+    new_vote.save
+    redirect_to(@publish)
+  end
+
   def delete_vote
     @publish = Publish.find(params[:id])
     @publish.likes.where(:publish_id => @publish.id, :user_id => current_user.id).destroy_all
@@ -51,14 +61,33 @@ class PublishesController < ApplicationController
     end
   end
 
-  def create_vote(vote)
-    @publish = Publish.find(params[:id])
-    new_vote = Like.new
-    new_vote.islike = vote
-    current_user.likes << new_vote
-    @publish.likes << new_vote
-    new_vote.save
-    redirect_to(@publish)
+  def api_add_like(api_drink)
+    @publish = Publish.new
+    @publish = create_publish(api_drink)
+    @publish.save
+    return add_like_publish_path(@publish)
+  end
+
+  def api_add_dislike(api_drink)
+    @publish = Publish.new
+    @publish = create_publish(api_drink)
+    @publish.save
+    return add_dislike_publish_path(@publish)
+  end
+
+  def api_create_publish(api_drink)
+    @publish.id = Publish.all.size
+    @publish.image = api_drink['strDrinkThumb']
+    @publish.name = api_drink['strDrink']
+    for i in 1..15 do
+      next if api_drink["strIngredient#{i}"] == ""
+      @ingredient = Ingredient.new
+      @ingredient.name = api_drink["strMeasure#{i}"] + api_drink["strIngredient#{i}"]
+      @publish.ingredients << @ingredient
+      @ingredient.save
+    end
+    @publish.instructions = api_drink['strInstructions']
+    return @publish
   end
 
   # POST /publishes

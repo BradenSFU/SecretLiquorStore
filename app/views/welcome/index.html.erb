@@ -20,25 +20,30 @@
       <p><img alt="Image" src="/assets/populartitle.png" ></p>
       <div>
       <% @publishes = sort_by_popular_drinks %>
-      <table>
-        <thead>
-          <tr>
-            <th style="width:200px;height:100px;font-color:white;"></th>
-            <th style="width:100px;height:100px;font-color:white;"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @publishes.first(5).each do |publish| %>
+      <% unless @publishes.size.empty? %>
+        <table>
+          <thead>
             <tr>
-              <td class="populardrinkname" style="font-size:20px;font-color:white;"><%= link_to publish.name, publish %></td>
-              <td class="populardrinkimg"><%= image_tag (publish.image.blank? ? "no-image.jpg" : publish.image.thumb.url), size: "100x100", alt: "Image not found." %></td>
+              <th style="width:200px;height:100px;font-color:white;"></th>
+              <th style="width:100px;height:100px;font-color:white;"></th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% @publishes.first(5).each do |publish| %>
+              <tr>
+                <td class="populardrinkname" style="font-size:20px;font-color:white;"><%= link_to publish.name, publish %></td>
+                <td class="populardrinkimg"><%= image_tag (publish.image.blank? ? "no-image.jpg" : publish.image.thumb.url), size: "100x100", alt: "Image not found." %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>There are no good drinks out there, lol.</p>
+      <% end %>
     </div>
   </div>
   </div>
 
+      </div>
   </div>
 </body>

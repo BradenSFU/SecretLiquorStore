@@ -24,6 +24,19 @@
   </div>
 
   <div class="field">
+    <%= f.label :Biography%>
+    <%= f.text_area :Biography %>
+  </div>
+
+  <div class="field">
+    <%= f.label :Password %>
+    <%= f.password_field :Password %>
+  </div>
+
+  <div class="field">
+    <%= f.label :Password_confirmation %>
+    <%= f.password_field :Password_confirmation %>
+
     <br></br>
     <p class="smalltag"><%= f.label :Biography%></p>
     <p style="font-size:15px;"><%= f.text_area :Biography, size: "15x5" %></p>

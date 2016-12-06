@@ -54,9 +54,10 @@ class LikesController < ApplicationController
   # DELETE /likes/1.json
   def destroy
     @like.destroy
-    respond_to do |format|
-      format.html { redirect_to :back, notice: 'Un-like was successful.' }
-      format.json { head :no_content }
+    begin
+      redirect_to :back
+    rescue ActionController::RedirectBackError
+      redirect_to root_url
     end
   end
 
