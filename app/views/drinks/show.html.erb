@@ -1,6 +1,10 @@
 <body style="height:100%;width:100%;background-color:black; ">
 <%= flash_message %>
+
+<% @ApiDrink = drink_in_database(@drink['strDrink']) %>
+
 <div class="jumbotron vertical-centers" style="background-image: url('/assets/publishbg.jpg'); min-height: 100%; min-height: 100vh;">
+
 <div class="container-fluid" style="margin-left:20px;">
 <div class="drinkImage">
   <%= image_tag( @drink['strDrinkThumb'] && @drink['strDrinkThumb'] != "" ? "#{@drink['strDrinkThumb']}" : 'no-image.jpg', size: "200x200", alt: "") %>
@@ -16,17 +20,58 @@
       <li style="font-size:18px;"><%= @drink["strMeasure#{i}"] %><%= @drink["strIngredient#{i}"]%></li>
     <% end %>
   </ul>
-  <p class="instructions"><%= @drink['strInstructions'] %></p>
 </div>
 
+<strong>
+  <% if @ApiDrink == nil %>
+      Likes: 0<br>
+      Dislikes: 0
+  <% else %>
+      Likes: <%= count_like(@ApiDrink) %><br>
+      Dislikes: <%= count_dislike(@ApiDrink) %>
+  <% end %>
+</strong>
 
-<% if drink_in_database(@drink['strDrink']) %>
+  <p class="instructions"><%= @drink['strInstructions'] %></p>
+
+
+<% if @ApiDrink == nil %>
+
+  <% if current_user %>
+    <%= link_to 'Like', root_url %> |
+    <%= link_to 'Dislike', root_url %>
+
+  <% else %>
+    <%= link_to 'Like', sign_up_url %> |
+    <%= link_to 'Dislike', sign_up_url %>
+  <% end %>
 
 <% else %>
 
   <% if current_user %>
-    <%= link_to 'Like' %> |
-    <%= link_to 'Dislike' %>
+
+    <% liked = false %>
+    <% disliked = false %>
+    <% current_user.likes.each do |l| %>
+      <% if l.publish_id == @ApiDrink.id %>
+        <% if l.islike %>
+          <% liked = true %>
+        <% else %>
+          <% disliked = true %>
+        <% end %>
+        <% break %>
+      <% end %>
+    <% end %>
+
+    <% if liked %>
+      <%= link_to 'Un-like', delete_vote_publish_path(@ApiDrink), method: :post %> |
+    <% elsif disliked %>
+      <%= link_to 'Un-dislike', delete_vote_publish_path(@ApiDrink), method: :post %> |
+    <% else %>
+      <%= link_to 'Like', add_like_publish_path(@ApiDrink), method: :post %> |
+      <%= link_to 'Dislike', add_dislike_publish_path(@ApiDrink), method: :post  %>
+    <% end %>
+
   <% else %>
     <%= link_to 'Like', sign_up_url, method: :get %> |
     <%= link_to 'Dislike', sign_up_url, method: :get %>

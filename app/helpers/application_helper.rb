@@ -14,4 +14,26 @@ module ApplicationHelper
      drink.likes.where(islike: false).count
   end
 
+  def sort_by_popular_drinks
+    Publish.joins(:likes).group("publishes.id").merge(Like.where(:islike => true).order(count: :desc))
+  end
+
+  def drink_in_database(name)
+    begin
+      @oneDrink = Publish.find(:name => name)
+    rescue ActiveRecord::RecordNotFound
+      return nil
+    end
+    return @oneDrink
+  end
+
+  def ingredient_in_database(name)
+    begin
+      @oneIngredient = Ingredient.find(:name => name)
+    rescue ActiveRecord::RecordNotFound
+      return nil
+    end
+    return @oneIngredient
+  end
+
 end

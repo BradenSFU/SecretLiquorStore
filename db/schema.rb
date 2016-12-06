@@ -15,6 +15,14 @@ ActiveRecord::Schema.define(version: 20161202051704) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "drinks", force: :cascade do |t|
+    t.string   "Dname"
+    t.integer  "user_id"
+    t.integer  "drink_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ingredients", force: :cascade do |t|
     t.string   "name"
     t.integer  "publish_id"
@@ -26,6 +34,15 @@ ActiveRecord::Schema.define(version: 20161202051704) do
     t.boolean  "islike"
     t.integer  "publish_id"
     t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "latitude"
+    t.integer  "longitude"
+    t.string   "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -49,6 +66,14 @@ ActiveRecord::Schema.define(version: 20161202051704) do
     t.datetime "updated_at",     null: false
     t.string   "hashedpassword"
     t.string   "passwordsalt"
+  end
+
+  create_table "widgets", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "stock"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

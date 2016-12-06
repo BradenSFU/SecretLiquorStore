@@ -63,7 +63,8 @@
                   <li><a class="active"> <%= link_to "Sign up", sign_up_path, :method => 'get' %></a></li>
                   <li><a class="active"> <%= link_to "Log in", log_in_path, :method => 'get' %></a></li>
                 <% end %>
-                <li id="searchIngredfield" style=" vertical-align:middle; line-height:110px; padding-right:10px;">
+
+                <li id="searchIngredfield" style=" vertical-align:middle; line-height:110px; padding-left:40px; padding-right:40px;">
 
                       <%= form_tag(ingred_startsearch_path, :method => 'get', :id =>'form_id') do %>
                           <%= link_to "Ingredient Search ", ingred_startsearch_path, :onclick => "$('#form_id').submit()", :style => "color:#999"%>
