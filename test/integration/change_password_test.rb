@@ -6,8 +6,8 @@ class ChangepasswordTest < ActionDispatch::IntegrationTest
    Password: "123456",Password_confirmation: "123456", Isadmin: true)
  end
   #test "Cannot change password" do
-    #get change_password_path (@user)
-    #patch log_in_path(@user), params: {old_password: "123456", password: "", password_confirmation: ""}
+    #login(@user)
+    #get change_password_path, params: {user: {email: @user.Email, old_password: "123456", password: "", password_confirmation: ""}}
     #assert !flash.empty?
   #end
   test "Cannot set new password" do

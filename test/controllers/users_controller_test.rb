@@ -7,7 +7,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   end
   test "should not get index" do
-    get users_url
+    get users_url (@user)
     assert_redirected_to root_url
     assert :success
   end
@@ -20,5 +20,11 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test "should show user profile" do
     get users_url (@user)
     assert :success
+  end
+  test "should destroy user" do
+    assert_difference ('User.count', -1) do
+      delete users_url (@user)
+    end
+    assert_redirected_to root_url
   end
 end
