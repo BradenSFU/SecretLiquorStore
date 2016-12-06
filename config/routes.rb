@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :users
   resources :sessions
   resources :likes
+  resources :ingredients
 
   resources :publishes do
     member do

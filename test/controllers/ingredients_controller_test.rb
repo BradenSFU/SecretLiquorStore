@@ -6,18 +6,13 @@ class IngredientsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
+    get ingredients_url
     assert_response :success
   end
 
   test "should get new" do
+    get ingredients_url
     assert_response :success
-  end
-
-  test "should create ingredient" do
-    assert_difference('Ingredient.count') do
-      post ingredients_url, params: { ingredient: { name: @ingredient.name, publish_id: @ingredient.publish_id } }
-    end
-    assert_redirected_to ingredient_url(Ingredient.last)
   end
 
   test "should destroy ingredient" do
