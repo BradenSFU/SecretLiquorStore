@@ -36,3 +36,4 @@ class ActionDispatch::ControllerTest
     end
   end
 end
+end

@@ -21,10 +21,4 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     get users_url (@user)
     assert :success
   end
-  test "should destroy user" do
-    assert_difference 'User.count', -1 do
-      delete users_url (@user)
-    end
-    assert_redirected_to root_url
-  end
 end

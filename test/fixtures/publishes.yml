@@ -4,6 +4,8 @@ one:
   name: MyString
   user_id: 1
   drink_id: 1
+  instructions: MyString
+  id: 2
 
 two:
   name: MyString
