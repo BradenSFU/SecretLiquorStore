@@ -29,7 +29,7 @@ class IngredSearchController < ApplicationController
         end
 
         @results.each do |item|
-          puts item
+          # puts item
           item.gsub!("'", '\%27')
           if @GlobalArray.count == 0
             @GlobalArray.push([item,counter])
@@ -113,7 +113,7 @@ class IngredSearchController < ApplicationController
     @GlobalArray.flatten!
     @page = 1
     @pagerange = @GlobalArray[(@page.to_i-1)*20..[@page.to_i*20-1, (@GlobalArray.size/2)-1].min]
-    puts @pagerange
+    # puts @pagerange
   end
 
   def pagehandler

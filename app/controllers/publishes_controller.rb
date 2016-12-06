@@ -94,7 +94,12 @@ class PublishesController < ApplicationController
   # POST /publishes.json
   def create
     @publish = Publish.new(publish_params)
-    @publish.user_id = current_user.id
+    begin
+      unless current_user.nil?
+        @publish.user_id = current_user.id
+      end
+    rescue ActionView::Template::Error
+    end
     destroy_invalid_inputs
     if @publish.save
       redirect_to @publish

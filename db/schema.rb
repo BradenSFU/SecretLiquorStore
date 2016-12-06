@@ -15,14 +15,6 @@ ActiveRecord::Schema.define(version: 20161202051704) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "drinks", force: :cascade do |t|
-    t.string   "Dname"
-    t.integer  "user_id"
-    t.integer  "drink_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "ingredients", force: :cascade do |t|
     t.string   "name"
     t.integer  "publish_id"
@@ -38,15 +30,6 @@ ActiveRecord::Schema.define(version: 20161202051704) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "locations", force: :cascade do |t|
-    t.string   "name"
-    t.integer  "latitude"
-    t.integer  "longitude"
-    t.string   "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "publishes", force: :cascade do |t|
     t.string   "name"
     t.integer  "user_id"
@@ -55,6 +38,24 @@ ActiveRecord::Schema.define(version: 20161202051704) do
     t.datetime "updated_at",   null: false
     t.string   "image"
     t.text     "instructions"
+  end
+
+  create_table "us_chal_interactions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "challenge_id"
+    t.string   "interaction"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["user_id", "challenge_id"], name: "index_us_chal_interactions_on_user_id_and_challenge_id", using: :btree
+  end
+
+  create_table "user_interactions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "submission_id"
+    t.string   "interaction"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["user_id", "submission_id"], name: "index_user_interactions_on_user_id_and_submission_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -66,6 +67,14 @@ ActiveRecord::Schema.define(version: 20161202051704) do
     t.datetime "updated_at",     null: false
     t.string   "hashedpassword"
     t.string   "passwordsalt"
+  end
+
+  create_table "widgets", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "stock"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

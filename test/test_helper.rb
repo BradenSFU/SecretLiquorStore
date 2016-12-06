@@ -15,6 +15,7 @@ class ActiveSupport::TestCase
          password: who.Password }
        assert_response :success
      end
+     end
   end
 end
 
