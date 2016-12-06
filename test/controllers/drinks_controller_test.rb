@@ -4,11 +4,22 @@ class DrinksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @drink = 'Jade'
     @notdrink = 'a'
+    @gibberish = 'ccvwrvc'
   end
 
-  test "should get drink info page" do
-    get drink_show_url(@drink)
+  test "search existing drink" do
+    get drink_search_url(:searchBarDrink => @drink)
     assert_response :success
+  end
+
+  test "search not existing drink with results" do
+    get drink_search_url(:searchBarDrink => @notdrink)
+    assert_response :success
+  end
+
+  test "search not existing drink with no results" do
+    get drink_search_url(:searchBarDrink => @gibberish)
+    assert_equal "No matched drinks found", flash[:alert]
   end
 
 end
