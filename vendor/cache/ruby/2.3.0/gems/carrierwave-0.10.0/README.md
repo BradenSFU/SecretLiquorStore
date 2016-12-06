@@ -138,8 +138,11 @@ If you store files outside the project root folder, you may want to define `cach
 
 ```ruby
 class MyUploader < CarrierWave::Uploader::Base
-  def cache_dir
-    '/tmp/projectname-cache'
+  #def cache_dir
+  #  '/tmp/projectname-cache'
+  #end
+	def cache_dir
+    "#{Rails.root}/tmp/uploads"
   end
 end
 ```
@@ -691,6 +694,12 @@ CarrierWave.configure do |config|
     identifier = # some logic
     "http://#{identifier}.cdn.rackspacecloud.com"
   end
+end
+```
+
+```ruby
+CarrierWave.configure do |config|
+  config.cache_dir = "#{Rails.root}/tmp/uploads"
 end
 ```
 
