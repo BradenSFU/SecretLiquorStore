@@ -4,10 +4,10 @@ class PublishesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @publish = publishes(:one)
   end
-    test "should add like" do
-      Publish.add_like
-      assert @publish.likes.vaild?
-    end
+
+  test "should add like" do
+    Publish.add_like
+    assert @publish.likes.vaild?
     assert_redirected_to publish_url(Publish.last)
   end
 

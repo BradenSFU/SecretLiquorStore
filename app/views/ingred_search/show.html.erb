@@ -15,7 +15,7 @@
 <div class='searchResults'>
   <% @pagerange.each_slice(2) do |result, count| %>
     <% drink = Publish.where(:name => result)[0] %>
-    <% puts drink %>
+    <% # puts drink %>
     <% if drink != nil # drink is a published drink %>
       <div style="clear:both">
         <div class="drinkImage">
