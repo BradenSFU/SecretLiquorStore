@@ -68,12 +68,4 @@ ActiveRecord::Schema.define(version: 20161202051704) do
     t.string   "passwordsalt"
   end
 
-  create_table "widgets", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.integer  "stock"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
 end

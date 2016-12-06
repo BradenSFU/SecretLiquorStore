@@ -19,7 +19,7 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
-
+  pool: 5
 
 development:
   <<: *default
@@ -90,4 +90,6 @@ test:
 #
 production:
   <<: *default
-  password: <%= ENV['PROJECT_DATABASE_PASSWORD'] %>
+  database: ruby-getting-started_production
+  username: ruby-getting-started
+  password: <%= ENV['RUBY-GETTING-STARTED_DATABASE_PASSWORD'] %>

@@ -16,7 +16,7 @@ two:
 
 UserA:
   Username: UserA
-  hashedpassword: 123456.CreateHashedPassword
+  id: 1
   Email: UserA@email.com
   Biography: MyText
   Isadmin: false
