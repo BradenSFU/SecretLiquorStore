@@ -19,7 +19,7 @@ class DrinksControllerTest < ActionDispatch::IntegrationTest
 
   test "search not existing drink with no results" do
     get drink_search_url(:searchBarDrink => @gibberish)
-    assert_response :found
+    assert_equal "No matched drinks found", flash[:alert]
   end
 
 end
