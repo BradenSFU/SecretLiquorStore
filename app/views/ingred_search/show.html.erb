@@ -11,7 +11,7 @@
     <%= button_to("Next", ingred_page_path(:page => @page.to_i+1, :results => @GlobalArray), :class => 'pageLinks') %>
   <% end %>
 </div>
-</br>
+<br/>
 <div class='searchResults'>
   <% @pagerange.each_slice(2) do |result, count| %>
     <% drink = Publish.where(:name => result)[0] %>
@@ -22,7 +22,8 @@
           <%= image_tag( drink['image'] ? "#{drink.image.thumb.url}" : "no-image.jpg", size: "150x150", alt: "") %>
         </div>
         <%= link_to("#{drink["name"]}", drink, :class => 'drinkName searchResultsName') %>
-        <br/
+        <br/>
+        <span>matched <b class='ingredcounttext'><%= count %></b> of your selected ingredients</span>
       </div>
     <% else %>
       <% url = "http://www.thecocktaildb.com/api/json/v1/1/search.php?s=#{result}"
