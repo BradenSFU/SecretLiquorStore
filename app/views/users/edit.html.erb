@@ -62,7 +62,7 @@
 <% if current_user %>
   <% if !current_user.Isadmin && current_user.id == @user.id %>
     <br></br><br></br>
-    <%= link_to 'Delete Your Account', @user, method: :delete, data: { confirm: 'Are you sure you want to deactivate?\nThis action cannot be undone.' } %>
+    <%= link_to 'Delete Your Account', @user, method: :delete, data: { confirm: 'Are you sure you want to deactivate? This action cannot be undone.' } %>
   <% end %>
 <% end %>
 </div>
